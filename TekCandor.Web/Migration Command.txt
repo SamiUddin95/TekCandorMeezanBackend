@@ -1,0 +1,3 @@
+﻿dotnet ef migrations add InitialCreate -p TekCandor.Repository -s TekCandor.Web
+
+dotnet ef database update -p TekCandor.Repository -s TekCandor.Web

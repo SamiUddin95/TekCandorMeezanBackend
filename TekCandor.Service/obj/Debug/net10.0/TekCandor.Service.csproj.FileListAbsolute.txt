@@ -1,0 +1,15 @@
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\bin\Debug\net10.0\TekCandor.Service.deps.json
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\bin\Debug\net10.0\TekCandor.Service.dll
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\bin\Debug\net10.0\TekCandor.Service.pdb
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\bin\Debug\net10.0\TekCandor.Repository.dll
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\bin\Debug\net10.0\TekCandor.Repository.pdb
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\TekCandor.Service.csproj.AssemblyReference.cache
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\TekCandor.Service.GeneratedMSBuildEditorConfig.editorconfig
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\TekCandor.Service.AssemblyInfoInputs.cache
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\TekCandor.Service.AssemblyInfo.cs
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\TekCandor.Service.csproj.CoreCompileInputs.cache
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\TekCando.7796F934.Up2Date
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\TekCandor.Service.dll
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\refint\TekCandor.Service.dll
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\TekCandor.Service.pdb
+D:\TekCandorUpdated\TekCandor\TekCandor.Service\obj\Debug\net10.0\ref\TekCandor.Service.dll

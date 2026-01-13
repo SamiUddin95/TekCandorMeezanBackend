@@ -1,0 +1,81 @@
+[
+  {
+    "ContainingType": "TekCandor.Web.Controllers.CycleController",
+    "Method": "GetAll",
+    "RelativePath": "api/Cycle",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TekCandor.Web.Controllers.CycleController",
+    "Method": "Create",
+    "RelativePath": "api/Cycle",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "dto",
+        "Type": "TekCandor.Service.Models.CycleDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TekCandor.Web.Controllers.CycleController",
+    "Method": "GetById",
+    "RelativePath": "api/Cycle/{id}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TekCandor.Web.Controllers.CycleController",
+    "Method": "Update",
+    "RelativePath": "api/Cycle/{id}",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      },
+      {
+        "Name": "dto",
+        "Type": "TekCandor.Service.Models.CycleDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "TekCandor.Web.Controllers.CycleController",
+    "Method": "Delete",
+    "RelativePath": "api/Cycle/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Guid",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  }
+]
