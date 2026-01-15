@@ -4,6 +4,7 @@ using TekCandor.Repository.Interfaces;
 using TekCandor.Repository.Implementations;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Implementations;
+using TekCandor.Repository.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Dependency Injection
 builder.Services.AddScoped<ICycleRepository, CycleRepository>();
 builder.Services.AddScoped<ICycleService, CycleService>();
+builder.Services.AddScoped<IHubRepository, HubRepository>();
+builder.Services.AddScoped<IHubService, HubService>();
+builder.Services.AddScoped<IBranchRepository, BranchRepository>();
+builder.Services.AddScoped<IBranchService, BranchService>();
+builder.Services.AddScoped<IReturnReasonRepository, ReturnReasonRepository>();
+builder.Services.AddScoped<IReturnReasonService, ReturnReasonService>();
+
+
 
 // Swagger & Controllers
 builder.Services.AddControllers();

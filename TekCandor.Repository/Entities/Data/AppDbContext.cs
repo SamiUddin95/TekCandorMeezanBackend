@@ -13,6 +13,15 @@ namespace TekCandor.Repository.Entities.Data
 
         public DbSet<Cycle> Cycles { get; set; }
 
+        public DbSet<Hub> Hub { get; set; }
+        public DbSet<Branch> Branch { get; set; }
+        public DbSet<ReturnReason> ReturnReason { get; set; }
+        public DbSet<ClearingStatuses> ClearingStatuses { get; set; }
+        public DbSet<Users>Users { get; set; }
+
+
+
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cycle>(entity =>

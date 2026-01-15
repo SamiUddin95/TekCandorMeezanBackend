@@ -1,0 +1,102 @@
+﻿using Microsoft.AspNetCore.Mvc;
+using TekCandor.Service.Interfaces;
+using TekCandor.Service.Models;
+using TekCandor.Web.Models;
+
+namespace TekCandor.Web.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class HubController : ControllerBase
+    {
+        private readonly IHubService _service;
+
+        public HubController(IHubService service)
+        {
+            _service = service;
+        }
+
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            try
+            {
+                var dtos = _service.GetAllHubs();
+                return Ok(ApiResponse<IEnumerable<HubDTO>>.Success(dtos));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetById(Guid id)
+        {
+            try
+            {
+                var dto = _service.GetById(id);
+                if (dto == null)
+                {
+                    return NotFound(ApiResponse<string>.Error("Hub not found"));
+                }
+                return Ok(ApiResponse<HubDTO>.Success(dto));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] HubDTO dto)
+        {
+            try
+            {
+                var created = _service.CreateHub(dto);
+                return Ok(ApiResponse<HubDTO>.Success(created, 200));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpPut("{id}")]
+        public IActionResult Update(Guid id, [FromBody] HubDTO dto)
+        {
+            try
+            {
+                dto.Id = id;
+                var updated = _service.Update(dto);
+                if (updated == null)
+                {
+                    return NotFound(ApiResponse<string>.Error("Hub not found"));
+                }
+                return Ok(ApiResponse<HubDTO>.Success(updated));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(Guid id)
+        {
+            try
+            {
+                var ok = _service.SoftDelete(id);
+                if (!ok)
+                {
+                    return NotFound(ApiResponse<string>.Error("Hub not found"));
+                }
+                return Ok(ApiResponse<string>.Success("Deleted"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+    }
+}
