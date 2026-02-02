@@ -11,8 +11,8 @@ namespace TekCandor.Service.Interfaces
     {
         IEnumerable<CycleDTO> GetAllCycles();
         CycleDTO CreateCycle(CycleDTO cycle);
-        CycleDTO? GetById(Guid id);
+        CycleDTO? GetById(long id);
         CycleDTO? Update(CycleDTO cycle);
-        bool SoftDelete(Guid id);
+        bool SoftDelete(long id);
     }
 }

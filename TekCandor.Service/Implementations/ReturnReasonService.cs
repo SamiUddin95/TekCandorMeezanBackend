@@ -20,24 +20,21 @@ namespace TekCandor.Service.Implementations
         {
             return _repository.GetAll().Select(r => new ReturnReasonDTO
             {
-                Id = r.Id,
                 Code = r.Code,
                 AlphaReturnCodes = r.AlphaReturnCodes,
                 NumericReturnCodes = r.NumericReturnCodes,
                 DescriptionWithReturnCodes = r.DescriptionWithReturnCodes,
                 DefaultCallBack = r.DefaultCallBack,
-                Version = r.Version,
                 Name = r.Name,
-                IsNew = r.IsNew,
                 IsDeleted = r.IsDeleted,
-                CreatedUser = r.CreatedUser,
-                CreatedDateTime = r.CreatedDateTime,
-                ModifiedUser = r.ModifiedUser,
-                ModifiedDateTime = r.ModifiedDateTime
+                CreatedBy = r.CreatedBy,
+                CreatedOn = r.CreatedOn,
+                UpdatedBy = r.UpdatedBy,
+                UpdatedOn = r.UpdatedOn
             });
         }
 
-        public ReturnReasonDTO? GetById(Guid id)
+        public ReturnReasonDTO? GetById(long id)
         {
             var r = _repository.GetById(id);
             if (r == null) return null;
@@ -50,14 +47,12 @@ namespace TekCandor.Service.Implementations
                 NumericReturnCodes = r.NumericReturnCodes,
                 DescriptionWithReturnCodes = r.DescriptionWithReturnCodes,
                 DefaultCallBack = r.DefaultCallBack,
-                Version = r.Version,
                 Name = r.Name,
-                IsNew = r.IsNew,
                 IsDeleted = r.IsDeleted,
-                CreatedUser = r.CreatedUser,
-                CreatedDateTime = r.CreatedDateTime,
-                ModifiedUser = r.ModifiedUser,
-                ModifiedDateTime = r.ModifiedDateTime
+                CreatedBy = r.CreatedBy,
+                CreatedOn = r.CreatedOn,
+                UpdatedBy = r.UpdatedBy,
+                UpdatedOn = r.UpdatedOn
             };
         }
 
@@ -71,14 +66,12 @@ namespace TekCandor.Service.Implementations
                 NumericReturnCodes = dto.NumericReturnCodes,
                 DescriptionWithReturnCodes = dto.DescriptionWithReturnCodes,
                 DefaultCallBack = dto.DefaultCallBack,
-                Version = dto.Version,
                 Name = dto.Name,
-                IsNew = dto.IsNew,
                 IsDeleted = dto.IsDeleted,
-                CreatedUser = dto.CreatedUser,
-                CreatedDateTime = dto.CreatedDateTime,
-                ModifiedUser = dto.ModifiedUser,
-                ModifiedDateTime = dto.ModifiedDateTime
+                CreatedBy = dto.CreatedBy,
+                CreatedOn = dto.CreatedOn,
+                UpdatedBy = dto.UpdatedBy,
+                UpdatedOn = dto.UpdatedOn
             };
 
             var created = _repository.Add(entity);
@@ -96,14 +89,12 @@ namespace TekCandor.Service.Implementations
                 NumericReturnCodes = dto.NumericReturnCodes,
                 DescriptionWithReturnCodes = dto.DescriptionWithReturnCodes,
                 DefaultCallBack = dto.DefaultCallBack,
-                Version = dto.Version,
                 Name = dto.Name,
-                IsNew = dto.IsNew,
                 IsDeleted = dto.IsDeleted,
-                CreatedUser = dto.CreatedUser,
-                CreatedDateTime = dto.CreatedDateTime,
-                ModifiedUser = dto.ModifiedUser,
-                ModifiedDateTime = dto.ModifiedDateTime
+                CreatedBy = dto.CreatedBy,
+                CreatedOn = dto.CreatedOn,
+                UpdatedBy = dto.UpdatedBy,
+                UpdatedOn = dto.UpdatedOn
             };
 
             var updated = _repository.Update(entity);
@@ -117,18 +108,16 @@ namespace TekCandor.Service.Implementations
                 NumericReturnCodes = updated.NumericReturnCodes,
                 DescriptionWithReturnCodes = updated.DescriptionWithReturnCodes,
                 DefaultCallBack = updated.DefaultCallBack,
-                Version = updated.Version,
                 Name = updated.Name,
-                IsNew = updated.IsNew,
                 IsDeleted = updated.IsDeleted,
-                CreatedUser = updated.CreatedUser,
-                CreatedDateTime = updated.CreatedDateTime,
-                ModifiedUser = updated.ModifiedUser,
-                ModifiedDateTime = updated.ModifiedDateTime
+                CreatedBy = updated.CreatedBy,
+                CreatedOn = updated.CreatedOn,
+                UpdatedBy = updated.UpdatedBy,
+                UpdatedOn = updated.UpdatedOn
             };
         }
 
-        public bool SoftDelete(Guid id)
+        public bool SoftDelete(long id)
         {
             return _repository.SoftDelete(id);
         }

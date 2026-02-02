@@ -25,14 +25,14 @@ namespace TekCandor.Repository.Implementations
 
         public Cycle Add(Cycle cycle)
         {
-            cycle.Id = Guid.NewGuid();
+            
             cycle.CreatedOn = DateTime.UtcNow;
             _context.Cycles.Add(cycle);
             _context.SaveChanges();
             return cycle;
         }
 
-        public Cycle? GetById(Guid id)
+        public Cycle? GetById(long id)
         {
             return _context.Cycles.FirstOrDefault(c => c.Id == id);
         }
@@ -52,7 +52,7 @@ namespace TekCandor.Repository.Implementations
             return existing;
         }
 
-        public bool SoftDelete(Guid id)
+        public bool SoftDelete(long id)
         {
             var existing = _context.Cycles.FirstOrDefault(c => c.Id == id);
             if (existing == null) return false;

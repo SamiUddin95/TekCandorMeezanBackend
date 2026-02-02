@@ -8,12 +8,12 @@ namespace TekCandor.Repository.Entities
 {
     public class Cycle
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public required string Code { get; set; }
         public required string Name { get; set; }
         public bool IsDeleted { get; set; } 
-        public required string CreatedBy { get; set; }
-        public required string UpdatedBy { get; set; }
+        public  string CreatedBy { get; set; }
+        public  string UpdatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime? UpdatedOn { get; set; }
     }

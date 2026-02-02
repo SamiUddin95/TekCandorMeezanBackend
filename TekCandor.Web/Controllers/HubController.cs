@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
 using TekCandor.Web.Models;
 
 namespace TekCandor.Web.Controllers
 {
+    [EnableCors("AllowFrontend")]
     [ApiController]
     [Route("api/[controller]")]
     public class HubController : ControllerBase
@@ -16,13 +18,22 @@ namespace TekCandor.Web.Controllers
             _service = service;
         }
 
+       
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10)
         {
             try
             {
-                var dtos = _service.GetAllHubs();
-                return Ok(ApiResponse<IEnumerable<HubDTO>>.Success(dtos));
+                var result = await _service.GetAllHubsAsync(pageNumber, pageSize);
+
+                return Ok(ApiResponse<object>.Success(new
+                {
+                    items = result.Items,
+                    totalCount = result.TotalCount,
+                    pageNumber = result.PageNumber,
+                    pageSize = result.PageSize,
+                    totalPages = result.TotalPages
+                }, 200));
             }
             catch (Exception ex)
             {
@@ -30,16 +41,16 @@ namespace TekCandor.Web.Controllers
             }
         }
 
+
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public async Task<IActionResult> GetById(long id)
         {
             try
             {
-                var dto = _service.GetById(id);
+                var dto = await _service.GetByIdAsync(id);
                 if (dto == null)
-                {
                     return NotFound(ApiResponse<string>.Error("Hub not found"));
-                }
+
                 return Ok(ApiResponse<HubDTO>.Success(dto));
             }
             catch (Exception ex)
@@ -49,11 +60,11 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] HubDTO dto)
+        public async Task<IActionResult> Create([FromBody] HubDTO dto)
         {
             try
             {
-                var created = _service.CreateHub(dto);
+                var created = await _service.CreateHubAsync(dto);
                 return Ok(ApiResponse<HubDTO>.Success(created, 200));
             }
             catch (Exception ex)
@@ -63,16 +74,15 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] HubDTO dto)
+        public async Task<IActionResult> Update(long id, [FromBody] HubDTO dto)
         {
             try
             {
                 dto.Id = id;
-                var updated = _service.Update(dto);
+                var updated = await _service.UpdateAsync(dto);
                 if (updated == null)
-                {
                     return NotFound(ApiResponse<string>.Error("Hub not found"));
-                }
+
                 return Ok(ApiResponse<HubDTO>.Success(updated));
             }
             catch (Exception ex)
@@ -82,15 +92,14 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(long id)
         {
             try
             {
-                var ok = _service.SoftDelete(id);
+                var ok = await _service.SoftDeleteAsync(id);
                 if (!ok)
-                {
                     return NotFound(ApiResponse<string>.Error("Hub not found"));
-                }
+
                 return Ok(ApiResponse<string>.Success("Deleted"));
             }
             catch (Exception ex)
@@ -98,5 +107,6 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
     }
 }

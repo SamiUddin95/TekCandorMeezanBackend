@@ -7,9 +7,9 @@ namespace TekCandor.Service.Interfaces
     public interface IReturnReasonService
     {
         IEnumerable<ReturnReasonDTO> GetAll();
-        ReturnReasonDTO? GetById(Guid id);
+        ReturnReasonDTO? GetById(long id);
         ReturnReasonDTO Create(ReturnReasonDTO returnReason);
         ReturnReasonDTO? Update(ReturnReasonDTO returnReason);
-        bool SoftDelete(Guid id);
+        bool SoftDelete(long id);
     }
 }

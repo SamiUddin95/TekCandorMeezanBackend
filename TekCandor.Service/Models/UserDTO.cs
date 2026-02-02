@@ -1,0 +1,30 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using TekCandor.Repository.Entities;
+
+namespace TekCandor.Service.Models
+{
+    public class UserDTO
+    {
+        public long Id { get; set; }
+        public string? Name { get; set; }
+        public string? LoginName { get; set; }
+        public string? PasswordHash { get; set; }
+        public string? Email { get; set; }
+        public string? BranchorHub { get; set; }
+        public string? UserType { get; set; }
+        public long? HubIds { get; set; }
+        public long? BranchIds { get; set; }
+        public string? PhoneNo { get; set; }
+        public string? PasswordLastChanged { get; set; }
+        public DateTime? LastLoginTime { get; set; }
+        public bool IsActive { get; set; }
+        public bool IsSupervise { get; set; }
+        public string? CreatedBy { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public string? UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+
+    }
+}

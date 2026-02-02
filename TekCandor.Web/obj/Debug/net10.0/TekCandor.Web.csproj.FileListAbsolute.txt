@@ -170,6 +170,7 @@ D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\bin\Debug\net10.
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\bin\Debug\net10.0\Azure.Core.dll
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\bin\Debug\net10.0\Azure.Identity.dll
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\bin\Debug\net10.0\Humanizer.dll
+D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\bin\Debug\net10.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\bin\Debug\net10.0\Microsoft.Bcl.AsyncInterfaces.dll
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\bin\Debug\net10.0\Microsoft.Build.Locator.dll
@@ -315,10 +316,10 @@ D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\staticwebassets.development.json
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\staticwebassets.build.endpoints.json
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\swae.build.ex.cache
+D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\TekCando.0B4408F4.Up2Date
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\TekCandor.Web.dll
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\refint\TekCandor.Web.dll
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\TekCandor.Web.pdb
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\TekCandor.Web.genruntimeconfig.cache
 D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\ref\TekCandor.Web.dll
-D:\TekCandorMeezan\Backend\TekCandorMeezanBackend\TekCandor.Web\obj\Debug\net10.0\staticwebassets.upToDateCheck.txt

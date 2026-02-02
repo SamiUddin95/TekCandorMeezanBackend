@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
 using TekCandor.Web.Models;
 
 namespace TekCandor.Web.Controllers
 {
+    [EnableCors("AllowFrontend")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReturnReasonController : ControllerBase
@@ -30,7 +32,7 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public IActionResult GetById(long id)
         {
             try
             {
@@ -74,7 +76,7 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete(long id)
         {
             try
             {

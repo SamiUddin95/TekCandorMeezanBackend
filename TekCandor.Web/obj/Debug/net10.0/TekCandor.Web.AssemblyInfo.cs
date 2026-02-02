@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("TekCandor.Web")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2cfbe5f685804060e90146ead5714830a6cb39b0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+20398bc11d4f2785204441a29a0fe9f9764a1aa7")]
 [assembly: System.Reflection.AssemblyProductAttribute("TekCandor.Web")]
 [assembly: System.Reflection.AssemblyTitleAttribute("TekCandor.Web")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -11,8 +11,8 @@ namespace TekCandor.Repository.Interfaces
     {
         IEnumerable<Cycle> GetAll();
         Cycle Add(Cycle cycle);
-        Cycle? GetById(Guid id);
+        Cycle? GetById(long id);
         Cycle? Update(Cycle cycle);
-        bool SoftDelete(Guid id);
+        bool SoftDelete(long id);
     }
 }

@@ -7,9 +7,9 @@ namespace TekCandor.Repository.Interfaces
     public interface IReturnReasonRepository
     {
         IEnumerable<ReturnReason> GetAll();
-        ReturnReason? GetById(Guid id);
+        ReturnReason? GetById(long id);
         ReturnReason Add(ReturnReason returnReason);
         ReturnReason? Update(ReturnReason returnReason);
-        bool SoftDelete(Guid id);
+        bool SoftDelete(long id);
     }
 }

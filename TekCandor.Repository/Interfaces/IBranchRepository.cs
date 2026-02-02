@@ -7,12 +7,10 @@ namespace TekCandor.Repository.Interfaces
 {
     public interface IBranchRepository
     {
-        IEnumerable<Branch> GetAll();
-        Branch Add(Branch branch);
-        Branch? GetById(Guid id);
-        Branch? Update(Branch branch);
-        bool SoftDelete(Guid id);
-
-
+        IEnumerable<Branch> GetAllQueryable();
+        Task<Branch?> GetByIdAsync(long id);
+        Task AddAsync(Branch branch);
+        Task<bool> SaveChangesAsync();
     }
+
 }

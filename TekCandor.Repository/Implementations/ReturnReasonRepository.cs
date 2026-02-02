@@ -20,15 +20,14 @@ namespace TekCandor.Repository.Implementations
             return _context.ReturnReason;
         }
 
-        public ReturnReason? GetById(Guid id)
+        public ReturnReason? GetById(long id)
         {
             return _context.ReturnReason.FirstOrDefault(r => r.Id == id);
         }
 
         public ReturnReason Add(ReturnReason returnReason)
         {
-            returnReason.Id = Guid.NewGuid();
-            returnReason.CreatedDateTime = DateTime.Now;
+            returnReason.CreatedOn = DateTime.Now;
             _context.ReturnReason.Add(returnReason);
             _context.SaveChanges();
             return returnReason;
@@ -44,20 +43,18 @@ namespace TekCandor.Repository.Implementations
             existing.NumericReturnCodes = returnReason.NumericReturnCodes;
             existing.DescriptionWithReturnCodes = returnReason.DescriptionWithReturnCodes;
             existing.DefaultCallBack = returnReason.DefaultCallBack;
-            existing.Version = returnReason.Version;
             existing.Name = returnReason.Name;
-            existing.IsNew = returnReason.IsNew;
             existing.IsDeleted = returnReason.IsDeleted;
-            existing.CreatedUser = returnReason.CreatedUser;
-            existing.CreatedDateTime = returnReason.CreatedDateTime;
-            existing.ModifiedUser = returnReason.ModifiedUser;
-            existing.ModifiedDateTime = DateTime.Now;
+            existing.CreatedBy = returnReason.CreatedBy;
+            existing.CreatedOn = returnReason.CreatedOn;
+            existing.UpdatedBy = returnReason.UpdatedBy;
+            existing.UpdatedOn = DateTime.Now;
 
             _context.SaveChanges();
             return existing;
         }
 
-        public bool SoftDelete(Guid id)
+        public bool SoftDelete(long id)
         {
             var existing = _context.ReturnReason.FirstOrDefault(r => r.Id == id);
             if (existing == null) return false;

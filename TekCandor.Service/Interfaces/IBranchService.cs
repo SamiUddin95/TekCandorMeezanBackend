@@ -7,12 +7,12 @@ namespace TekCandor.Service.Interfaces
 {
     public interface IBranchService
     {
-        IEnumerable<BranchDTO> GetBranches();
-        BranchDTO CreateBranch(BranchDTO branch);
-        
-        BranchDTO? UpdateBranch(BranchDTO branch);
-        bool SoftDelete(Guid id);
+        Task<PagedResult<BranchDTO>> GetBranchesAsync(int pageNumber, int pageSize);
+        Task<BranchDTO?> GetByIdAsync(long id);
+        Task<BranchDTO> CreateBranchAsync(BranchDTO branch);
+        Task<BranchDTO?> UpdateBranchAsync(BranchDTO branch);
+        Task<bool> SoftDeleteAsync(long id);
 
-        BranchDTO? GetById(Guid Id);
+
     }
 }

@@ -51,7 +51,6 @@ namespace TekCandor.Service.Implementations
             var created = _repository.Add(entity);
             return new CycleDTO
             {
-                Id = created.Id,
                 Code = created.Code,
                 Name = created.Name,
                 IsDeleted = created.IsDeleted,
@@ -62,13 +61,13 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-        public CycleDTO? GetById(Guid id)
+        public CycleDTO? GetById(long id)
         {
             var c = _repository.GetById(id);
             if (c == null) return null;
             return new CycleDTO
             {
-                Id = c.Id,
+              
                 Code = c.Code,
                 Name = c.Name,
                 IsDeleted = c.IsDeleted,
@@ -83,7 +82,7 @@ namespace TekCandor.Service.Implementations
         {
             var entity = new Cycle
             {
-                Id = cycle.Id,
+               
                 Code = cycle.Code,
                 Name = cycle.Name,
                 IsDeleted = cycle.IsDeleted,
@@ -96,7 +95,7 @@ namespace TekCandor.Service.Implementations
             if (updated == null) return null;
             return new CycleDTO
             {
-                Id = updated.Id,
+                
                 Code = updated.Code,
                 Name = updated.Name,
                 IsDeleted = updated.IsDeleted,
@@ -107,7 +106,7 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-        public bool SoftDelete(Guid id)
+        public bool SoftDelete(long id)
         {
             return _repository.SoftDelete(id);
         }
