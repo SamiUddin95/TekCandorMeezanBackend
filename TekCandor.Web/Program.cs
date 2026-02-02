@@ -36,8 +36,9 @@ builder.Services.AddScoped<IBranchService, BranchService>();
 builder.Services.AddScoped<IReturnReasonRepository, ReturnReasonRepository>();
 builder.Services.AddScoped<IReturnReasonService, ReturnReasonService>();
 builder.Services.AddScoped<ITokenRevocationRepository, TokenRevocationRepository>();
-//builder.Services.AddScoped<IPermissionHelperService, PermissionHelperService>();
 
+builder.Services.AddScoped<IGroupRepository, GroupRepository>();
+builder.Services.AddScoped<IGroupService, GroupService>();
 // Swagger & Controllers
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

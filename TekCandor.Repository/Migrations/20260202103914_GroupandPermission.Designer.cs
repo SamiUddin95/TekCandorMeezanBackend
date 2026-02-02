@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TekCandor.Repository.Entities.Data;
 
@@ -11,9 +12,11 @@ using TekCandor.Repository.Entities.Data;
 namespace TekCandor.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260202103914_GroupandPermission")]
+    partial class GroupandPermission
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,40 +219,6 @@ namespace TekCandor.Repository.Migrations
                     b.ToTable("Cycles");
                 });
 
-            modelBuilder.Entity("TekCandor.Repository.Entities.Group", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Group");
-                });
-
             modelBuilder.Entity("TekCandor.Repository.Entities.Hub", b =>
                 {
                     b.Property<long>("Id")
@@ -312,45 +281,6 @@ namespace TekCandor.Repository.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Hub");
-                });
-
-            modelBuilder.Entity("TekCandor.Repository.Entities.Permission", b =>
-                {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
-
-                    b.Property<string>("CreatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("CreatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<bool?>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("UpdatedBy")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime?>("UpdatedOn")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.ToTable("Permission");
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.ReturnReason", b =>
@@ -527,9 +457,6 @@ namespace TekCandor.Repository.Migrations
                         .HasColumnType("datetime2")
                         .HasDefaultValueSql("GETUTCDATE()");
 
-                    b.Property<long?>("UserLimit")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("UserType")
                         .HasMaxLength(50)
                         .IsUnicode(false)
@@ -552,17 +479,6 @@ namespace TekCandor.Repository.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
 
                     b.Navigation("Hub");
-                });
-
-            modelBuilder.Entity("TekCandor.Repository.Entities.Permission", b =>
-                {
-                    b.HasOne("TekCandor.Repository.Entities.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Group");
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.User", b =>

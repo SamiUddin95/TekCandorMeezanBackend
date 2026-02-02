@@ -20,7 +20,10 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<User>Users { get; set; }
         public DbSet<RevokedToken> RevokedTokens { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }
-       
+        
+        public DbSet<Group> Group { get; set; }
+        public DbSet<Permission> Permission { get; set; }
+
 
 
 
