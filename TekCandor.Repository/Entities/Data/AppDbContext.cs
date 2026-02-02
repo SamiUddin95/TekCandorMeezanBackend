@@ -108,8 +108,7 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(b => b.IsDeleted)
                       .HasDefaultValue(false);
 
-                entity.Property(b => b.Version)
-                      .HasDefaultValue(1);
+                
 
                 entity.Property(b => b.Email1).HasMaxLength(128).IsUnicode(false);
                 entity.Property(b => b.Email2).HasMaxLength(128).IsUnicode(false);

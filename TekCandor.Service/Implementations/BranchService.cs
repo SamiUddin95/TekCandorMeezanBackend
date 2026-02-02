@@ -38,7 +38,6 @@ namespace TekCandor.Service.Implementations
                 NIFTBranchCode = b.NIFTBranchCode,
                 Name = b.Name,
                 HubId = b.HubId,
-                Version = b.Version,
                 IsDeleted = b.IsDeleted,
                 CreatedBy = b.CreatedBy,
                 CreatedOn = b.CreatedOn,
@@ -67,7 +66,6 @@ namespace TekCandor.Service.Implementations
                 NIFTBranchCode = branch.NIFTBranchCode,
                 Name = branch.Name,
                 HubId = branch.HubId,
-                Version = branch.Version,
                 IsDeleted = false,
                 CreatedBy = branch.CreatedBy,
                 CreatedOn = DateTime.Now,
@@ -85,7 +83,6 @@ namespace TekCandor.Service.Implementations
                 NIFTBranchCode = entity.NIFTBranchCode,
                 Name = entity.Name,
                 HubId = entity.HubId,
-                Version = entity.Version,
                 IsDeleted = entity.IsDeleted,
                 CreatedBy = entity.CreatedBy,
                 CreatedOn = entity.CreatedOn,
@@ -108,7 +105,6 @@ namespace TekCandor.Service.Implementations
                 NIFTBranchCode = b.NIFTBranchCode,
                 Name = b.Name,
                 HubId = b.HubId,
-                Version = b.Version,
                 IsDeleted = b.IsDeleted,
                 CreatedBy = b.CreatedBy,
                 CreatedOn = b.CreatedOn,
@@ -129,7 +125,6 @@ namespace TekCandor.Service.Implementations
             existing.NIFTBranchCode = branch.NIFTBranchCode;
             existing.Name = branch.Name;
             existing.HubId = branch.HubId;
-            existing.Version = branch.Version;
             existing.UpdatedBy = branch.UpdatedBy;
             existing.UpdatedOn = DateTime.Now;
             existing.Email1 = branch.Email1;
@@ -145,7 +140,6 @@ namespace TekCandor.Service.Implementations
                 NIFTBranchCode = existing.NIFTBranchCode,
                 Name = existing.Name,
                 HubId = existing.HubId,
-                Version = existing.Version,
                 IsDeleted = existing.IsDeleted,
                 CreatedBy = existing.CreatedBy,
                 CreatedOn = existing.CreatedOn,

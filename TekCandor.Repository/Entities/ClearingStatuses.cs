@@ -9,9 +9,7 @@ namespace TekCandor.Repository.Entities
         public long Id { get; set; }
         public string? Text { get; set; }
         public string? Value { get; set; }
-        public bool Version { get; set; }
         public string? Name { get; set; }
-        public bool IsNew { get; set; }
         public bool IsDeleted { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }

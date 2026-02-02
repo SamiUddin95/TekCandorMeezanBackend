@@ -39,6 +39,13 @@ builder.Services.AddScoped<ITokenRevocationRepository, TokenRevocationRepository
 
 builder.Services.AddScoped<IGroupRepository, GroupRepository>();
 builder.Services.AddScoped<IGroupService, GroupService>();
+
+builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+builder.Services.AddScoped<IPermissionService, PermissionService>();
+
+
+
+
 // Swagger & Controllers
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
