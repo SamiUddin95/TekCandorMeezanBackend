@@ -15,6 +15,7 @@
 /TekCandor.Repository/obj/Debug/net10.0/TekCandor.Repository.AssemblyInfoInputs.cache
 /TekCandor.Repository/obj/Debug/net10.0/TekCandor.Repository.csproj.CoreCompileInputs.cache
 /TekCandor.Repository/obj/Debug/net10.0/TekCandor.Repository.dll
+/TekCandor.Repository/obj/Debug/net10.0/TekCandor.Repository.GeneratedMSBuildEditorConfig.editorconfig
 /TekCandor.Repository/obj/Debug/net10.0/TekCandor.Repository.pdb
 /TekCandor.Repository/obj/Debug/net10.0/TekCandor.Repository.sourcelink.json
 /TekCandor.Service/bin/Debug/net10.0/TekCandor.Repository.dll
@@ -28,6 +29,7 @@
 /TekCandor.Service/obj/Debug/net10.0/TekCandor.Service.csproj.AssemblyReference.cache
 /TekCandor.Service/obj/Debug/net10.0/TekCandor.Service.csproj.CoreCompileInputs.cache
 /TekCandor.Service/obj/Debug/net10.0/TekCandor.Service.dll
+/TekCandor.Service/obj/Debug/net10.0/TekCandor.Service.GeneratedMSBuildEditorConfig.editorconfig
 /TekCandor.Service/obj/Debug/net10.0/TekCandor.Service.pdb
 /TekCandor.Service/obj/Debug/net10.0/TekCandor.Service.sourcelink.json
 /TekCandor.Web/bin/Debug/net10.0/TekCandor.Repository.dll
@@ -44,11 +46,13 @@
 /TekCandor.Web/obj/Debug/net10.0/refint/TekCandor.Web.dll
 /TekCandor.Web/obj/Debug/net10.0/rjsmcshtml.dswa.cache.json
 /TekCandor.Web/obj/Debug/net10.0/rjsmrazor.dswa.cache.json
+/TekCandor.Web/obj/Debug/net10.0/rpswa.dswa.cache.json
 /TekCandor.Web/obj/Debug/net10.0/TekCandor.Web.AssemblyInfo.cs
 /TekCandor.Web/obj/Debug/net10.0/TekCandor.Web.AssemblyInfoInputs.cache
 /TekCandor.Web/obj/Debug/net10.0/TekCandor.Web.csproj.AssemblyReference.cache
 /TekCandor.Web/obj/Debug/net10.0/TekCandor.Web.csproj.CoreCompileInputs.cache
 /TekCandor.Web/obj/Debug/net10.0/TekCandor.Web.csproj.FileListAbsolute.txt
 /TekCandor.Web/obj/Debug/net10.0/TekCandor.Web.dll
+/TekCandor.Web/obj/Debug/net10.0/TekCandor.Web.GeneratedMSBuildEditorConfig.editorconfig
 /TekCandor.Web/obj/Debug/net10.0/TekCandor.Web.pdb
 /TekCandor.Web/obj/Debug/net10.0/TekCandor.Web.sourcelink.json
