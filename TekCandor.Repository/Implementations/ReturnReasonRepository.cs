@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TekCandor.Repository.Entities;
@@ -15,10 +16,11 @@ namespace TekCandor.Repository.Implementations
             _context = context;
         }
 
-        public IEnumerable<ReturnReason> GetAll()
+        public IQueryable<ReturnReason> GetAllQueryable()
         {
-            return _context.ReturnReason;
+            return _context.ReturnReason.AsNoTracking();
         }
+
 
         public ReturnReason? GetById(long id)
         {

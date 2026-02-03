@@ -17,9 +17,10 @@ namespace TekCandor.Repository.Implementations
             _context = context;
         }
 
-        public IEnumerable<User> GetAll()
+        public IQueryable<User> GetAllQueryable()
         {
-            return _context.Users;
+            return _context.Users
+                   .AsNoTracking();           
         }
 
         public User? GetById(long id)

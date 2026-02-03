@@ -9,7 +9,7 @@ namespace TekCandor.Repository.Interfaces
 {
     public interface ICycleRepository
     {
-        IEnumerable<Cycle> GetAll();
+        IEnumerable<Cycle> GetAllQueryable();
         Cycle Add(Cycle cycle);
         Cycle? GetById(long id);
         Cycle? Update(Cycle cycle);

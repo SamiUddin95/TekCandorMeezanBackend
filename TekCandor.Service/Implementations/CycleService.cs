@@ -19,17 +19,25 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        public IEnumerable<CycleDTO> GetAllCycles()
+        public async Task<PagedResult<CycleDTO>> GetAllCyclesAsync(int pageNumber, int pageSize)
         {
-            //var entities = _repository.GetAll();
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
 
-            var entities = _repository.GetAll()
-                                  .Where(b => !b.IsDeleted);
+            var query = _repository.GetAllQueryable()
+                                   .Where(c => c.IsDeleted != true);
 
+            var totalCount = query.Count();
 
-            return entities.Select(c => new CycleDTO
-            { 
-                Id=c.Id,
+            var cycles = query
+                .OrderByDescending(c => c.UpdatedOn ?? c.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var dtos = cycles.Select(c => new CycleDTO
+            {
+                Id = c.Id,
                 Code = c.Code,
                 Name = c.Name,
                 IsDeleted = c.IsDeleted,
@@ -38,7 +46,16 @@ namespace TekCandor.Service.Implementations
                 CreatedOn = c.CreatedOn,
                 UpdatedOn = c.UpdatedOn
             });
+
+            return new PagedResult<CycleDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
+
 
         public CycleDTO CreateCycle(CycleDTO cycle)
         {

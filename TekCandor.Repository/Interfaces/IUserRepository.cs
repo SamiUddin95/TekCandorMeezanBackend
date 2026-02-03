@@ -6,7 +6,7 @@ namespace TekCandor.Repository.Interfaces
 {
     public interface IUserRepository
     {
-        IEnumerable<User> GetAll();
+        IQueryable<User> GetAllQueryable();
         User? GetById(long id);
         User Add(User user);
         User? Update(User user);

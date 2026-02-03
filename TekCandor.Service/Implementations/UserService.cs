@@ -24,21 +24,37 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        public IEnumerable<UserDTO> GetAll()
+        // Implementation
+        public async Task<PagedResult<UserDTO>> GetAll(int pageNumber, int pageSize)
         {
-            return _repository.GetAll().Select(u => new UserDTO
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+            if (pageSize > 100) pageSize = 100;   
+
+            var query = _repository.GetAllQueryable()
+                                   .Where(u => u.IsActive);    
+
+            var totalCount = await query.CountAsync();  
+
+            var users = await query
+                .OrderByDescending(u => u.UpdatedOn ?? u.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var dtos = users.Select(u => new UserDTO
             {
                 Id = u.Id,
                 Name = u.Name,
                 LoginName = u.LoginName,
-                PasswordHash=u.PasswordHash,
+              
                 Email = u.Email,
-                BranchorHub= u.BranchorHub,
+                BranchorHub = u.BranchorHub,
                 UserType = u.UserType,
                 HubIds = u.HubIds,
                 BranchIds = u.BranchIds,
                 PhoneNo = u.PhoneNo,
-                PasswordLastChanged= u.PasswordLastChanged,
+                PasswordLastChanged = u.PasswordLastChanged,
                 LastLoginTime = u.LastLoginTime,
                 IsActive = u.IsActive,
                 IsSupervise = u.IsSupervise,
@@ -46,10 +62,17 @@ namespace TekCandor.Service.Implementations
                 CreatedOn = u.CreatedOn,
                 UpdatedBy = u.UpdatedBy,
                 UpdatedOn = u.UpdatedOn,
-                UserLimit= u.UserLimit
-
-
+                UserLimit = u.UserLimit
             });
+
+            return new PagedResult<UserDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+               
+            };
         }
 
         public UserDTO? GetById(long id)

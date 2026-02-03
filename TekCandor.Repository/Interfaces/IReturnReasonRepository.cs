@@ -6,7 +6,7 @@ namespace TekCandor.Repository.Interfaces
 {
     public interface IReturnReasonRepository
     {
-        IEnumerable<ReturnReason> GetAll();
+        IQueryable<ReturnReason> GetAllQueryable();
         ReturnReason? GetById(long id);
         ReturnReason Add(ReturnReason returnReason);
         ReturnReason? Update(ReturnReason returnReason);

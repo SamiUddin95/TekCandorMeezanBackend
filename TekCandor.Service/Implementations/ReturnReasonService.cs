@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TekCandor.Repository.Entities;
@@ -16,11 +17,25 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        public IEnumerable<ReturnReasonDTO> GetAll()
+        public async Task<PagedResult<ReturnReasonDTO>> GetAll(int pageNumber, int pageSize)
         {
-            return _repository.GetAll().Select(r => new ReturnReasonDTO
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var query = _repository.GetAllQueryable()
+                                   .Where(r => !r.IsDeleted);
+
+            var totalCount = query.Count();
+
+            var returnReasons = await query
+                .OrderByDescending(r => r.UpdatedOn ?? r.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var dtos = returnReasons.Select(r => new ReturnReasonDTO
             {
-                Id=r.Id,
+                Id = r.Id,
                 Code = r.Code,
                 AlphaReturnCodes = r.AlphaReturnCodes,
                 NumericReturnCodes = r.NumericReturnCodes,
@@ -33,7 +48,18 @@ namespace TekCandor.Service.Implementations
                 UpdatedBy = r.UpdatedBy,
                 UpdatedOn = r.UpdatedOn
             });
+
+            return new PagedResult<ReturnReasonDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
+
+
+
 
         public ReturnReasonDTO? GetById(long id)
         {

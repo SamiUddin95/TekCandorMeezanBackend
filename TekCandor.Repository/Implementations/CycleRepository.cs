@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,10 +19,11 @@ namespace TekCandor.Repository.Implementations
             _context = context;
         }
 
-        public IEnumerable<Cycle> GetAll()
+        public IEnumerable<Cycle> GetAllQueryable()
         {
-            return _context.Cycles.ToList();
+            return _context.Cycles.AsNoTracking();
         }
+
 
         public Cycle Add(Cycle cycle)
         {

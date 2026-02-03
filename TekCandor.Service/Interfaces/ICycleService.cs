@@ -9,7 +9,7 @@ namespace TekCandor.Service.Interfaces
 {
     public interface ICycleService
     {
-        IEnumerable<CycleDTO> GetAllCycles();
+        Task<PagedResult<CycleDTO>> GetAllCyclesAsync(int pageNumber, int pageSize);
         CycleDTO CreateCycle(CycleDTO cycle);
         CycleDTO? GetById(long id);
         CycleDTO? Update(CycleDTO cycle);

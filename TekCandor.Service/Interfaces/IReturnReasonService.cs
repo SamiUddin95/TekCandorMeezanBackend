@@ -6,7 +6,7 @@ namespace TekCandor.Service.Interfaces
 {
     public interface IReturnReasonService
     {
-        IEnumerable<ReturnReasonDTO> GetAll();
+        Task<PagedResult<ReturnReasonDTO>> GetAll(int pageNumber, int pageSize);
         ReturnReasonDTO? GetById(long id);
         ReturnReasonDTO Create(ReturnReasonDTO returnReason);
         ReturnReasonDTO? Update(ReturnReasonDTO returnReason);

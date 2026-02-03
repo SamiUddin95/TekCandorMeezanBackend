@@ -18,12 +18,26 @@ namespace TekCandor.Web.Controllers
         {
             _service = service;
         }
-
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10)
         {
-            var users = _service.GetAll();
-            return Ok(ApiResponse<IEnumerable<UserDTO>>.Success(users));
+            try
+            {
+                var result = await _service.GetAll(pageNumber, pageSize); 
+
+                return Ok(ApiResponse<object>.Success(new
+                {
+                    items = result.Items,
+                    totalCount = result.TotalCount,
+                    pageNumber = result.PageNumber,
+                    pageSize = result.PageSize,
+                    totalPages = result.TotalPages
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
         }
 
         [HttpGet("{id}")]
