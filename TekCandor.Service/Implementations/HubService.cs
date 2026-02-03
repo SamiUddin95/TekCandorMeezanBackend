@@ -35,7 +35,7 @@ namespace TekCandor.Service.Implementations
 
             var dtoList = hubs.Select(h => new HubDTO
             {
-                
+                Id=h.Id,
                 Code = h.Code,
                 Name = h.Name,
                 IsDeleted = h.IsDeleted,
@@ -61,7 +61,8 @@ namespace TekCandor.Service.Implementations
         public async Task<HubDTO> CreateHubAsync(HubDTO hub)
         {
             var entity = new Hub
-            {
+            { 
+                Id=hub.Id,
                 Code = hub.Code,
                 Name = hub.Name,
                 IsDeleted = false,
@@ -83,7 +84,7 @@ namespace TekCandor.Service.Implementations
             return new HubDTO
             {
                
-              
+                Id=entity.Id,
                 Code = entity.Code,
                 Name = entity.Name,
                 IsDeleted = entity.IsDeleted,
@@ -129,7 +130,7 @@ namespace TekCandor.Service.Implementations
             var existing = await _repository.GetByIdAsync(hub.Id);
             if (existing == null || existing.IsDeleted)
                 return null;
-
+           
             existing.Code = hub.Code;
             existing.Name = hub.Name;
             existing.UpdatedBy = hub.UpdatedBy;
@@ -142,7 +143,8 @@ namespace TekCandor.Service.Implementations
             await _repository.SaveChangesAsync();
 
             return new HubDTO
-            {
+            { 
+                Id = existing.Id,
                 Code = existing.Code,
                 Name = existing.Name,
                 IsDeleted = existing.IsDeleted,

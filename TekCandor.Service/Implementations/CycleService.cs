@@ -21,9 +21,15 @@ namespace TekCandor.Service.Implementations
 
         public IEnumerable<CycleDTO> GetAllCycles()
         {
-            var entities = _repository.GetAll();
+            //var entities = _repository.GetAll();
+
+            var entities = _repository.GetAll()
+                                  .Where(b => !b.IsDeleted);
+
+
             return entities.Select(c => new CycleDTO
-            {
+            { 
+                Id=c.Id,
                 Code = c.Code,
                 Name = c.Name,
                 IsDeleted = c.IsDeleted,
@@ -37,7 +43,8 @@ namespace TekCandor.Service.Implementations
         public CycleDTO CreateCycle(CycleDTO cycle)
         {
             var entity = new Cycle
-            {
+            { 
+                Id=cycle.Id,
                 Code = cycle.Code,
                 Name = cycle.Name,
                 // Always start as not deleted on create
@@ -45,12 +52,13 @@ namespace TekCandor.Service.Implementations
                 CreatedBy = cycle.CreatedBy,
                 UpdatedBy = string.IsNullOrWhiteSpace(cycle.UpdatedBy) ? cycle.CreatedBy : cycle.UpdatedBy,
                 // Set timestamps server-side
-                CreatedOn = DateTime.UtcNow,
+                CreatedOn = DateTime.Now,
                 UpdatedOn = null
             };
             var created = _repository.Add(entity);
             return new CycleDTO
-            {
+            { 
+                Id=created.Id,
                 Code = created.Code,
                 Name = created.Name,
                 IsDeleted = created.IsDeleted,
@@ -68,6 +76,7 @@ namespace TekCandor.Service.Implementations
             return new CycleDTO
             {
               
+                Id=c.Id,
                 Code = c.Code,
                 Name = c.Name,
                 IsDeleted = c.IsDeleted,
@@ -82,12 +91,12 @@ namespace TekCandor.Service.Implementations
         {
             var entity = new Cycle
             {
-               
+                Id=cycle.Id,
                 Code = cycle.Code,
                 Name = cycle.Name,
                 IsDeleted = cycle.IsDeleted,
                 UpdatedBy = cycle.UpdatedBy,
-                UpdatedOn = DateTime.UtcNow,
+                UpdatedOn = DateTime.Now,
                 CreatedBy = cycle.CreatedBy,
                 CreatedOn = cycle.CreatedOn
             };
@@ -95,7 +104,7 @@ namespace TekCandor.Service.Implementations
             if (updated == null) return null;
             return new CycleDTO
             {
-                
+                Id=updated.Id,
                 Code = updated.Code,
                 Name = updated.Name,
                 IsDeleted = updated.IsDeleted,

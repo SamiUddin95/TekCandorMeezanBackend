@@ -12,7 +12,6 @@ namespace TekCandor.Service.Interfaces
         UserDTO Create(UserDTO user);
         UserDTO? Update(UserDTO user);
         bool SoftDelete(long id);
-        //Task<UserDTO?> ValidateCredentialsAsync(string loginName, string password);
         Task<UserDTO?> ValidateCredentialsAsync(string loginName, string password);
         Task<UserDTO> CreateAsync(UserDTO user, string password);
 

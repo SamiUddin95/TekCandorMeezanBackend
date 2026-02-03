@@ -2,7 +2,7 @@ namespace TekCandor.Service.Models
 {
     public class CycleDTO
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public required string Code { get; set; }
         public required string Name { get; set; }
         public bool IsDeleted { get; set; }

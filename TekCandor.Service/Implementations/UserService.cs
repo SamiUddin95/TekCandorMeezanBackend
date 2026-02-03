@@ -46,7 +46,9 @@ namespace TekCandor.Service.Implementations
                 CreatedOn = u.CreatedOn,
                 UpdatedBy = u.UpdatedBy,
                 UpdatedOn = u.UpdatedOn,
-                
+                UserLimit= u.UserLimit
+
+
             });
         }
 
@@ -75,7 +77,8 @@ namespace TekCandor.Service.Implementations
                 CreatedOn = u.CreatedOn,
                 UpdatedBy = u.UpdatedBy,
                 UpdatedOn = u.UpdatedOn,
-                
+                UserLimit= u.UserLimit
+
             };
         }
 
@@ -103,6 +106,7 @@ namespace TekCandor.Service.Implementations
                 CreatedOn = DateTime.Now,
                 UpdatedBy = dto.UpdatedBy,
                 UpdatedOn = dto.UpdatedOn,
+                UserLimit= dto.UserLimit
 
             };
 
@@ -147,6 +151,7 @@ namespace TekCandor.Service.Implementations
                 CreatedOn = DateTime.Now,
                 UpdatedBy = dto.UpdatedBy,
                 UpdatedOn = dto.UpdatedOn,
+                UserLimit = dto.UserLimit
             };
 
             var updated = _repository.Update(entity);
@@ -193,7 +198,8 @@ namespace TekCandor.Service.Implementations
                 CreatedBy = user.CreatedBy ?? "system",
                 CreatedOn = DateTime.Now,
                 UpdatedBy = user.UpdatedBy,
-                UpdatedOn = DateTime.Now
+                UpdatedOn = DateTime.Now,
+                UserLimit= user.UserLimit
             };
         }
 
@@ -219,8 +225,9 @@ namespace TekCandor.Service.Implementations
                 CreatedBy=dto.CreatedBy,
                 CreatedOn=dto.CreatedOn,
                 UpdatedBy=dto.UpdatedBy,
-                UpdatedOn=dto.UpdatedOn
-               
+                UpdatedOn=dto.UpdatedOn,
+                UserLimit=dto.UserLimit
+
             };
 
             var hash = HashPassword(password);
@@ -247,7 +254,8 @@ namespace TekCandor.Service.Implementations
                 CreatedBy = createdUser.CreatedBy,
                 CreatedOn = createdUser.CreatedOn,
                 UpdatedBy = createdUser.UpdatedBy,
-                UpdatedOn = createdUser.UpdatedOn
+                UpdatedOn = createdUser.UpdatedOn,
+                UserLimit = createdUser.UserLimit
 
 
             };

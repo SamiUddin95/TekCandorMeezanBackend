@@ -20,6 +20,7 @@ namespace TekCandor.Service.Implementations
         {
             return _repository.GetAll().Select(r => new ReturnReasonDTO
             {
+                Id=r.Id,
                 Code = r.Code,
                 AlphaReturnCodes = r.AlphaReturnCodes,
                 NumericReturnCodes = r.NumericReturnCodes,

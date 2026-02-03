@@ -33,7 +33,8 @@ namespace TekCandor.Service.Implementations
                .ToList();
 
             var dtos = branches.Select(b => new BranchDTO
-            {
+            {    
+                Id = b.Id,
                 Code = b.Code,
                 NIFTBranchCode = b.NIFTBranchCode,
                 Name = b.Name,
@@ -62,6 +63,7 @@ namespace TekCandor.Service.Implementations
         {
             var entity = new Branch
             {
+                Id=branch.Id,
                 Code = branch.Code,
                 NIFTBranchCode = branch.NIFTBranchCode,
                 Name = branch.Name,
@@ -79,6 +81,7 @@ namespace TekCandor.Service.Implementations
 
             return new BranchDTO
             {
+                Id=entity.Id,
                 Code = entity.Code,
                 NIFTBranchCode = entity.NIFTBranchCode,
                 Name = entity.Name,
@@ -100,7 +103,7 @@ namespace TekCandor.Service.Implementations
 
             return new BranchDTO
             {
-                
+                Id=b.Id,
                 Code = b.Code,
                 NIFTBranchCode = b.NIFTBranchCode,
                 Name = b.Name,
@@ -135,7 +138,8 @@ namespace TekCandor.Service.Implementations
 
             return new BranchDTO
             {
-              
+                 
+                Id=existing.Id,
                 Code = existing.Code,
                 NIFTBranchCode = existing.NIFTBranchCode,
                 Name = existing.Name,

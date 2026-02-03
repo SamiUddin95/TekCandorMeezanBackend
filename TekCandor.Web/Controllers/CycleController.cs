@@ -65,7 +65,7 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] CycleDTO dto)
+        public IActionResult Update(long id, [FromBody] CycleDTO dto)
         {
             try
             {

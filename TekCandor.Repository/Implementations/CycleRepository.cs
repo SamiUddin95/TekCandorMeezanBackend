@@ -26,7 +26,7 @@ namespace TekCandor.Repository.Implementations
         public Cycle Add(Cycle cycle)
         {
             
-            cycle.CreatedOn = DateTime.UtcNow;
+            cycle.CreatedOn = DateTime.Now;
             _context.Cycles.Add(cycle);
             _context.SaveChanges();
             return cycle;
@@ -46,7 +46,7 @@ namespace TekCandor.Repository.Implementations
             existing.Name = cycle.Name;
             existing.IsDeleted = cycle.IsDeleted;
             existing.UpdatedBy = cycle.UpdatedBy;
-            existing.UpdatedOn = DateTime.UtcNow;
+            existing.UpdatedOn = DateTime.Now;
 
             _context.SaveChanges();
             return existing;
@@ -58,7 +58,7 @@ namespace TekCandor.Repository.Implementations
             if (existing == null) return false;
             if (existing.IsDeleted) return true;
             existing.IsDeleted = true;
-            existing.UpdatedOn = DateTime.UtcNow;
+            existing.UpdatedOn = DateTime.Now;
             _context.SaveChanges();
             return true;
         }
