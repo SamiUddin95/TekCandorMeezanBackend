@@ -17,15 +17,20 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        public async Task<PagedResult<ReturnReasonDTO>> GetAll(int pageNumber, int pageSize)
+        public async Task<PagedResult<ReturnReasonDTO>> GetAll(int pageNumber, int pageSize, string? name = null)
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 1) pageSize = 10;
 
-            var query = _repository.GetAllQueryable()
-                                   .Where(r => !r.IsDeleted);
+            var query = await _repository.GetAllQueryableAsync();
 
-            var totalCount = query.Count();
+            query = query.Where(h => !h.IsDeleted);
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(h => h.Name.Contains(name.Trim()));
+            }
+
+            var totalCount = await query.CountAsync();
 
             var returnReasons = await query
                 .OrderByDescending(r => r.UpdatedOn ?? r.CreatedOn)

@@ -9,7 +9,9 @@ namespace TekCandor.Repository.Interfaces
 {
     public interface ICycleRepository
     {
-        IEnumerable<Cycle> GetAllQueryable();
+        Task<IQueryable<Cycle>> GetAllQueryableAsync();
+
+       
         Cycle Add(Cycle cycle);
         Cycle? GetById(long id);
         Cycle? Update(Cycle cycle);

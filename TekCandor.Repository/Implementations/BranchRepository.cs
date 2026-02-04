@@ -18,15 +18,21 @@ namespace TekCandor.Repository.Implementations
             _context = context;
         }
 
-        public IEnumerable<Branch> GetAllQueryable()
+        public async Task<IQueryable<Branch>> GetAllQueryableAsync()
         {
             return _context.Branch.AsNoTracking();
         }
+
 
         public async Task<Branch?> GetByIdAsync(long id)
         {
             return await _context.Branch.FirstOrDefaultAsync(b => b.Id == id);
         }
+        //public async Task<Branch?> GetByIdAsync(long id)
+        //{
+           
+        //    return await _context.Branch.FirstOrDefaultAsync(b => b.Id == id);
+        //}
 
         public async Task AddAsync(Branch branch)
         {

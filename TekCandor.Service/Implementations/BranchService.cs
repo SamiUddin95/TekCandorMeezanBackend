@@ -16,15 +16,20 @@ namespace TekCandor.Service.Implementations
         {
             _repository = repository;
         }
-        public async Task<PagedResult<BranchDTO>> GetBranchesAsync(int pageNumber, int pageSize)
+        public async Task<PagedResult<BranchDTO>> GetBranchesAsync(int pageNumber, int pageSize, string? name = null)
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 1) pageSize = 10;
 
-            var query = _repository.GetAllQueryable()
-                                   .Where(b => !b.IsDeleted);
+            var query = await _repository.GetAllQueryableAsync();
 
-            var totalCount = query.Count();
+            query = query.Where(h => !h.IsDeleted);
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(h => h.Name.Contains(name.Trim()));
+            }
+
+            var totalCount = await query.CountAsync();
 
             var branches = query
                .OrderByDescending(h => h.UpdatedOn ?? h.CreatedOn)
@@ -122,7 +127,11 @@ namespace TekCandor.Service.Implementations
         public async Task<BranchDTO?> UpdateBranchAsync(BranchDTO branch)
         {
             var existing = await _repository.GetByIdAsync(branch.Id);
-            if (existing == null || existing.IsDeleted) return null;
+            if (existing == null || existing.IsDeleted)
+                return null;
+
+            if (branch.HubId <= 0)
+                throw new ArgumentException("HubId is required");
 
             existing.Code = branch.Code;
             existing.NIFTBranchCode = branch.NIFTBranchCode;
@@ -134,12 +143,11 @@ namespace TekCandor.Service.Implementations
             existing.Email2 = branch.Email2;
             existing.Email3 = branch.Email3;
 
-            await _repository.SaveChangesAsync();
+            await _repository.SaveChangesAsync(); 
 
             return new BranchDTO
             {
-                 
-                Id=existing.Id,
+                Id = existing.Id,
                 Code = existing.Code,
                 NIFTBranchCode = existing.NIFTBranchCode,
                 Name = existing.Name,
@@ -154,6 +162,7 @@ namespace TekCandor.Service.Implementations
                 Email3 = existing.Email3
             };
         }
+
 
 
         public async Task<bool> SoftDeleteAsync(long id)

@@ -7,8 +7,11 @@ namespace TekCandor.Repository.Interfaces
 {
     public interface IBranchRepository
     {
-        IEnumerable<Branch> GetAllQueryable();
+        Task<IQueryable<Branch>> GetAllQueryableAsync();
+
         Task<Branch?> GetByIdAsync(long id);
+        //Task<Branch?> GetByIdAsyncupd(long id);
+
         Task AddAsync(Branch branch);
         Task<bool> SaveChangesAsync();
     }

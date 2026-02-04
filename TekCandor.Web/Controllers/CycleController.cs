@@ -19,11 +19,11 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10, string? name = null)
         {
             try
             {
-                var result = await _service.GetAllCyclesAsync(pageNumber, pageSize);
+                var result = await _service.GetAllCyclesAsync(pageNumber, pageSize, name);
 
                 return Ok(ApiResponse<object>.Success(new
                 {

@@ -19,11 +19,11 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10)
+        public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10, string? name = null)
         {
             try
             {
-                var result = await _service.GetBranchesAsync(pageNumber, pageSize);
+                var result = await _service.GetBranchesAsync(pageNumber, pageSize, name);
 
                 return Ok(ApiResponse<object>.Success(new
                 {
@@ -83,11 +83,16 @@ namespace TekCandor.Web.Controllers
 
                 return Ok(ApiResponse<BranchDTO>.Success(updated, 200));
             }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ApiResponse<string>.Error(ex.Message));
+            }
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(long id)

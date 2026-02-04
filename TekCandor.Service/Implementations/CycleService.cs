@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TekCandor.Repository.Entities;
 using TekCandor.Repository.Interfaces;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
-using TekCandor.Repository.Entities;
 
 namespace TekCandor.Service.Implementations
 {
@@ -19,15 +20,20 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        public async Task<PagedResult<CycleDTO>> GetAllCyclesAsync(int pageNumber, int pageSize)
+        public async Task<PagedResult<CycleDTO>> GetAllCyclesAsync(int pageNumber, int pageSize, string? name = null)
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 1) pageSize = 10;
 
-            var query = _repository.GetAllQueryable()
-                                   .Where(c => c.IsDeleted != true);
+            var query = await _repository.GetAllQueryableAsync();
 
-            var totalCount = query.Count();
+            query = query.Where(h => !h.IsDeleted);
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(h => h.Name.Contains(name.Trim()));
+            }
+
+            var totalCount = await query.CountAsync();
 
             var cycles = query
                 .OrderByDescending(c => c.UpdatedOn ?? c.CreatedOn)

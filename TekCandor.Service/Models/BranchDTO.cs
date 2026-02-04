@@ -11,8 +11,8 @@ namespace TekCandor.Service.Models
         public string? Code { get; set; }
         public string? NIFTBranchCode { get; set; }
         public string? Name { get; set; }
-        public long? HubId { get; set; }
-        //public Hub Hub { get; set; }
+        public long HubId { get; set; }
+       
         public bool IsDeleted { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }

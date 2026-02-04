@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using TekCandor.Repository.Entities;
 using TekCandor.Repository.Interfaces;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
-using TekCandor.Repository.Entities;
 
 namespace TekCandor.Service.Implementations
 {
@@ -17,46 +18,55 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        public async Task<PagedResult<HubDTO>> GetAllHubsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResult<HubDTO>> GetAllHubsAsync(
+    int pageNumber,
+    int pageSize,
+    string? name = null
+)
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 1) pageSize = 10;
 
             var query = await _repository.GetAllQueryableAsync();
+
             query = query.Where(h => !h.IsDeleted);
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(h => h.Name.Contains(name.Trim()));
+            }
 
-            var totalCount = query.Count();
+            var totalCount = await query.CountAsync();
 
-            var hubs = query
+            var items = await query
                 .OrderByDescending(h => h.UpdatedOn ?? h.CreatedOn)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
-                .ToList();
-
-            var dtoList = hubs.Select(h => new HubDTO
-            {
-                Id=h.Id,
-                Code = h.Code,
-                Name = h.Name,
-                IsDeleted = h.IsDeleted,
-                CreatedBy = h.CreatedBy,
-                CreatedOn = h.CreatedOn,
-                UpdatedBy = h.UpdatedBy,
-                UpdatedOn = h.UpdatedOn,
-                CrAccSameDay = h.CrAccSameDay,
-                CrAccNormal = h.CrAccNormal,
-                CrAccIntercity = h.CrAccIntercity,
-                CrAccDollar = h.CrAccDollar
-            });
+                .Select(h => new HubDTO
+                {
+                    Id = h.Id,
+                    Code = h.Code,
+                    Name = h.Name,
+                    IsDeleted = h.IsDeleted,
+                    CreatedBy = h.CreatedBy,
+                    CreatedOn = h.CreatedOn,
+                    UpdatedBy = h.UpdatedBy,
+                    UpdatedOn = h.UpdatedOn,
+                    CrAccSameDay = h.CrAccSameDay,
+                    CrAccNormal = h.CrAccNormal,
+                    CrAccIntercity = h.CrAccIntercity,
+                    CrAccDollar = h.CrAccDollar
+                })
+                .ToListAsync();
 
             return new PagedResult<HubDTO>
             {
-                Items = dtoList,
+                Items = items,
                 TotalCount = totalCount,
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };
         }
+
 
         public async Task<HubDTO> CreateHubAsync(HubDTO hub)
         {

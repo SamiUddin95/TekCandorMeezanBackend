@@ -19,10 +19,16 @@ namespace TekCandor.Repository.Implementations
             _context = context;
         }
 
-        public IEnumerable<Cycle> GetAllQueryable()
+
+        public async Task<IQueryable<Cycle>> GetAllQueryableAsync()
         {
             return _context.Cycles.AsNoTracking();
         }
+
+        //public IEnumerable<Cycle> GetAllQueryable()
+        //{
+        //    return _context.Cycles.AsNoTracking();
+        //}
 
 
         public Cycle Add(Cycle cycle)

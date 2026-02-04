@@ -15,11 +15,15 @@ namespace TekCandor.Repository.Implementations
         {
             _context = context;
         }
-
-        public IQueryable<ReturnReason> GetAllQueryable()
+        public async Task<IQueryable<ReturnReason>> GetAllQueryableAsync()
         {
             return _context.ReturnReason.AsNoTracking();
         }
+
+        //public IQueryable<ReturnReason> GetAllQueryable()
+        //{
+        //    return _context.ReturnReason.AsNoTracking();
+        //}
 
 
         public ReturnReason? GetById(long id)

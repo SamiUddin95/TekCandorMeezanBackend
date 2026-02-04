@@ -7,8 +7,8 @@ namespace TekCandor.Repository.Interfaces
 {
     public interface IHubRepository
     {
-       
-        Task<IEnumerable<Hub>> GetAllQueryableAsync();
+
+        Task<IQueryable<Hub>> GetAllQueryableAsync();
         Task<Hub?> GetByIdAsync(long id);
         Task AddAsync(Hub hub);
         Task<bool> SaveChangesAsync();

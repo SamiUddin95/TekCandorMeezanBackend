@@ -17,10 +17,11 @@ namespace TekCandor.Repository.Implementations
             _context = context;
         }
 
-        public async Task<IEnumerable<Hub>> GetAllQueryableAsync()
+        public async Task<IQueryable<Hub>> GetAllQueryableAsync()
         {
-           return _context.Hub.ToList();
+            return _context.Hub.AsNoTracking();
         }
+
 
 
         public async Task<Hub?> GetByIdAsync(long id)
