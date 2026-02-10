@@ -58,7 +58,8 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-        public GetBranchDTO CreateBranch(BranchDTO branch)
+        
+        public bool CreateBranch(BranchDTO branch)
         {
             var entity = new Branch
             {
@@ -69,24 +70,16 @@ namespace TekCandor.Service.Implementations
                 IsDeleted = false,
                 CreatedBy = branch.CreatedBy,
                 CreatedOn = DateTime.Now,
+                UpdatedBy = null,
+                UpdatedOn = null,
                 Email1 = branch.Email1,
                 Email2 = branch.Email2,
                 Email3 = branch.Email3
             };
 
-            var created = _repository.Add(entity);
+            _repository.Add(entity);
 
-            return new GetBranchDTO
-            {
-                Id = created.Id,
-                Code = created.Code,
-                NIFTBranchCode = created.NIFTBranchCode,
-                Name = created.Name,
-                HubId = created.HubId,
-                Email1 = created.Email1,
-                Email2 = created.Email2,
-                Email3 = created.Email3
-            };
+            return true;
         }
 
         public BranchDTO? GetById(long id)

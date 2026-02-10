@@ -63,14 +63,18 @@ namespace TekCandor.Web.Controllers
         {
             try
             {
-                var created = _service.CreateBranch(dto);
-                return Ok(ApiResponse<GetBranchDTO>.Success(created, 200));
+                _service.CreateBranch(dto);
+
+                return Ok(
+                    ApiResponse<string>.Success("Branch successfully created", 200)
+                );
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
 
         [HttpPut("{id}")]
         public IActionResult Update(long id, [FromBody] BranchDTO dto)
