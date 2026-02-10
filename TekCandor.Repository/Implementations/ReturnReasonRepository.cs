@@ -31,14 +31,13 @@ namespace TekCandor.Repository.Implementations
             return _context.ReturnReason.FirstOrDefault(r => r.Id == id);
         }
 
-        public ReturnReason Add(ReturnReason returnReason)
+        public ReturnReason Add(ReturnReason entity)
         {
-            returnReason.CreatedOn = DateTime.Now;
-            _context.ReturnReason.Add(returnReason);
+            entity.CreatedOn = DateTime.Now; 
+            _context.ReturnReason.Add(entity);
             _context.SaveChanges();
-            return returnReason;
+            return entity;
         }
-
         public ReturnReason? Update(ReturnReason returnReason)
         {
             var existing = _context.ReturnReason.FirstOrDefault(r => r.Id == returnReason.Id);

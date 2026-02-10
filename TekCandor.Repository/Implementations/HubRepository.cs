@@ -29,10 +29,23 @@ namespace TekCandor.Repository.Implementations
             return await _context.Hub.FirstOrDefaultAsync(h => h.Id == id);
         }
 
-        public async Task AddAsync(Hub hub)
+        //public async Task AddAsync(Hub hub)
+        //{
+        //    await _context.Hub.AddAsync(hub);
+        //}
+        public Hub Add(Hub hub)
         {
-            await _context.Hub.AddAsync(hub);
+            hub.CreatedOn = DateTime.Now;
+
+            hub.UpdatedBy = null;
+            hub.UpdatedOn = null;
+
+            _context.Hub.Add(hub);
+            _context.SaveChanges();
+
+            return hub;
         }
+
 
         public async Task<bool> SaveChangesAsync()
         {

@@ -33,12 +33,14 @@ namespace TekCandor.Repository.Implementations
 
         public Cycle Add(Cycle cycle)
         {
-            
-            cycle.CreatedOn = DateTime.Now;
+            cycle.CreatedOn = DateTime.Now;   
+
             _context.Cycles.Add(cycle);
             _context.SaveChanges();
+
             return cycle;
         }
+
 
         public Cycle? GetById(long id)
         {

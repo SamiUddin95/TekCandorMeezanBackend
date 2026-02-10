@@ -59,12 +59,13 @@ namespace TekCandor.Web.Controllers
             }
         }
 
+      
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] HubDTO dto)
+        public IActionResult Create([FromBody] HubDTO dto)
         {
             try
             {
-                var created = await _service.CreateHubAsync(dto);
+                var created = _service.CreateHub(dto);
                 return Ok(ApiResponse<HubDTO>.Success(created, 200));
             }
             catch (Exception ex)
@@ -72,6 +73,7 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(long id, [FromBody] HubDTO dto)

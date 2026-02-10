@@ -58,7 +58,7 @@ namespace TekCandor.Repository.Entities.Data
                       .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.Property(h => h.UpdatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                      .IsRequired(false);
 
                 entity.Property(h => h.IsDeleted)
                       .HasDefaultValue(false);
@@ -103,12 +103,10 @@ namespace TekCandor.Repository.Entities.Data
                       .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.Property(b => b.UpdatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                      .IsRequired(false);
 
                 entity.Property(b => b.IsDeleted)
-                      .HasDefaultValue(false);
-
-                
+                      .HasDefaultValue(false);                
 
                 entity.Property(b => b.Email1).HasMaxLength(128).IsUnicode(false);
                 entity.Property(b => b.Email2).HasMaxLength(128).IsUnicode(false);
@@ -159,7 +157,7 @@ namespace TekCandor.Repository.Entities.Data
                       .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.Property(r => r.UpdatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                      .IsRequired(false);
 
                 entity.Property(r => r.CreatedBy)
                       .HasMaxLength(128)
@@ -226,7 +224,7 @@ namespace TekCandor.Repository.Entities.Data
                       .HasDefaultValueSql("GETUTCDATE()");
 
                 entity.Property(u => u.UpdatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                      .IsRequired(false);
 
                 entity.HasOne(u => u.Hub)
                       .WithMany()

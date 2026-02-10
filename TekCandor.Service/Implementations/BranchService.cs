@@ -1,54 +1,49 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using TekCandor.Repository.Entities;
+﻿
+using Microsoft.EntityFrameworkCore;
 using TekCandor.Repository.Interfaces;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
+using TekCandor.Repository.Entities;
 
 namespace TekCandor.Service.Implementations
 {
     public class BranchService : IBranchService
     {
         private readonly IBranchRepository _repository;
+
         public BranchService(IBranchRepository repository)
         {
             _repository = repository;
         }
-        public async Task<PagedResult<BranchDTO>> GetBranchesAsync(int pageNumber, int pageSize, string? name = null)
+
+        public async Task<PagedResult<BranchDTO>> GetAllBranchesAsync(int pageNumber, int pageSize, string? name = null)
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 1) pageSize = 10;
 
             var query = await _repository.GetAllQueryableAsync();
+            query = query.Where(b => !b.IsDeleted);
 
-            query = query.Where(h => !h.IsDeleted);
             if (!string.IsNullOrWhiteSpace(name))
             {
-                query = query.Where(h => h.Name.Contains(name.Trim()));
+                query = query.Where(b => b.Name.Contains(name.Trim()));
             }
 
             var totalCount = await query.CountAsync();
-
             var branches = query
-               .OrderByDescending(h => h.UpdatedOn ?? h.CreatedOn)
-               .Skip((pageNumber - 1) * pageSize)
-               .Take(pageSize)
-               .ToList();
+                .OrderByDescending(b => b.UpdatedOn ?? b.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
 
             var dtos = branches.Select(b => new BranchDTO
-            {    
+            {
                 Id = b.Id,
                 Code = b.Code,
                 NIFTBranchCode = b.NIFTBranchCode,
                 Name = b.Name,
                 HubId = b.HubId,
                 IsDeleted = b.IsDeleted,
-                CreatedBy = b.CreatedBy,
-                CreatedOn = b.CreatedOn,
-                UpdatedBy = b.UpdatedBy,
-                UpdatedOn = b.UpdatedOn,
                 Email1 = b.Email1,
                 Email2 = b.Email2,
                 Email3 = b.Email3
@@ -63,12 +58,10 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-
-        public async Task<BranchDTO> CreateBranchAsync(BranchDTO branch)
+        public GetBranchDTO CreateBranch(BranchDTO branch)
         {
             var entity = new Branch
             {
-                Id=branch.Id,
                 Code = branch.Code,
                 NIFTBranchCode = branch.NIFTBranchCode,
                 Name = branch.Name,
@@ -81,42 +74,37 @@ namespace TekCandor.Service.Implementations
                 Email3 = branch.Email3
             };
 
-            await _repository.AddAsync(entity);
-            await _repository.SaveChangesAsync();
+            var created = _repository.Add(entity);
 
-            return new BranchDTO
+            return new GetBranchDTO
             {
-                Id=entity.Id,
-                Code = entity.Code,
-                NIFTBranchCode = entity.NIFTBranchCode,
-                Name = entity.Name,
-                HubId = entity.HubId,
-                IsDeleted = entity.IsDeleted,
-                CreatedBy = entity.CreatedBy,
-                CreatedOn = entity.CreatedOn,
-                Email1 = entity.Email1,
-                Email2 = entity.Email2,
-                Email3 = entity.Email3
+                Id = created.Id,
+                Code = created.Code,
+                NIFTBranchCode = created.NIFTBranchCode,
+                Name = created.Name,
+                HubId = created.HubId,
+                Email1 = created.Email1,
+                Email2 = created.Email2,
+                Email3 = created.Email3
             };
         }
 
-
-        public async Task<BranchDTO?> GetByIdAsync(long id)
+        public BranchDTO? GetById(long id)
         {
-            var b = await _repository.GetByIdAsync(id);
-            if (b == null || b.IsDeleted) return null;
+            var b = _repository.GetById(id);
+            if (b == null) return null;
 
             return new BranchDTO
             {
-                Id=b.Id,
+                Id = b.Id,
                 Code = b.Code,
                 NIFTBranchCode = b.NIFTBranchCode,
                 Name = b.Name,
                 HubId = b.HubId,
                 IsDeleted = b.IsDeleted,
                 CreatedBy = b.CreatedBy,
-                CreatedOn = b.CreatedOn,
                 UpdatedBy = b.UpdatedBy,
+                CreatedOn = b.CreatedOn,
                 UpdatedOn = b.UpdatedOn,
                 Email1 = b.Email1,
                 Email2 = b.Email2,
@@ -124,62 +112,50 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-        public async Task<BranchDTO?> UpdateBranchAsync(BranchDTO branch)
+        public BranchDTO? Update(BranchDTO branch)
         {
-            var existing = await _repository.GetByIdAsync(branch.Id);
-            if (existing == null || existing.IsDeleted)
-                return null;
+            var entity = new Branch
+            {
+                Id = branch.Id,
+                Code = branch.Code,
+                NIFTBranchCode = branch.NIFTBranchCode,
+                Name = branch.Name,
+                HubId = branch.HubId,
+                IsDeleted = branch.IsDeleted,
+                CreatedBy = branch.CreatedBy,
+                CreatedOn = branch.CreatedOn,
+                UpdatedBy = branch.UpdatedBy,
+                UpdatedOn = DateTime.Now,
+                Email1 = branch.Email1,
+                Email2 = branch.Email2,
+                Email3 = branch.Email3
+            };
 
-            if (branch.HubId <= 0)
-                throw new ArgumentException("HubId is required");
-
-            existing.Code = branch.Code;
-            existing.NIFTBranchCode = branch.NIFTBranchCode;
-            existing.Name = branch.Name;
-            existing.HubId = branch.HubId;
-            existing.UpdatedBy = branch.UpdatedBy;
-            existing.UpdatedOn = DateTime.Now;
-            existing.Email1 = branch.Email1;
-            existing.Email2 = branch.Email2;
-            existing.Email3 = branch.Email3;
-
-            await _repository.SaveChangesAsync(); 
+            var updated = _repository.Update(entity);
+            if (updated == null) return null;
 
             return new BranchDTO
             {
-                Id = existing.Id,
-                Code = existing.Code,
-                NIFTBranchCode = existing.NIFTBranchCode,
-                Name = existing.Name,
-                HubId = existing.HubId,
-                IsDeleted = existing.IsDeleted,
-                CreatedBy = existing.CreatedBy,
-                CreatedOn = existing.CreatedOn,
-                UpdatedBy = existing.UpdatedBy,
-                UpdatedOn = existing.UpdatedOn,
-                Email1 = existing.Email1,
-                Email2 = existing.Email2,
-                Email3 = existing.Email3
+                Id = updated.Id,
+                Code = updated.Code,
+                NIFTBranchCode = updated.NIFTBranchCode,
+                Name = updated.Name,
+                HubId = updated.HubId,
+                IsDeleted = updated.IsDeleted,
+                CreatedBy = updated.CreatedBy,
+                CreatedOn = updated.CreatedOn,
+                UpdatedBy = updated.UpdatedBy,
+                UpdatedOn = updated.UpdatedOn,
+                Email1 = updated.Email1,
+                Email2 = updated.Email2,
+                Email3 = updated.Email3
             };
         }
 
-
-
-        public async Task<bool> SoftDeleteAsync(long id)
+        public bool SoftDelete(long id)
         {
-            var existing = await _repository.GetByIdAsync(id);
-            if (existing == null || existing.IsDeleted) return false;
-
-            existing.IsDeleted = true;
-            existing.UpdatedOn = DateTime.Now;
-
-            return await _repository.SaveChangesAsync();
+            return _repository.SoftDelete(id);
         }
-
-
     }
-
 }
-
-
 

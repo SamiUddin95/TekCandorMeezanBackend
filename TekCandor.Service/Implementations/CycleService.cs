@@ -66,31 +66,36 @@ namespace TekCandor.Service.Implementations
         public CycleDTO CreateCycle(CycleDTO cycle)
         {
             var entity = new Cycle
-            { 
-                Id=cycle.Id,
+            {
+                Id = cycle.Id,
                 Code = cycle.Code,
                 Name = cycle.Name,
-                // Always start as not deleted on create
                 IsDeleted = false,
+
                 CreatedBy = cycle.CreatedBy,
-                UpdatedBy = string.IsNullOrWhiteSpace(cycle.UpdatedBy) ? cycle.CreatedBy : cycle.UpdatedBy,
-                // Set timestamps server-side
                 CreatedOn = DateTime.Now,
-                UpdatedOn = null
+
+                UpdatedBy = null,      
+                UpdatedOn = null       
             };
+
             var created = _repository.Add(entity);
+
             return new CycleDTO
-            { 
-                Id=created.Id,
+            {
+                Id = created.Id,
                 Code = created.Code,
                 Name = created.Name,
                 IsDeleted = created.IsDeleted,
+
                 CreatedBy = created.CreatedBy,
-                UpdatedBy = created.UpdatedBy,
                 CreatedOn = created.CreatedOn,
-                UpdatedOn = created.UpdatedOn
+
+                UpdatedBy = created.UpdatedBy,   
+                UpdatedOn = created.UpdatedOn    
             };
         }
+
 
         public CycleDTO? GetById(long id)
         {

@@ -68,49 +68,49 @@ namespace TekCandor.Service.Implementations
         }
 
 
-        public async Task<HubDTO> CreateHubAsync(HubDTO hub)
+        public HubDTO CreateHub(HubDTO hub)
         {
             var entity = new Hub
-            { 
-                Id=hub.Id,
+            {
+                Id = hub.Id,
                 Code = hub.Code,
                 Name = hub.Name,
                 IsDeleted = false,
+
                 CreatedBy = hub.CreatedBy,
-                UpdatedBy = string.IsNullOrWhiteSpace(hub.UpdatedBy)
-                    ? hub.CreatedBy
-                    : hub.UpdatedBy,
                 CreatedOn = DateTime.Now,
-                UpdatedOn = null,
+
+                UpdatedBy = null,    
+                UpdatedOn = null, 
+
                 CrAccSameDay = hub.CrAccSameDay,
                 CrAccNormal = hub.CrAccNormal,
                 CrAccIntercity = hub.CrAccIntercity,
                 CrAccDollar = hub.CrAccDollar
             };
 
-            await _repository.AddAsync(entity);
-            await _repository.SaveChangesAsync();
+            var created = _repository.Add(entity);
 
             return new HubDTO
             {
-               
-                Id=entity.Id,
-                Code = entity.Code,
-                Name = entity.Name,
-                IsDeleted = entity.IsDeleted,
-              
-                CreatedBy = entity.CreatedBy,
-                UpdatedBy = entity.UpdatedBy,
-                CreatedOn = entity.CreatedOn,
-                UpdatedOn = entity.UpdatedOn,
-                CrAccSameDay = entity.CrAccSameDay,
-                CrAccNormal = entity.CrAccNormal,
-                CrAccIntercity = entity.CrAccIntercity,
-                CrAccDollar = entity.CrAccDollar
+                Id = created.Id,
+                Code = created.Code,
+                Name = created.Name,
+                IsDeleted = created.IsDeleted,
+
+                CreatedBy = created.CreatedBy,
+                CreatedOn = created.CreatedOn,
+
+                UpdatedBy = null,
+                UpdatedOn = null,   
+
+                CrAccSameDay = created.CrAccSameDay,
+                CrAccNormal = created.CrAccNormal,
+                CrAccIntercity = created.CrAccIntercity,
+                CrAccDollar = created.CrAccDollar
             };
         }
 
-    
 
         public async Task<HubDTO?> GetByIdAsync(long id)
         {

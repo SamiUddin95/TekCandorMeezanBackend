@@ -1,8 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
+using Microsoft.EntityFrameworkCore;
 using TekCandor.Repository.Entities;
 using TekCandor.Repository.Entities.Data;
 using TekCandor.Repository.Interfaces;
@@ -23,26 +20,48 @@ namespace TekCandor.Repository.Implementations
             return _context.Branch.AsNoTracking();
         }
 
-
-        public async Task<Branch?> GetByIdAsync(long id)
+        public Branch Add(Branch branch)
         {
-            return await _context.Branch.FirstOrDefaultAsync(b => b.Id == id);
-        }
-        //public async Task<Branch?> GetByIdAsync(long id)
-        //{
-           
-        //    return await _context.Branch.FirstOrDefaultAsync(b => b.Id == id);
-        //}
-
-        public async Task AddAsync(Branch branch)
-        {
-            await _context.Branch.AddAsync(branch);
+            _context.Branch.Add(branch);
+            _context.SaveChanges();
+            return branch;
         }
 
-        public async Task<bool> SaveChangesAsync()
+        public Branch? GetById(long id)
         {
-            return await _context.SaveChangesAsync() > 0;
+            return _context.Branch.FirstOrDefault(b => b.Id == id);
+        }
+
+        public Branch? Update(Branch branch)
+        {
+            var existing = _context.Branch.FirstOrDefault(b => b.Id == branch.Id);
+            if (existing == null) return null;
+
+            existing.Code = branch.Code;
+            existing.NIFTBranchCode = branch.NIFTBranchCode;
+            existing.Name = branch.Name;
+            existing.HubId = branch.HubId;
+            existing.IsDeleted = branch.IsDeleted;
+            existing.UpdatedBy = branch.UpdatedBy;
+            existing.UpdatedOn = DateTime.Now;
+            existing.Email1 = branch.Email1;
+            existing.Email2 = branch.Email2;
+            existing.Email3 = branch.Email3;
+
+            _context.SaveChanges();
+            return existing;
+        }
+
+        public bool SoftDelete(long id)
+        {
+            var existing = _context.Branch.FirstOrDefault(b => b.Id == id);
+            if (existing == null) return false;
+            if (existing.IsDeleted) return true;
+
+            existing.IsDeleted = true;
+            existing.UpdatedOn = DateTime.Now;
+            _context.SaveChanges();
+            return true;
         }
     }
-
 }

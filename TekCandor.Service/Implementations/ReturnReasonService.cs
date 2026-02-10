@@ -92,25 +92,41 @@ namespace TekCandor.Service.Implementations
         {
             var entity = new ReturnReason
             {
-                Id = dto.Id,
                 Code = dto.Code,
                 AlphaReturnCodes = dto.AlphaReturnCodes,
                 NumericReturnCodes = dto.NumericReturnCodes,
                 DescriptionWithReturnCodes = dto.DescriptionWithReturnCodes,
                 DefaultCallBack = dto.DefaultCallBack,
                 Name = dto.Name,
-                IsDeleted = dto.IsDeleted,
+                IsDeleted = false,
+
                 CreatedBy = dto.CreatedBy,
-                CreatedOn = dto.CreatedOn,
-                UpdatedBy = dto.UpdatedBy,
-                UpdatedOn = dto.UpdatedOn
+                CreatedOn = DateTime.Now,
+
+                UpdatedBy = null,
+                UpdatedOn = null
             };
 
-            var created = _repository.Add(entity);
-            dto.Id = created.Id;
-            return dto;
-        }
+           
+            var createdEntity = _repository.Add(entity);
 
+      
+            return new ReturnReasonDTO
+            {
+                Id = createdEntity.Id,
+                Code = createdEntity.Code,
+                AlphaReturnCodes = createdEntity.AlphaReturnCodes,
+                NumericReturnCodes = createdEntity.NumericReturnCodes,
+                DescriptionWithReturnCodes = createdEntity.DescriptionWithReturnCodes,
+                DefaultCallBack = createdEntity.DefaultCallBack,
+                Name = createdEntity.Name,
+                IsDeleted = createdEntity.IsDeleted,
+                CreatedBy = createdEntity.CreatedBy,
+                CreatedOn = createdEntity.CreatedOn,
+                UpdatedBy = createdEntity.UpdatedBy,
+                UpdatedOn = createdEntity.UpdatedOn
+            };
+        }
         public ReturnReasonDTO? Update(ReturnReasonDTO dto)
         {
             var entity = new ReturnReason

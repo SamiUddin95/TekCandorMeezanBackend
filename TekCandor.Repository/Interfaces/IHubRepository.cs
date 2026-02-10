@@ -10,7 +10,8 @@ namespace TekCandor.Repository.Interfaces
 
         Task<IQueryable<Hub>> GetAllQueryableAsync();
         Task<Hub?> GetByIdAsync(long id);
-        Task AddAsync(Hub hub);
+        //Task AddAsync(Hub hub);
+        Hub Add(Hub hub);
         Task<bool> SaveChangesAsync();
 
 

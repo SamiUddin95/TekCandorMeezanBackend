@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
@@ -8,22 +7,23 @@ using TekCandor.Web.Models;
 namespace TekCandor.Web.Controllers
 {
     [EnableCors("AllowFrontend")]
-    [Route("api/[controller]")]
     [ApiController]
+    [Route("api/[controller]")]
     public class BranchController : ControllerBase
     {
         private readonly IBranchService _service;
+
         public BranchController(IBranchService service)
         {
             _service = service;
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get(int pageNumber = 1, int pageSize = 10, string? name = null)
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10, string? name = null)
         {
             try
             {
-                var result = await _service.GetBranchesAsync(pageNumber, pageSize, name);
+                var result = await _service.GetAllBranchesAsync(pageNumber, pageSize, name);
 
                 return Ok(ApiResponse<object>.Success(new
                 {
@@ -32,21 +32,7 @@ namespace TekCandor.Web.Controllers
                     pageNumber = result.PageNumber,
                     pageSize = result.PageSize,
                     totalPages = result.TotalPages
-                }, 200));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Create([FromBody] BranchDTO dto)
-        {
-            try
-            {
-                var created = await _service.CreateBranchAsync(dto);
-                return Ok(ApiResponse<BranchDTO>.Success(created, 200));
+                }));
             }
             catch (Exception ex)
             {
@@ -55,11 +41,11 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetById(long id)
+        public IActionResult GetById(long id)
         {
             try
             {
-                var dto = await _service.GetByIdAsync(id);
+                var dto = _service.GetById(id);
                 if (dto == null)
                 {
                     return NotFound(ApiResponse<string>.Error("Branch not found"));
@@ -72,20 +58,13 @@ namespace TekCandor.Web.Controllers
             }
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] BranchDTO dto)
+        [HttpPost]
+        public IActionResult Create([FromBody] BranchDTO dto)
         {
             try
             {
-                var updated = await _service.UpdateBranchAsync(dto);
-                if (updated == null)
-                    return NotFound(ApiResponse<string>.Error("Branch not found"));
-
-                return Ok(ApiResponse<BranchDTO>.Success(updated, 200));
-            }
-            catch (ArgumentException ex)
-            {
-                return BadRequest(ApiResponse<string>.Error(ex.Message));
+                var created = _service.CreateBranch(dto);
+                return Ok(ApiResponse<GetBranchDTO>.Success(created, 200));
             }
             catch (Exception ex)
             {
@@ -93,25 +72,42 @@ namespace TekCandor.Web.Controllers
             }
         }
 
+        [HttpPut("{id}")]
+        public IActionResult Update(long id, [FromBody] BranchDTO dto)
+        {
+            try
+            {
+                dto.Id = id;
+                var updated = _service.Update(dto);
+                if (updated == null)
+                {
+                    return NotFound(ApiResponse<string>.Error("Branch not found"));
+                }
+                return Ok(ApiResponse<BranchDTO>.Success(updated));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(long id)
+        public IActionResult Delete(long id)
         {
             try
             {
-                var deleted = await _service.SoftDeleteAsync(id);
-                if (!deleted)
+                var ok = _service.SoftDelete(id);
+                if (!ok)
+                {
                     return NotFound(ApiResponse<string>.Error("Branch not found"));
-
-                return Ok(ApiResponse<bool>.Success(deleted, 200));
+                }
+                return Ok(ApiResponse<string>.Success("Deleted"));
             }
             catch (Exception ex)
             {
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
-
-
     }
-
 }
+
