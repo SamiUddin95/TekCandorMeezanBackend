@@ -50,8 +50,7 @@ namespace TekCandor.Repository.Implementations
             existing.DefaultCallBack = returnReason.DefaultCallBack;
             existing.Name = returnReason.Name;
             existing.IsDeleted = returnReason.IsDeleted;
-            existing.CreatedBy = returnReason.CreatedBy;
-            existing.CreatedOn = returnReason.CreatedOn;
+            
             existing.UpdatedBy = returnReason.UpdatedBy;
             existing.UpdatedOn = DateTime.Now;
 

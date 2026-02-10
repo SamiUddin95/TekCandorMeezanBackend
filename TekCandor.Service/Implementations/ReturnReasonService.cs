@@ -139,7 +139,6 @@ namespace TekCandor.Service.Implementations
                 DefaultCallBack = dto.DefaultCallBack,
                 Name = dto.Name,
                 IsDeleted = dto.IsDeleted,
-                CreatedBy = dto.CreatedBy,
                 CreatedOn = dto.CreatedOn,
                 UpdatedBy = dto.UpdatedBy,
                 UpdatedOn = dto.UpdatedOn

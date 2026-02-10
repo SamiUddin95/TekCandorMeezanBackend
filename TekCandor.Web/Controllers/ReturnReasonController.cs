@@ -68,14 +68,18 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
-
         [HttpPut("{id}")]
-        public IActionResult Update([FromBody] ReturnReasonDTO dto)
+        public IActionResult Update(long id, [FromBody] ReturnReasonDTO dto)
         {
             try
             {
+                dto.Id = id;
+
                 var updated = _service.Update(dto);
-                if (updated == null) return NotFound(ApiResponse<string>.Error("ReturnReason not found"));
+
+                if (updated == null)
+                    return NotFound(ApiResponse<string>.Error("ReturnReason not found"));
+
                 return Ok(ApiResponse<ReturnReasonDTO>.Success(updated, 200));
             }
             catch (Exception ex)
@@ -83,6 +87,7 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
 
         [HttpDelete("{id}")]
         public IActionResult Delete(long id)
