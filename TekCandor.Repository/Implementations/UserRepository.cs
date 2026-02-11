@@ -50,6 +50,7 @@ namespace TekCandor.Repository.Implementations
             existing.HubIds = user.HubIds;
             existing.BranchIds = user.BranchIds;
             existing.GroupId = user.GroupId;
+            existing.IsDeleted= user.IsDeleted;
             existing.PhoneNo = user.PhoneNo;
             existing.LoginName = user.LoginName;
             existing.PasswordHash = user.PasswordHash;
@@ -69,7 +70,7 @@ namespace TekCandor.Repository.Implementations
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
             if (user == null) return false;
 
-            user.IsActive = false;
+            user.IsDeleted = true;
             user.UpdatedOn = DateTime.Now;
 
             _context.SaveChanges();
@@ -96,6 +97,7 @@ namespace TekCandor.Repository.Implementations
                     Email = u.Email,
                     PhoneNo = u.PhoneNo,
                     LoginName = u.LoginName,
+                    IsDeleted= u.IsDeleted,
                     IsActive = u.IsActive,
                     CreatedBy = u.CreatedBy,
                     CreatedOn = u.CreatedOn,

@@ -21,6 +21,8 @@ namespace TekCandor.Repository.Entities
        
         public long? GroupId { get; set; }
         public Group Group { get; set; }
+        public bool IsDeleted { get; set; }
+
         public string? PhoneNo { get; set; }
         public string? PasswordLastChanged { get; set; }
         public DateTime? LastLoginTime { get; set; }

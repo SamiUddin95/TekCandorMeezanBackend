@@ -32,7 +32,9 @@ namespace TekCandor.Service.Implementations
             if (pageSize > 100) pageSize = 100;
 
             var query = _repository.GetAllQueryable()
-                        .Where(u => u.IsActive);  
+                        .Where(u => !u.IsDeleted);
+
+          
 
             int totalUsers = await _repository.GetAllQueryable().CountAsync();
 
@@ -107,7 +109,8 @@ namespace TekCandor.Service.Implementations
                 BranchIds = u.BranchIds,
                 GroupId=u.GroupId,
                 PhoneNo = u.PhoneNo,
-             
+                IsDeleted= u.IsDeleted,
+
                 IsActive = u.IsActive,
                 CreatedBy = u.CreatedBy,
                 CreatedOn = u.CreatedOn,
@@ -135,6 +138,7 @@ namespace TekCandor.Service.Implementations
                 BranchIds = dto.BranchIds,
                 GroupId=dto.GroupId,
                 PhoneNo = dto.PhoneNo,
+                IsDeleted= false,
                 //PasswordLastChanged= dto.PasswordLastChanged,
                 //LastLoginTime= dto.LastLoginTime,
                 IsActive = true,
@@ -179,6 +183,7 @@ namespace TekCandor.Service.Implementations
                 HubIds = dto.HubIds,
                 BranchIds = dto.BranchIds,
                 GroupId=dto.GroupId,
+                IsDeleted= dto.IsDeleted,
                 PhoneNo = dto.PhoneNo,
               
                 IsActive = dto.IsActive,
@@ -227,6 +232,7 @@ namespace TekCandor.Service.Implementations
                 BranchIds = user.BranchIds,
                 GroupId=user.GroupId,
                 PhoneNo = user.PhoneNo,
+                IsDeleted = user.IsDeleted,
                 //PasswordLastChanged = user.PasswordLastChanged,
                 //LastLoginTime = user.LastLoginTime,
                 IsActive = true,
@@ -239,58 +245,6 @@ namespace TekCandor.Service.Implementations
         }
 
 
-        //public async Task<UserDTO> CreateAsync(UserDTO dto, string password)
-        //{
-        //    var userEntity = new User
-        //    {
-        //        Id = dto.Id,
-        //        Name = dto.Name,
-        //        Email = dto.Email,
-        //        PhoneNo = dto.PhoneNo,
-        //        LoginName=dto.LoginName,
-        //        PasswordHash=dto.PasswordHash,
-        //        BranchorHub=dto.BranchorHub,
-
-        //        HubIds=dto.HubIds,
-        //        BranchIds=dto.BranchIds,
-        //        GroupId=dto.GroupId,
-        //        IsActive=dto.IsActive,
-        //        CreatedBy=dto.CreatedBy,
-        //        CreatedOn=dto.CreatedOn,
-        //        UpdatedBy=dto.UpdatedBy,
-        //        UpdatedOn=dto.UpdatedOn,
-        //        UserLimit=dto.UserLimit
-
-        //    };
-
-        //    var hash = HashPassword(password);
-
-        //    var createdUser = await _repository.AddAsync(userEntity, hash);
-
-
-        //    return new UserDTO
-        //    {
-        //        Id = createdUser.Id,
-        //        Name = createdUser.Name,
-        //        Email = createdUser.Email,
-        //        PhoneNo = createdUser.PhoneNo,
-        //        LoginName=createdUser.LoginName,
-        //        PasswordHash = createdUser.PasswordHash,
-        //        BranchorHub = createdUser.BranchorHub,
-
-        //        HubIds = createdUser.HubIds,
-        //        BranchIds = createdUser.BranchIds,
-        //        GroupId=createdUser.GroupId,
-        //        IsActive = createdUser.IsActive,
-        //        CreatedBy = createdUser.CreatedBy,
-        //        CreatedOn = createdUser.CreatedOn,
-        //        UpdatedBy = createdUser.UpdatedBy,
-        //        UpdatedOn = createdUser.UpdatedOn,
-        //        UserLimit = createdUser.UserLimit
-
-
-        //    };
-        //}
         public async Task<UserDTO> CreateAsync(UserDTO dto, string password)
         {
             var userEntity = new User
@@ -306,6 +260,7 @@ namespace TekCandor.Service.Implementations
                 GroupId = dto.GroupId,
                 IsActive = dto.IsActive,
                 UserLimit = dto.UserLimit,
+                IsDeleted = false,
 
                 CreatedBy = dto.CreatedBy,
                 CreatedOn = DateTime.Now,
@@ -329,6 +284,7 @@ namespace TekCandor.Service.Implementations
                 BranchorHub = createdUser.BranchorHub,
                 HubIds = createdUser.HubIds,
                 BranchIds = createdUser.BranchIds,
+                IsDeleted = createdUser.IsDeleted,
                 GroupId = createdUser.GroupId,
                 IsActive = createdUser.IsActive,
                 CreatedBy = createdUser.CreatedBy,
