@@ -180,9 +180,8 @@ namespace TekCandor.Service.Implementations
                 BranchIds = dto.BranchIds,
                 GroupId=dto.GroupId,
                 PhoneNo = dto.PhoneNo,
-                //PasswordLastChanged = dto.PasswordLastChanged,
-                //LastLoginTime = dto.LastLoginTime,
-                IsActive = true,
+              
+                IsActive = dto.IsActive,
                 CreatedBy = dto.CreatedBy ?? "system",
                 CreatedOn = DateTime.Now,
                 UpdatedBy = dto.UpdatedBy,
@@ -239,37 +238,85 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-        
+
+        //public async Task<UserDTO> CreateAsync(UserDTO dto, string password)
+        //{
+        //    var userEntity = new User
+        //    {
+        //        Id = dto.Id,
+        //        Name = dto.Name,
+        //        Email = dto.Email,
+        //        PhoneNo = dto.PhoneNo,
+        //        LoginName=dto.LoginName,
+        //        PasswordHash=dto.PasswordHash,
+        //        BranchorHub=dto.BranchorHub,
+
+        //        HubIds=dto.HubIds,
+        //        BranchIds=dto.BranchIds,
+        //        GroupId=dto.GroupId,
+        //        IsActive=dto.IsActive,
+        //        CreatedBy=dto.CreatedBy,
+        //        CreatedOn=dto.CreatedOn,
+        //        UpdatedBy=dto.UpdatedBy,
+        //        UpdatedOn=dto.UpdatedOn,
+        //        UserLimit=dto.UserLimit
+
+        //    };
+
+        //    var hash = HashPassword(password);
+
+        //    var createdUser = await _repository.AddAsync(userEntity, hash);
+
+
+        //    return new UserDTO
+        //    {
+        //        Id = createdUser.Id,
+        //        Name = createdUser.Name,
+        //        Email = createdUser.Email,
+        //        PhoneNo = createdUser.PhoneNo,
+        //        LoginName=createdUser.LoginName,
+        //        PasswordHash = createdUser.PasswordHash,
+        //        BranchorHub = createdUser.BranchorHub,
+
+        //        HubIds = createdUser.HubIds,
+        //        BranchIds = createdUser.BranchIds,
+        //        GroupId=createdUser.GroupId,
+        //        IsActive = createdUser.IsActive,
+        //        CreatedBy = createdUser.CreatedBy,
+        //        CreatedOn = createdUser.CreatedOn,
+        //        UpdatedBy = createdUser.UpdatedBy,
+        //        UpdatedOn = createdUser.UpdatedOn,
+        //        UserLimit = createdUser.UserLimit
+
+
+        //    };
+        //}
         public async Task<UserDTO> CreateAsync(UserDTO dto, string password)
         {
             var userEntity = new User
             {
-                Id = dto.Id,
+                
                 Name = dto.Name,
                 Email = dto.Email,
                 PhoneNo = dto.PhoneNo,
-                LoginName=dto.LoginName,
-                PasswordHash=dto.PasswordHash,
-                BranchorHub=dto.BranchorHub,
-                
-                HubIds=dto.HubIds,
-                BranchIds=dto.BranchIds,
-                GroupId=dto.GroupId,
-                //PasswordLastChanged=dto.PasswordLastChanged,
-                //LastLoginTime=dto.LastLoginTime,
-                IsActive=dto.IsActive,
-                CreatedBy=dto.CreatedBy,
-                CreatedOn=dto.CreatedOn,
-                UpdatedBy=dto.UpdatedBy,
-                UpdatedOn=dto.UpdatedOn,
-                UserLimit=dto.UserLimit
+                LoginName = dto.LoginName,
+                BranchorHub = dto.BranchorHub,
+                HubIds = dto.HubIds,
+                BranchIds = dto.BranchIds,
+                GroupId = dto.GroupId,
+                IsActive = dto.IsActive,
+                UserLimit = dto.UserLimit,
 
+                CreatedBy = dto.CreatedBy,
+                CreatedOn = DateTime.Now,
+
+                UpdatedBy = null,
+                UpdatedOn = null
             };
 
             var hash = HashPassword(password);
 
             var createdUser = await _repository.AddAsync(userEntity, hash);
-           
 
             return new UserDTO
             {
@@ -277,23 +324,18 @@ namespace TekCandor.Service.Implementations
                 Name = createdUser.Name,
                 Email = createdUser.Email,
                 PhoneNo = createdUser.PhoneNo,
-                LoginName=createdUser.LoginName,
+                LoginName = createdUser.LoginName,
                 PasswordHash = createdUser.PasswordHash,
                 BranchorHub = createdUser.BranchorHub,
-               
                 HubIds = createdUser.HubIds,
                 BranchIds = createdUser.BranchIds,
-                GroupId=createdUser.GroupId,
-                //PasswordLastChanged = createdUser.PasswordLastChanged,
-                //LastLoginTime = createdUser.LastLoginTime,
+                GroupId = createdUser.GroupId,
                 IsActive = createdUser.IsActive,
                 CreatedBy = createdUser.CreatedBy,
                 CreatedOn = createdUser.CreatedOn,
-                UpdatedBy = createdUser.UpdatedBy,
-                UpdatedOn = createdUser.UpdatedOn,
+                UpdatedBy = createdUser.UpdatedBy,   
+                UpdatedOn = createdUser.UpdatedOn,   
                 UserLimit = createdUser.UserLimit
-
-
             };
         }
 

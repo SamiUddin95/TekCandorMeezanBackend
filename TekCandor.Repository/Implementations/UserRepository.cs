@@ -46,12 +46,17 @@ namespace TekCandor.Repository.Implementations
 
             existing.Name = user.Name;
             existing.Email = user.Email;
+            existing.BranchorHub = user.BranchorHub;
+            existing.HubIds = user.HubIds;
+            existing.BranchIds = user.BranchIds;
+            existing.GroupId = user.GroupId;
             existing.PhoneNo = user.PhoneNo;
             existing.LoginName = user.LoginName;
             existing.PasswordHash = user.PasswordHash;
             existing.IsActive = user.IsActive;
             existing.UpdatedBy = user.UpdatedBy;
             existing.UpdatedOn = DateTime.Now;
+            existing.UserLimit = user.UserLimit;
 
 
             _context.SaveChanges();
