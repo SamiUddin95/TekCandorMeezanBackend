@@ -194,9 +194,7 @@ namespace TekCandor.Repository.Entities.Data
                       .HasMaxLength(50)
                       .IsUnicode(false);
 
-                entity.Property(u => u.UserType)
-                      .HasMaxLength(50)
-                      .IsUnicode(false);
+               
 
                 entity.Property(u => u.PhoneNo)
                       .HasMaxLength(20)
@@ -209,8 +207,7 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(u => u.IsActive)
                       .HasDefaultValue(true);
 
-                entity.Property(u => u.IsSupervise)
-                      .HasDefaultValue(false);
+               
 
                 entity.Property(u => u.CreatedBy)
                       .HasMaxLength(128)
@@ -226,15 +223,7 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(u => u.UpdatedOn)
                       .IsRequired(false);
 
-                entity.HasOne(u => u.Hub)
-                      .WithMany()
-                      .HasForeignKey(u => u.HubIds)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne(u => u.Branch)
-                      .WithMany()
-                      .HasForeignKey(u => u.BranchIds)
-                      .OnDelete(DeleteBehavior.Restrict);
+               
             });
 
 

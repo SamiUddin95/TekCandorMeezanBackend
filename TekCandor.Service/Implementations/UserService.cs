@@ -24,17 +24,28 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        // Implementation
+
         public async Task<PagedResult<UserDTO>> GetAll(int pageNumber, int pageSize)
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 1) pageSize = 10;
-            if (pageSize > 100) pageSize = 100;   
+            if (pageSize > 100) pageSize = 100;
 
             var query = _repository.GetAllQueryable()
-                                   .Where(u => u.IsActive);    
+                        .Where(u => u.IsActive);  
 
-            var totalCount = await query.CountAsync();  
+            int totalUsers = await _repository.GetAllQueryable().CountAsync();
+
+            int totalActiveUsers = await query.Where(u => u.IsActive == true).CountAsync();
+
+            int totalHubUser = await query
+                .Where(u => u.BranchorHub == "Hub")  
+                .CountAsync();
+
+            int totalBranchUser = await query
+                .Where(u => u.BranchorHub == "Branch")  
+                .CountAsync();
+
 
             var users = await query
                 .OrderByDescending(u => u.UpdatedOn ?? u.CreatedOn)
@@ -47,33 +58,36 @@ namespace TekCandor.Service.Implementations
                 Id = u.Id,
                 Name = u.Name,
                 LoginName = u.LoginName,
-              
                 Email = u.Email,
                 BranchorHub = u.BranchorHub,
-                UserType = u.UserType,
                 HubIds = u.HubIds,
                 BranchIds = u.BranchIds,
+                GroupId = u.GroupId,
                 PhoneNo = u.PhoneNo,
-                PasswordLastChanged = u.PasswordLastChanged,
-                LastLoginTime = u.LastLoginTime,
                 IsActive = u.IsActive,
-                IsSupervise = u.IsSupervise,
                 CreatedBy = u.CreatedBy,
                 CreatedOn = u.CreatedOn,
                 UpdatedBy = u.UpdatedBy,
                 UpdatedOn = u.UpdatedOn,
-                UserLimit = u.UserLimit
+                UserLimit = u.UserLimit,
+               
+
             });
 
             return new PagedResult<UserDTO>
             {
                 Items = dtos,
-                TotalCount = totalCount,
+                TotalCount = totalUsers,
                 PageNumber = pageNumber,
-                PageSize = pageSize
-               
+                PageSize = pageSize,
+                TotalUsers = totalUsers,
+                TotalHubUser = totalHubUser,
+                TotalActiveUser = totalActiveUsers,
+                TotalBranchUser = totalBranchUser
+
             };
         }
+
 
         public UserDTO? GetById(long id)
         {
@@ -88,14 +102,13 @@ namespace TekCandor.Service.Implementations
                 PasswordHash=u.PasswordHash,
                 Email = u.Email,
                 BranchorHub= u.BranchorHub,
-                UserType = u.UserType,
+               
                 HubIds = u.HubIds,
                 BranchIds = u.BranchIds,
+                GroupId=u.GroupId,
                 PhoneNo = u.PhoneNo,
-                PasswordLastChanged= u.PasswordLastChanged,
-                LastLoginTime = u.LastLoginTime,
+             
                 IsActive = u.IsActive,
-                IsSupervise = u.IsSupervise,
                 CreatedBy = u.CreatedBy,
                 CreatedOn = u.CreatedOn,
                 UpdatedBy = u.UpdatedBy,
@@ -117,14 +130,14 @@ namespace TekCandor.Service.Implementations
                 PasswordHash = passwordHash,
                 Email = dto.Email,
                 BranchorHub= dto.BranchorHub,
-                UserType = dto.UserType,
+               
                 HubIds = dto.HubIds,
                 BranchIds = dto.BranchIds,
+                GroupId=dto.GroupId,
                 PhoneNo = dto.PhoneNo,
-                PasswordLastChanged= dto.PasswordLastChanged,
-                LastLoginTime= dto.LastLoginTime,
+                //PasswordLastChanged= dto.PasswordLastChanged,
+                //LastLoginTime= dto.LastLoginTime,
                 IsActive = true,
-                IsSupervise = dto.IsSupervise,
                 CreatedBy = dto.CreatedBy ?? "system",
                 CreatedOn = DateTime.Now,
                 UpdatedBy = dto.UpdatedBy,
@@ -162,14 +175,14 @@ namespace TekCandor.Service.Implementations
                 PasswordHash = dto.PasswordHash,
                 Email = dto.Email,
                 BranchorHub = dto.BranchorHub,
-                UserType = dto.UserType,
+               
                 HubIds = dto.HubIds,
                 BranchIds = dto.BranchIds,
+                GroupId=dto.GroupId,
                 PhoneNo = dto.PhoneNo,
-                PasswordLastChanged = dto.PasswordLastChanged,
-                LastLoginTime = dto.LastLoginTime,
+                //PasswordLastChanged = dto.PasswordLastChanged,
+                //LastLoginTime = dto.LastLoginTime,
                 IsActive = true,
-                IsSupervise = dto.IsSupervise,
                 CreatedBy = dto.CreatedBy ?? "system",
                 CreatedOn = DateTime.Now,
                 UpdatedBy = dto.UpdatedBy,
@@ -210,14 +223,14 @@ namespace TekCandor.Service.Implementations
                 PasswordHash = user.PasswordHash,
                 Email = user.Email,
                 BranchorHub = user.BranchorHub,
-                UserType = user.UserType,
+               
                 HubIds = user.HubIds,
                 BranchIds = user.BranchIds,
+                GroupId=user.GroupId,
                 PhoneNo = user.PhoneNo,
-                PasswordLastChanged = user.PasswordLastChanged,
-                LastLoginTime = user.LastLoginTime,
+                //PasswordLastChanged = user.PasswordLastChanged,
+                //LastLoginTime = user.LastLoginTime,
                 IsActive = true,
-                IsSupervise = user.IsSupervise,
                 CreatedBy = user.CreatedBy ?? "system",
                 CreatedOn = DateTime.Now,
                 UpdatedBy = user.UpdatedBy,
@@ -238,13 +251,13 @@ namespace TekCandor.Service.Implementations
                 LoginName=dto.LoginName,
                 PasswordHash=dto.PasswordHash,
                 BranchorHub=dto.BranchorHub,
-                UserType=dto.UserType,
+                
                 HubIds=dto.HubIds,
                 BranchIds=dto.BranchIds,
-                PasswordLastChanged=dto.PasswordLastChanged,
-                LastLoginTime=dto.LastLoginTime,
+                GroupId=dto.GroupId,
+                //PasswordLastChanged=dto.PasswordLastChanged,
+                //LastLoginTime=dto.LastLoginTime,
                 IsActive=dto.IsActive,
-                IsSupervise=dto.IsSupervise,
                 CreatedBy=dto.CreatedBy,
                 CreatedOn=dto.CreatedOn,
                 UpdatedBy=dto.UpdatedBy,
@@ -267,13 +280,13 @@ namespace TekCandor.Service.Implementations
                 LoginName=createdUser.LoginName,
                 PasswordHash = createdUser.PasswordHash,
                 BranchorHub = createdUser.BranchorHub,
-                UserType = createdUser.UserType,
+               
                 HubIds = createdUser.HubIds,
                 BranchIds = createdUser.BranchIds,
-                PasswordLastChanged = createdUser.PasswordLastChanged,
-                LastLoginTime = createdUser.LastLoginTime,
+                GroupId=createdUser.GroupId,
+                //PasswordLastChanged = createdUser.PasswordLastChanged,
+                //LastLoginTime = createdUser.LastLoginTime,
                 IsActive = createdUser.IsActive,
-                IsSupervise = createdUser.IsSupervise,
                 CreatedBy = createdUser.CreatedBy,
                 CreatedOn = createdUser.CreatedOn,
                 UpdatedBy = createdUser.UpdatedBy,

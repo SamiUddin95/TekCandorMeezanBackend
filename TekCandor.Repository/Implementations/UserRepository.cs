@@ -20,7 +20,7 @@ namespace TekCandor.Repository.Implementations
         public IQueryable<User> GetAllQueryable()
         {
             return _context.Users
-                   .AsNoTracking();           
+                   .AsNoTracking();
         }
 
         public User? GetById(long id)
@@ -30,7 +30,7 @@ namespace TekCandor.Repository.Implementations
 
         public User Add(User user)
         {
-           
+
             user.CreatedOn = DateTime.Now;
             user.IsActive = true;
 
@@ -50,16 +50,15 @@ namespace TekCandor.Repository.Implementations
             existing.LoginName = user.LoginName;
             existing.PasswordHash = user.PasswordHash;
             existing.IsActive = user.IsActive;
-            existing.IsSupervise = user.IsSupervise;
             existing.UpdatedBy = user.UpdatedBy;
             existing.UpdatedOn = DateTime.Now;
-            existing.UserType = user.UserType;
+
 
             _context.SaveChanges();
             return existing;
         }
 
-        
+
         public bool SoftDelete(long id)
         {
             var user = _context.Users.FirstOrDefault(u => u.Id == id);
@@ -75,7 +74,7 @@ namespace TekCandor.Repository.Implementations
         {
             var data = await _context.Users.AsNoTracking()
                 .Where(u => u.LoginName == loginName)
-                .Select(u => new { u.Id, u.PasswordHash, u.IsActive, u.IsSupervise })
+                .Select(u => new { u.Id, u.PasswordHash, u.IsActive })
                 .FirstOrDefaultAsync();
             if (data == null) return null;
             return (data.Id, data.PasswordHash!, data.IsActive);
@@ -98,11 +97,10 @@ namespace TekCandor.Repository.Implementations
                     UpdatedBy = u.UpdatedBy,
                     UpdatedOn = u.UpdatedOn,
                     PasswordHash = u.PasswordHash,
-                    IsSupervise = u.IsSupervise,
-                    UserType = u.UserType
+
                 }).FirstOrDefaultAsync();
         }
-       
+
         public async Task<User> AddAsync(User user, string passwordHash)
         {
             user.PasswordHash = passwordHash;

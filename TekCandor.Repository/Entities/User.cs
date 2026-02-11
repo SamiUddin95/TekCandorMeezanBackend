@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace TekCandor.Repository.Entities
@@ -12,16 +13,18 @@ namespace TekCandor.Repository.Entities
         public string? PasswordHash { get; set; }
         public string? Email { get; set; }
         public string? BranchorHub { get; set; }
-        public string? UserType { get; set; }
-        public long? HubIds { get; set; }
-        public Hub Hub { get; set; }
-        public long? BranchIds { get; set; }
-        public Branch Branch { get; set; }
+        [MaxLength(255)]
+        public string? HubIds { get; set; }
+       
+        [MaxLength(255)]
+        public string? BranchIds { get; set; }
+       
+        public long? GroupId { get; set; }
+        public Group Group { get; set; }
         public string? PhoneNo { get; set; }
         public string? PasswordLastChanged { get; set; }
         public DateTime? LastLoginTime { get; set; }
         public bool IsActive { get; set; }
-        public bool IsSupervise { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }

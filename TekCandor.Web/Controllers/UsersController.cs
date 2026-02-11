@@ -31,7 +31,11 @@ namespace TekCandor.Web.Controllers
                     totalCount = result.TotalCount,
                     pageNumber = result.PageNumber,
                     pageSize = result.PageSize,
-                    totalPages = result.TotalPages
+                    totalPages = result.TotalPages,
+                    totalUsers = result.TotalUsers,
+                    totalActiveUser = result.TotalActiveUser,
+                    totalHubUser = result.TotalHubUser,
+                    totalBranchUser = result.TotalBranchUser
                 }));
             }
             catch (Exception ex)

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TekCandor.Repository.Entities.Data;
 
@@ -11,9 +12,11 @@ using TekCandor.Repository.Entities.Data;
 namespace TekCandor.Repository.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260211075131_addUsertable")]
+    partial class addUsertable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -434,9 +437,8 @@ namespace TekCandor.Repository.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
 
-                    b.Property<string>("BranchIds")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<long?>("BranchIds")
+                        .HasColumnType("bigint");
 
                     b.Property<string>("BranchorHub")
                         .HasMaxLength(50)
@@ -461,14 +463,18 @@ namespace TekCandor.Repository.Migrations
                     b.Property<long?>("GroupId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("HubIds")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                    b.Property<long?>("HubIds")
+                        .HasColumnType("bigint");
 
                     b.Property<bool>("IsActive")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
                         .HasDefaultValue(true);
+
+                    b.Property<bool>("IsSupervise")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
 
                     b.Property<DateTime?>("LastLoginTime")
                         .HasColumnType("datetime2");
@@ -511,7 +517,11 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("BranchIds");
+
                     b.HasIndex("GroupId");
+
+                    b.HasIndex("HubIds");
 
                     b.ToTable("Users");
                 });
@@ -540,11 +550,25 @@ namespace TekCandor.Repository.Migrations
 
             modelBuilder.Entity("TekCandor.Repository.Entities.User", b =>
                 {
+                    b.HasOne("TekCandor.Repository.Entities.Branch", "Branch")
+                        .WithMany()
+                        .HasForeignKey("BranchIds")
+                        .OnDelete(DeleteBehavior.Restrict);
+
                     b.HasOne("TekCandor.Repository.Entities.Group", "Group")
                         .WithMany()
                         .HasForeignKey("GroupId");
 
+                    b.HasOne("TekCandor.Repository.Entities.Hub", "Hub")
+                        .WithMany()
+                        .HasForeignKey("HubIds")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.Navigation("Branch");
+
                     b.Navigation("Group");
+
+                    b.Navigation("Hub");
                 });
 #pragma warning restore 612, 618
         }

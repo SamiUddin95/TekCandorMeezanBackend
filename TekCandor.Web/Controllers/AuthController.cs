@@ -17,7 +17,7 @@ using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
 using TekCandor.Web.Models;
 
-namespace TekCandor.Web.Controllers 
+namespace TekCandor.Web.Controllers
 
 {
     [EnableCors("AllowFrontend")]
@@ -28,7 +28,7 @@ namespace TekCandor.Web.Controllers
         private readonly IUserService _userService;
         private readonly IConfiguration _config;
         private readonly ITokenRevocationRepository _revocationRepo;
-       
+
         //private readonly IPermissionHelperService _permissionHelper;
 
         public AuthController(IUserService userService, IConfiguration config, ITokenRevocationRepository revocationRepo)
@@ -36,7 +36,7 @@ namespace TekCandor.Web.Controllers
             _userService = userService;
             _config = config;
             _revocationRepo = revocationRepo;
-            
+
             //_permissionHelper = permissionHelper;
         }
 
@@ -51,10 +51,10 @@ namespace TekCandor.Web.Controllers
                 {
                     return Unauthorized(ApiResponse<string>.Error("Invalid credentials", 201));
                 }
-                if (!user.IsSupervise)
-                {
-                    return Unauthorized(ApiResponse<string>.Error("You are not authorized to log in. Please wait for supervisor approval.", 201));
-                }
+                //if (!user.IsSupervise)
+                //{
+                //    return Unauthorized(ApiResponse<string>.Error("You are not authorized to log in. Please wait for supervisor approval.", 201));
+                //}
 
                 if (user.IsActive == false)
                 {
@@ -62,10 +62,10 @@ namespace TekCandor.Web.Controllers
                 }
 
                 var token = await GenerateJwtTokenAsync(user);
-              
+
                 return Ok(ApiResponse<object>.Success(new
                 {
-                        
+
                     userid = user.Id,
                     name = user.Name,
                     token = token.Token,
