@@ -9,10 +9,12 @@ namespace TekCandor.Repository.Interfaces
 {
     public interface ICycleRepository
     {
-        IEnumerable<Cycle> GetAll();
+        Task<IQueryable<Cycle>> GetAllQueryableAsync();
+
+       
         Cycle Add(Cycle cycle);
-        Cycle? GetById(Guid id);
+        Cycle? GetById(long id);
         Cycle? Update(Cycle cycle);
-        bool SoftDelete(Guid id);
+        bool SoftDelete(long id);
     }
 }

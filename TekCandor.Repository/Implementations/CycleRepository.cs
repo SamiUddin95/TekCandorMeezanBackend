@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,21 +19,30 @@ namespace TekCandor.Repository.Implementations
             _context = context;
         }
 
-        public IEnumerable<Cycle> GetAll()
+
+        public async Task<IQueryable<Cycle>> GetAllQueryableAsync()
         {
-            return _context.Cycles.ToList();
+            return _context.Cycles.AsNoTracking();
         }
+
+        //public IEnumerable<Cycle> GetAllQueryable()
+        //{
+        //    return _context.Cycles.AsNoTracking();
+        //}
+
 
         public Cycle Add(Cycle cycle)
         {
-            cycle.Id = Guid.NewGuid();
-            cycle.CreatedOn = DateTime.UtcNow;
+            cycle.CreatedOn = DateTime.Now;   
+
             _context.Cycles.Add(cycle);
             _context.SaveChanges();
+
             return cycle;
         }
 
-        public Cycle? GetById(Guid id)
+
+        public Cycle? GetById(long id)
         {
             return _context.Cycles.FirstOrDefault(c => c.Id == id);
         }
@@ -46,19 +56,19 @@ namespace TekCandor.Repository.Implementations
             existing.Name = cycle.Name;
             existing.IsDeleted = cycle.IsDeleted;
             existing.UpdatedBy = cycle.UpdatedBy;
-            existing.UpdatedOn = DateTime.UtcNow;
+            existing.UpdatedOn = DateTime.Now;
 
             _context.SaveChanges();
             return existing;
         }
 
-        public bool SoftDelete(Guid id)
+        public bool SoftDelete(long id)
         {
             var existing = _context.Cycles.FirstOrDefault(c => c.Id == id);
             if (existing == null) return false;
             if (existing.IsDeleted) return true;
             existing.IsDeleted = true;
-            existing.UpdatedOn = DateTime.UtcNow;
+            existing.UpdatedOn = DateTime.Now;
             _context.SaveChanges();
             return true;
         }

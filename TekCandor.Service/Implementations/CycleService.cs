@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TekCandor.Repository.Entities;
 using TekCandor.Repository.Interfaces;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
-using TekCandor.Repository.Entities;
 
 namespace TekCandor.Service.Implementations
 {
@@ -19,11 +20,30 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        public IEnumerable<CycleDTO> GetAllCycles()
+        public async Task<PagedResult<CycleDTO>> GetAllCyclesAsync(int pageNumber, int pageSize, string? name = null)
         {
-            var entities = _repository.GetAll();
-            return entities.Select(c => new CycleDTO
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var query = await _repository.GetAllQueryableAsync();
+
+            query = query.Where(h => !h.IsDeleted);
+            if (!string.IsNullOrWhiteSpace(name))
             {
+                query = query.Where(h => h.Name.Contains(name.Trim()));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var cycles = query
+                .OrderByDescending(c => c.UpdatedOn ?? c.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            var dtos = cycles.Select(c => new CycleDTO
+            {
+                Id = c.Id,
                 Code = c.Code,
                 Name = c.Name,
                 IsDeleted = c.IsDeleted,
@@ -32,43 +52,59 @@ namespace TekCandor.Service.Implementations
                 CreatedOn = c.CreatedOn,
                 UpdatedOn = c.UpdatedOn
             });
+
+            return new PagedResult<CycleDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
+
 
         public CycleDTO CreateCycle(CycleDTO cycle)
         {
             var entity = new Cycle
             {
+                Id = cycle.Id,
                 Code = cycle.Code,
                 Name = cycle.Name,
-                // Always start as not deleted on create
                 IsDeleted = false,
+
                 CreatedBy = cycle.CreatedBy,
-                UpdatedBy = string.IsNullOrWhiteSpace(cycle.UpdatedBy) ? cycle.CreatedBy : cycle.UpdatedBy,
-                // Set timestamps server-side
-                CreatedOn = DateTime.UtcNow,
-                UpdatedOn = null
+                CreatedOn = DateTime.Now,
+
+                UpdatedBy = null,      
+                UpdatedOn = null       
             };
+
             var created = _repository.Add(entity);
+
             return new CycleDTO
             {
                 Id = created.Id,
                 Code = created.Code,
                 Name = created.Name,
                 IsDeleted = created.IsDeleted,
+
                 CreatedBy = created.CreatedBy,
-                UpdatedBy = created.UpdatedBy,
                 CreatedOn = created.CreatedOn,
-                UpdatedOn = created.UpdatedOn
+
+                UpdatedBy = created.UpdatedBy,   
+                UpdatedOn = created.UpdatedOn    
             };
         }
 
-        public CycleDTO? GetById(Guid id)
+
+        public CycleDTO? GetById(long id)
         {
             var c = _repository.GetById(id);
             if (c == null) return null;
             return new CycleDTO
             {
-                Id = c.Id,
+              
+                Id=c.Id,
                 Code = c.Code,
                 Name = c.Name,
                 IsDeleted = c.IsDeleted,
@@ -83,12 +119,12 @@ namespace TekCandor.Service.Implementations
         {
             var entity = new Cycle
             {
-                Id = cycle.Id,
+                Id=cycle.Id,
                 Code = cycle.Code,
                 Name = cycle.Name,
                 IsDeleted = cycle.IsDeleted,
                 UpdatedBy = cycle.UpdatedBy,
-                UpdatedOn = DateTime.UtcNow,
+                UpdatedOn = DateTime.Now,
                 CreatedBy = cycle.CreatedBy,
                 CreatedOn = cycle.CreatedOn
             };
@@ -96,7 +132,7 @@ namespace TekCandor.Service.Implementations
             if (updated == null) return null;
             return new CycleDTO
             {
-                Id = updated.Id,
+                Id=updated.Id,
                 Code = updated.Code,
                 Name = updated.Name,
                 IsDeleted = updated.IsDeleted,
@@ -107,7 +143,7 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-        public bool SoftDelete(Guid id)
+        public bool SoftDelete(long id)
         {
             return _repository.SoftDelete(id);
         }

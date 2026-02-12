@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
 using TekCandor.Web.Models;
 
 namespace TekCandor.Web.Controllers
 {
+    [EnableCors("AllowFrontend")]
     [Route("api/[controller]")]
     [ApiController]
     public class ReturnReasonController : ControllerBase
@@ -16,12 +18,20 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10, string? name = null)
         {
             try
             {
-                var dtos = _service.GetAll();
-                return Ok(ApiResponse<IEnumerable<ReturnReasonDTO>>.Success(dtos));
+                var result = await _service.GetAll(pageNumber, pageSize,name);
+
+                return Ok(ApiResponse<object>.Success(new
+                {
+                    items = result.Items,
+                    totalCount = result.TotalCount,
+                    pageNumber = result.PageNumber,
+                    pageSize = result.PageSize,
+                    totalPages = result.TotalPages
+                }, 200));
             }
             catch (Exception ex)
             {
@@ -29,8 +39,9 @@ namespace TekCandor.Web.Controllers
             }
         }
 
+
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public IActionResult GetById(long id)
         {
             try
             {
@@ -57,14 +68,18 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
-
         [HttpPut("{id}")]
-        public IActionResult Update([FromBody] ReturnReasonDTO dto)
+        public IActionResult Update(long id, [FromBody] ReturnReasonDTO dto)
         {
             try
             {
+                dto.Id = id;
+
                 var updated = _service.Update(dto);
-                if (updated == null) return NotFound(ApiResponse<string>.Error("ReturnReason not found"));
+
+                if (updated == null)
+                    return NotFound(ApiResponse<string>.Error("ReturnReason not found"));
+
                 return Ok(ApiResponse<ReturnReasonDTO>.Success(updated, 200));
             }
             catch (Exception ex)
@@ -73,8 +88,9 @@ namespace TekCandor.Web.Controllers
             }
         }
 
+
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete(long id)
         {
             try
             {

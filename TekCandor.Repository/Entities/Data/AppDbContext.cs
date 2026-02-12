@@ -17,7 +17,24 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Branch> Branch { get; set; }
         public DbSet<ReturnReason> ReturnReason { get; set; }
         public DbSet<ClearingStatuses> ClearingStatuses { get; set; }
-        public DbSet<Users>Users { get; set; }
+        public DbSet<User>Users { get; set; }
+        public DbSet<RevokedToken> RevokedTokens { get; set; }
+        public DbSet<AuditLog> AuditLogs { get; set; }
+        
+        public DbSet<Group> Group { get; set; }
+        public DbSet<Permission> Permission { get; set; }
+
+        public DbSet<ApplicationConfig> ApplicationConfig { get; set; }
+        public DbSet<HostCall> HostCall { get; set; }
+        public DbSet<HostCallConfig> HostCallConfig { get; set; }
+        public DbSet<ImportData> ImportData { get; set; }
+        public DbSet<ImportDataDetail> ImportDataDetail { get; set; }
+        public DbSet<Manual_ImportData> Manual_ImportData { get; set; }
+        public DbSet<Manual_ImportDataDetails> Manual_ImportDataDetails { get; set; }
+
+
+
+
 
 
 
@@ -31,6 +48,652 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(c => c.Name).IsRequired().HasMaxLength(100);
                 entity.Property(c => c.CreatedOn).HasDefaultValueSql("GETUTCDATE()");
             });
+
+            modelBuilder.Entity<Hub>(entity =>
+            {
+                entity.HasKey(h => h.Id);
+
+                entity.Property(h => h.Id)
+                      .ValueGeneratedOnAdd(); 
+
+                entity.Property(h => h.Code)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(h => h.Name)
+                      .HasMaxLength(256)
+                      .IsUnicode(false);
+
+                entity.Property(h => h.CreatedOn)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(h => h.UpdatedOn)
+                      .IsRequired(false);
+
+                entity.Property(h => h.IsDeleted)
+                      .HasDefaultValue(false);
+
+                entity.Property(h => h.CrAccSameDay)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(h => h.CrAccNormal)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(h => h.CrAccIntercity)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(h => h.CrAccDollar)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+            });
+
+            modelBuilder.Entity<Branch>(entity =>
+            {
+                entity.HasKey(b => b.Id);
+
+                entity.Property(b => b.Id)
+                      .ValueGeneratedOnAdd(); 
+
+                entity.Property(b => b.Code)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(b => b.NIFTBranchCode)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(b => b.Name)
+                      .HasMaxLength(256)
+                      .IsUnicode(false);
+
+                entity.Property(b => b.CreatedOn)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(b => b.UpdatedOn)
+                      .IsRequired(false);
+
+                entity.Property(b => b.IsDeleted)
+                      .HasDefaultValue(false);                
+
+                entity.Property(b => b.Email1).HasMaxLength(128).IsUnicode(false);
+                entity.Property(b => b.Email2).HasMaxLength(128).IsUnicode(false);
+                entity.Property(b => b.Email3).HasMaxLength(128).IsUnicode(false);
+
+               
+                entity.HasOne(b => b.Hub)
+                      .WithMany()       
+                      .HasForeignKey(b => b.HubId)
+                      .OnDelete(DeleteBehavior.Restrict); 
+            });
+           
+            modelBuilder.Entity<ReturnReason>(entity =>
+            {
+                entity.HasKey(r => r.Id);
+
+                entity.Property(r => r.Id)
+                      .ValueGeneratedOnAdd(); 
+
+                entity.Property(r => r.Code)
+                      .HasMaxLength(50)
+                      .IsUnicode(false);
+
+                entity.Property(r => r.AlphaReturnCodes)
+                      .HasMaxLength(50)
+                      .IsUnicode(false);
+
+                entity.Property(r => r.NumericReturnCodes)
+                      .HasMaxLength(50)
+                      .IsUnicode(false)
+                      .IsRequired(); 
+
+                entity.Property(r => r.DescriptionWithReturnCodes)
+                      .HasMaxLength(256)
+                      .IsUnicode(false);
+
+                entity.Property(r => r.Name)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(r => r.DefaultCallBack)
+                      .HasDefaultValue(false);
+
+                entity.Property(r => r.IsDeleted)
+                      .HasDefaultValue(false);
+
+                entity.Property(r => r.CreatedOn)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(r => r.UpdatedOn)
+                      .IsRequired(false);
+
+                entity.Property(r => r.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(r => r.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+            });
+            modelBuilder.Entity<User>(entity =>
+            {
+                entity.HasKey(u => u.Id);
+
+                entity.Property(u => u.Id)
+                      .ValueGeneratedOnAdd(); 
+
+                entity.Property(u => u.Name)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.LoginName)
+                      .HasMaxLength(50)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.PasswordHash)
+                      .HasMaxLength(256)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.Email)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.BranchorHub)
+                      .HasMaxLength(50)
+                      .IsUnicode(false);
+
+               
+
+                entity.Property(u => u.PhoneNo)
+                      .HasMaxLength(20)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.PasswordLastChanged)
+                      .HasMaxLength(50)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.IsActive)
+                      .HasDefaultValue(true);
+
+               
+
+                entity.Property(u => u.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.CreatedOn)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(u => u.UpdatedOn)
+                      .IsRequired(false);
+
+               
+            });
+            modelBuilder.Entity<ApplicationConfig>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .IsRequired()                 // NOT NULL
+                      .ValueGeneratedOnAdd();       // Auto Identity
+
+                entity.Property(e => e.Key)
+                      .HasMaxLength(256)
+                      .IsRequired(false);           // NULL allowed
+
+                entity.Property(e => e.Value)
+                      .HasMaxLength(500)
+                      .IsRequired(false);           // NULL allowed
+
+                entity.Property(e => e.Name)
+                      .HasMaxLength(256)
+                      .IsRequired(false);           // NULL allowed
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()                 // NOT NULL
+                      .HasDefaultValue(false);      // Default false
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);           // NULL allowed
+
+                entity.Property(e => e.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);           // NULL allowed
+
+                entity.Property(e => e.CreatedOn)
+                      .IsRequired(false);           // NULL allowed
+
+                entity.Property(e => e.UpdatedOn)
+                      .IsRequired(false);           // NULL allowed
+            });
+            modelBuilder.Entity<HostCall>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .IsRequired()                    // NOT NULL
+                      .ValueGeneratedOnAdd();          // Identity
+
+                entity.Property(e => e.ChequeDeposit_Id)
+                      .IsRequired();                   // NOT NULL
+
+                entity.Property(e => e.RequsetDate)
+                      .IsRequired();                   // NOT NULL
+
+                entity.Property(e => e.ResponseDate)
+                      .IsRequired();                   // NOT NULL
+
+                entity.Property(e => e.URL)
+                      .HasMaxLength(500)
+                      .IsRequired(false);              // NULL allowed
+
+                entity.Property(e => e.RequestMsg)
+                      .IsRequired(false);              // NULL allowed
+
+                entity.Property(e => e.ResponseMsg)
+                      .IsRequired(false);              // NULL allowed
+
+                entity.Property(e => e.ResponseCode)
+                      .HasMaxLength(50)
+                      .IsRequired(false);              // NULL allowed
+
+                entity.Property(e => e.Name)
+                      .HasMaxLength(256)
+                      .IsRequired(false);              // NULL allowed
+
+                entity.Property(e => e.IsApproved)
+                      .IsRequired();                   // NOT NULL (bool default)
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()                    // NOT NULL
+                      .HasDefaultValue(false);         // default false
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);              // NULL allowed
+
+                entity.Property(e => e.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);              // NULL allowed
+
+                entity.Property(e => e.CreatedOn)
+                      .IsRequired(false);              // NULL allowed
+
+                entity.Property(e => e.UpdatedOn)
+                      .IsRequired(false);              // NULL allowed
+            });
+            modelBuilder.Entity<HostCallConfig>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .IsRequired()                   // NOT NULL
+                      .ValueGeneratedOnAdd();         // Identity
+
+                entity.Property(e => e.ParamName)
+                      .HasMaxLength(256)
+                      .IsRequired(false);             // NULL allowed
+
+                entity.Property(e => e.ParamValue)
+                      .HasMaxLength(500)
+                      .IsRequired(false);             // NULL allowed
+
+                entity.Property(e => e.DataType)
+                      .HasMaxLength(100)
+                      .IsRequired(false);             // NULL allowed
+
+                entity.Property(e => e.Name)
+                      .HasMaxLength(256)
+                      .IsRequired(false);             // NULL allowed
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()                   // NOT NULL
+                      .HasDefaultValue(false);        // Default false
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);             // NULL allowed
+
+                entity.Property(e => e.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);             // NULL allowed
+
+                entity.Property(e => e.CreatedOn)
+                      .IsRequired(false);             // NULL allowed
+
+                entity.Property(e => e.UpdatedOn)
+                      .IsRequired(false);             // NULL allowed
+            });
+            modelBuilder.Entity<ImportData>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .IsRequired()                  // NOT NULL
+                      .ValueGeneratedOnAdd();        // Identity
+
+                entity.Property(e => e.FileName)
+                      .HasMaxLength(256)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.Date)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.TotalRecords)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.SuccessfullRecords)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.FailureRecords)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.Name)
+                      .HasMaxLength(256)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()                  // NOT NULL
+                      .HasDefaultValue(false);       // Default false
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.CreatedOn)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedOn)
+                      .IsRequired(false);            // NULL allowed
+            });
+            modelBuilder.Entity<ImportDataDetail>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .IsRequired()                  // NOT NULL
+                      .ValueGeneratedOnAdd();        // Identity
+
+                entity.Property(e => e.Data)
+                      .HasMaxLength(500)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.Date)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.Error)
+                      .IsRequired();                 // NOT NULL (bool)
+
+                entity.Property(e => e.ErrorDescription)
+                      .HasMaxLength(500)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.ImportDataId)
+                      .IsRequired();                 // NOT NULL
+
+                entity.HasOne(e => e.ImportData)
+                      .WithMany()                     // 1 ImportData has many ImportDataDetails
+                      .HasForeignKey(e => e.ImportDataId)
+                      .OnDelete(DeleteBehavior.Restrict); // Restrict delete
+
+                entity.Property(e => e.Name)
+                      .HasMaxLength(256)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()                  // NOT NULL
+                      .HasDefaultValue(false);       // Default false
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.CreatedOn)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedOn)
+                      .IsRequired(false);            // NULL allowed
+            });
+            modelBuilder.Entity<Manual_ImportData>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .IsRequired()                  // NOT NULL
+                      .ValueGeneratedOnAdd();        // Identity
+
+                entity.Property(e => e.FileName)
+                      .HasMaxLength(256)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.Date)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.TotalRecords)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.SuccessfullRecords)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.FailureRecords)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.Name)
+                      .HasMaxLength(256)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()                  // NOT NULL
+                      .HasDefaultValue(false);       // Default false
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.CreatedOn)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedOn)
+                      .IsRequired(false);            // NULL allowed
+            });
+            modelBuilder.Entity<Manual_ImportDataDetails>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .IsRequired()                  // NOT NULL
+                      .ValueGeneratedOnAdd();        // Identity
+
+                entity.Property(e => e.Data)
+                      .HasMaxLength(500)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.Date)
+                      .IsRequired();                 // NOT NULL
+
+                entity.Property(e => e.Error)
+                      .IsRequired();                 // NOT NULL (bool)
+
+                entity.Property(e => e.ErrorDescription)
+                      .HasMaxLength(500)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.Manual_ImportDataId)
+                      .IsRequired();                 // NOT NULL
+
+                entity.HasOne(e => e.Manual_ImportData)
+                      .WithMany()                     // 1 Manual_ImportData has many Manual_ImportDataDetails
+                      .HasForeignKey(e => e.Manual_ImportDataId)
+                      .OnDelete(DeleteBehavior.Restrict); // Restrict delete
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()                  // NOT NULL
+                      .HasDefaultValue(false);       // Default false
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.CreatedOn)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedOn)
+                      .IsRequired(false);            // NULL allowed
+            });
+            modelBuilder.Entity<Group>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .IsRequired()                  // NOT NULL
+                      .ValueGeneratedOnAdd();        // Identity
+
+                entity.Property(e => e.Description)
+                      .HasMaxLength(500)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.Name)
+                      .HasMaxLength(256)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()                  // NOT NULL
+                      .HasDefaultValue(false);       // Default false
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.CreatedOn)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedOn)
+                      .IsRequired(false);            // NULL allowed
+            });
+            modelBuilder.Entity<Permission>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.Id)
+                      .IsRequired()                  // NOT NULL
+                      .ValueGeneratedOnAdd();        // Identity
+
+                entity.Property(e => e.GroupId)
+                      .IsRequired();                 // NOT NULL FK
+
+                entity.HasOne(e => e.Group)
+                      .WithMany()                    // 1 Group can have many Permissions
+                      .HasForeignKey(e => e.GroupId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.Property(e => e.Name)
+                      .HasMaxLength(256)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.Description)
+                      .HasMaxLength(500)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()                  // NOT NULL
+                      .HasDefaultValue(false);       // Default false
+
+                entity.Property(e => e.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.CreatedOn)
+                      .IsRequired(false);            // NULL allowed
+
+                entity.Property(e => e.UpdatedOn)
+                      .IsRequired(false);            // NULL allowed
+            });
+            modelBuilder.Entity<SecurityGroup_PermissionRecord>(entity =>
+            {
+                entity.HasKey(e => new { e.GroupId, e.PermissionId }); // Composite PK
+
+                entity.Property(e => e.GroupId).IsRequired();
+                entity.Property(e => e.PermissionId).IsRequired();
+
+              
+
+                // Foreign keys
+                entity.HasOne<Group>()
+                      .WithMany()
+                      .HasForeignKey(e => e.GroupId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                entity.HasOne<Permission>()
+                      .WithMany()
+                      .HasForeignKey(e => e.PermissionId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+            modelBuilder.Entity<SecurityGroup_User>(entity =>
+            {
+                // Composite Primary Key
+                entity.HasKey(e => new { e.GroupId, e.UserId });
+
+                entity.Property(e => e.GroupId).IsRequired();  // NOT NULL
+                entity.Property(e => e.UserId).IsRequired();   // NOT NULL
+
+              
+
+                // Foreign key to Group
+                entity.HasOne<Group>()
+                      .WithMany()  // 1 Group can have many SecurityGroup_User entries
+                      .HasForeignKey(e => e.GroupId)
+                      .OnDelete(DeleteBehavior.Restrict);
+
+                // Foreign key to User
+                entity.HasOne<User>()
+                      .WithMany()  // 1 User can have many SecurityGroup_User entries
+                      .HasForeignKey(e => e.UserId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+
+
+
+
+
+
+
+
+
+
+
         }
+
     }
 }

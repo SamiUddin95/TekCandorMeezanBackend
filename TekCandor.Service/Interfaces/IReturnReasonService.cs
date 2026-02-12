@@ -6,10 +6,10 @@ namespace TekCandor.Service.Interfaces
 {
     public interface IReturnReasonService
     {
-        IEnumerable<ReturnReasonDTO> GetAll();
-        ReturnReasonDTO? GetById(Guid id);
+        Task<PagedResult<ReturnReasonDTO>> GetAll(int pageNumber, int pageSize, string? name = null);
+        ReturnReasonDTO? GetById(long id);
         ReturnReasonDTO Create(ReturnReasonDTO returnReason);
         ReturnReasonDTO? Update(ReturnReasonDTO returnReason);
-        bool SoftDelete(Guid id);
+        bool SoftDelete(long id);
     }
 }

@@ -7,10 +7,13 @@ namespace TekCandor.Repository.Interfaces
 {
     public interface IHubRepository
     {
-        IEnumerable<Hub> GetAll();
+
+        Task<IQueryable<Hub>> GetAllQueryableAsync();
+        Task<Hub?> GetByIdAsync(long id);
+        //Task AddAsync(Hub hub);
         Hub Add(Hub hub);
-        Hub? GetById(Guid id);
-        Hub? Update(Hub hub);
-        bool SoftDelete(Guid id);
+        Task<bool> SaveChangesAsync();
+
+
     }
 }

@@ -1,18 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 using TekCandor.Repository.Entities;
 
 namespace TekCandor.Repository.Interfaces
 {
     public interface IBranchRepository
     {
-        IEnumerable<Branch> GetAll();
+        Task<IQueryable<Branch>> GetAllQueryableAsync();
         Branch Add(Branch branch);
-        Branch? GetById(Guid id);
+        Branch? GetById(long id);
         Branch? Update(Branch branch);
-        bool SoftDelete(Guid id);
-
-
+        bool SoftDelete(long id);
     }
 }

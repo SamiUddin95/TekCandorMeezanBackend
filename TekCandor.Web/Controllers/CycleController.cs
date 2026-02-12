@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors;
+using Microsoft.AspNetCore.Mvc;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
 using TekCandor.Web.Models;
 
 namespace TekCandor.Web.Controllers
 {
+    [EnableCors("AllowFrontend")]
     [ApiController]
     [Route("api/[controller]")]
     public class CycleController : ControllerBase
@@ -17,12 +19,20 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetAll()
+        public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10, string? name = null)
         {
             try
             {
-                var dtos = _service.GetAllCycles();
-                return Ok(ApiResponse<IEnumerable<CycleDTO>>.Success(dtos));
+                var result = await _service.GetAllCyclesAsync(pageNumber, pageSize, name);
+
+                return Ok(ApiResponse<object>.Success(new
+                {
+                    items = result.Items,
+                    totalCount = result.TotalCount,
+                    pageNumber = result.PageNumber,
+                    pageSize = result.PageSize,
+                    totalPages = result.TotalPages
+                }));
             }
             catch (Exception ex)
             {
@@ -30,8 +40,10 @@ namespace TekCandor.Web.Controllers
             }
         }
 
+
+
         [HttpGet("{id}")]
-        public IActionResult GetById(Guid id)
+        public IActionResult GetById(long id)
         {
             try
             {
@@ -63,7 +75,7 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpPut("{id}")]
-        public IActionResult Update(Guid id, [FromBody] CycleDTO dto)
+        public IActionResult Update(long id, [FromBody] CycleDTO dto)
         {
             try
             {
@@ -82,7 +94,7 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        public IActionResult Delete(long id)
         {
             try
             {

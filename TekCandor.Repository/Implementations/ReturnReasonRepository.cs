@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TekCandor.Repository.Entities;
@@ -14,26 +15,29 @@ namespace TekCandor.Repository.Implementations
         {
             _context = context;
         }
-
-        public IEnumerable<ReturnReason> GetAll()
+        public async Task<IQueryable<ReturnReason>> GetAllQueryableAsync()
         {
-            return _context.ReturnReason;
+            return _context.ReturnReason.AsNoTracking();
         }
 
-        public ReturnReason? GetById(Guid id)
+        //public IQueryable<ReturnReason> GetAllQueryable()
+        //{
+        //    return _context.ReturnReason.AsNoTracking();
+        //}
+
+
+        public ReturnReason? GetById(long id)
         {
             return _context.ReturnReason.FirstOrDefault(r => r.Id == id);
         }
 
-        public ReturnReason Add(ReturnReason returnReason)
+        public ReturnReason Add(ReturnReason entity)
         {
-            returnReason.Id = Guid.NewGuid();
-            returnReason.CreatedDateTime = DateTime.Now;
-            _context.ReturnReason.Add(returnReason);
+            entity.CreatedOn = DateTime.Now; 
+            _context.ReturnReason.Add(entity);
             _context.SaveChanges();
-            return returnReason;
+            return entity;
         }
-
         public ReturnReason? Update(ReturnReason returnReason)
         {
             var existing = _context.ReturnReason.FirstOrDefault(r => r.Id == returnReason.Id);
@@ -44,20 +48,17 @@ namespace TekCandor.Repository.Implementations
             existing.NumericReturnCodes = returnReason.NumericReturnCodes;
             existing.DescriptionWithReturnCodes = returnReason.DescriptionWithReturnCodes;
             existing.DefaultCallBack = returnReason.DefaultCallBack;
-            existing.Version = returnReason.Version;
             existing.Name = returnReason.Name;
-            existing.IsNew = returnReason.IsNew;
             existing.IsDeleted = returnReason.IsDeleted;
-            existing.CreatedUser = returnReason.CreatedUser;
-            existing.CreatedDateTime = returnReason.CreatedDateTime;
-            existing.ModifiedUser = returnReason.ModifiedUser;
-            existing.ModifiedDateTime = DateTime.Now;
+            
+            existing.UpdatedBy = returnReason.UpdatedBy;
+            existing.UpdatedOn = DateTime.Now;
 
             _context.SaveChanges();
             return existing;
         }
 
-        public bool SoftDelete(Guid id)
+        public bool SoftDelete(long id)
         {
             var existing = _context.ReturnReason.FirstOrDefault(r => r.Id == id);
             if (existing == null) return false;

@@ -1,25 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TekCandor.Repository.Entities;
 
 namespace TekCandor.Service.Models
 {
     public class BranchDTO
     {
-        public required Guid Id { get; set; }
-        public string? NIFT { get; set; }
+        public long Id { get; set; }
         public string? Code { get; set; }
         public string? NIFTBranchCode { get; set; }
         public string? Name { get; set; }
-        public Guid? HubId { get; set; }
-        public int Version { get; set; }
-        public bool IsNew { get; set; }
+        public long HubId { get; set; }
+       
         public bool IsDeleted { get; set; }
-
-        public string? CreatedUser { get; set; }
-        public DateTime? CreatedDateTime { get; set; }
-        public string? ModifiedUser { get; set; }
-        public DateTime? ModifiedDateTime { get; set; }
+        public string? CreatedBy { get; set; }
+        public string? UpdatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public DateTime? UpdatedOn { get; set; }
 
         public string? Email1 { get; set; }
         public string? Email2 { get; set; }

@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using TekCandor.Repository.Entities;
 using TekCandor.Repository.Interfaces;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
-using TekCandor.Repository.Entities;
 
 namespace TekCandor.Service.Implementations
 {
@@ -17,59 +18,92 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        public IEnumerable<HubDTO> GetAllHubs()
+        public async Task<PagedResult<HubDTO>> GetAllHubsAsync(
+    int pageNumber,
+    int pageSize,
+    string? name = null
+)
         {
-            var entities = _repository.GetAll();
-            return entities.Select(h => new HubDTO
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var query = await _repository.GetAllQueryableAsync();
+
+            query = query.Where(h => !h.IsDeleted);
+            if (!string.IsNullOrWhiteSpace(name))
             {
-                Id = h.Id,
-                Version = h.Version,
-                Code = h.Code,
-                Name = h.Name,
-                IsDeleted = h.IsDeleted,
-                IsNew = h.IsNew,
-                CreatedUser = h.CreatedUser,
-                CreatedDateTime = h.CreatedDateTime,
-                ModifiedUser = h.ModifiedUser,
-                ModifiesDateTime = h.ModifiesDateTime,
-                CrAccSameDay = h.CrAccSameDay,
-                CrAccNormal = h.CrAccNormal,
-                CrAccIntercity = h.CrAccIntercity,
-                CrAccDollar = h.CrAccDollar
-            });
+                query = query.Where(h => h.Name.Contains(name.Trim()));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(h => h.UpdatedOn ?? h.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(h => new HubDTO
+                {
+                    Id = h.Id,
+                    Code = h.Code,
+                    Name = h.Name,
+                    IsDeleted = h.IsDeleted,
+                    CreatedBy = h.CreatedBy,
+                    CreatedOn = h.CreatedOn,
+                    UpdatedBy = h.UpdatedBy,
+                    UpdatedOn = h.UpdatedOn,
+                    CrAccSameDay = h.CrAccSameDay,
+                    CrAccNormal = h.CrAccNormal,
+                    CrAccIntercity = h.CrAccIntercity,
+                    CrAccDollar = h.CrAccDollar
+                })
+                .ToListAsync();
+
+            return new PagedResult<HubDTO>
+            {
+                Items = items,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
+
 
         public HubDTO CreateHub(HubDTO hub)
         {
             var entity = new Hub
             {
-                Version = hub.Version,
+                Id = hub.Id,
                 Code = hub.Code,
                 Name = hub.Name,
                 IsDeleted = false,
-                IsNew = hub.IsNew,
-                CreatedUser = hub.CreatedUser,
-                ModifiedUser = string.IsNullOrWhiteSpace(hub.ModifiedUser) ? hub.CreatedUser : hub.ModifiedUser,
-                CreatedDateTime = DateTime.UtcNow,
-                ModifiesDateTime = null,
+
+                CreatedBy = hub.CreatedBy,
+                CreatedOn = DateTime.Now,
+
+                UpdatedBy = null,    
+                UpdatedOn = null, 
+
                 CrAccSameDay = hub.CrAccSameDay,
                 CrAccNormal = hub.CrAccNormal,
                 CrAccIntercity = hub.CrAccIntercity,
                 CrAccDollar = hub.CrAccDollar
             };
+
             var created = _repository.Add(entity);
+
             return new HubDTO
             {
                 Id = created.Id,
-                Version = created.Version,
                 Code = created.Code,
                 Name = created.Name,
                 IsDeleted = created.IsDeleted,
-                IsNew = created.IsNew,
-                CreatedUser = created.CreatedUser,
-                ModifiedUser = created.ModifiedUser,
-                CreatedDateTime = created.CreatedDateTime,
-                ModifiesDateTime = created.ModifiesDateTime,
+
+                CreatedBy = created.CreatedBy,
+                CreatedOn = created.CreatedOn,
+
+                UpdatedBy = null,
+                UpdatedOn = null,   
+
                 CrAccSameDay = created.CrAccSameDay,
                 CrAccNormal = created.CrAccNormal,
                 CrAccIntercity = created.CrAccIntercity,
@@ -77,22 +111,22 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-        public HubDTO? GetById(Guid id)
+
+        public async Task<HubDTO?> GetByIdAsync(long id)
         {
-            var h = _repository.GetById(id);
-            if (h == null) return null;
+            var h = await _repository.GetByIdAsync(id);
+            if (h == null || h.IsDeleted) return null;
+
             return new HubDTO
             {
                 Id = h.Id,
-                Version = h.Version,
                 Code = h.Code,
                 Name = h.Name,
                 IsDeleted = h.IsDeleted,
-                IsNew = h.IsNew,
-                CreatedUser = h.CreatedUser,
-                ModifiedUser = h.ModifiedUser,
-                CreatedDateTime = h.CreatedDateTime,
-                ModifiesDateTime = h.ModifiesDateTime,
+                CreatedBy = h.CreatedBy,
+                UpdatedBy = h.UpdatedBy,
+                CreatedOn = h.CreatedOn,
+                UpdatedOn = h.UpdatedOn,
                 CrAccSameDay = h.CrAccSameDay,
                 CrAccNormal = h.CrAccNormal,
                 CrAccIntercity = h.CrAccIntercity,
@@ -100,49 +134,53 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-        public HubDTO? Update(HubDTO hub)
+
+        public async Task<HubDTO?> UpdateAsync(HubDTO hub)
         {
-            var entity = new Hub
-            {
-                Id = hub.Id,
-                Version = hub.Version,
-                Code = hub.Code,
-                Name = hub.Name,
-                IsDeleted = hub.IsDeleted,
-                IsNew = hub.IsNew,
-                CreatedUser = hub.CreatedUser,
-                CreatedDateTime = hub.CreatedDateTime,
-                ModifiedUser = hub.ModifiedUser,
-                ModifiesDateTime = DateTime.UtcNow,
-                CrAccSameDay = hub.CrAccSameDay,
-                CrAccNormal = hub.CrAccNormal,
-                CrAccIntercity = hub.CrAccIntercity,
-                CrAccDollar = hub.CrAccDollar
-            };
-            var updated = _repository.Update(entity);
-            if (updated == null) return null;
+            var existing = await _repository.GetByIdAsync(hub.Id);
+            if (existing == null || existing.IsDeleted)
+                return null;
+           
+            existing.Code = hub.Code;
+            existing.Name = hub.Name;
+            existing.UpdatedBy = hub.UpdatedBy;
+            existing.UpdatedOn = DateTime.Now;
+            existing.CrAccSameDay = hub.CrAccSameDay;
+            existing.CrAccNormal = hub.CrAccNormal;
+            existing.CrAccIntercity = hub.CrAccIntercity;
+            existing.CrAccDollar = hub.CrAccDollar;
+
+            await _repository.SaveChangesAsync();
+
             return new HubDTO
-            {
-                Id = updated.Id,
-                Version = updated.Version,
-                Code = updated.Code,
-                Name = updated.Name,
-                IsDeleted = updated.IsDeleted,
-                IsNew = updated.IsNew,
-                CreatedUser = updated.CreatedUser,
-                ModifiedUser = updated.ModifiedUser,
-                CreatedDateTime = updated.CreatedDateTime,
-                ModifiesDateTime = updated.ModifiesDateTime,
-                CrAccSameDay = updated.CrAccSameDay,
-                CrAccNormal = updated.CrAccNormal,
-                CrAccIntercity = updated.CrAccIntercity,
-                CrAccDollar = updated.CrAccDollar
+            { 
+                Id = existing.Id,
+                Code = existing.Code,
+                Name = existing.Name,
+                IsDeleted = existing.IsDeleted,
+                CreatedBy = existing.CreatedBy,
+                UpdatedBy = existing.UpdatedBy,
+                CreatedOn = existing.CreatedOn,
+                UpdatedOn = existing.UpdatedOn,
+                CrAccSameDay = existing.CrAccSameDay,
+                CrAccNormal = existing.CrAccNormal,
+                CrAccIntercity = existing.CrAccIntercity,
+                CrAccDollar = existing.CrAccDollar
             };
         }
 
-        public bool SoftDelete(Guid id)
+
+        public async Task<bool> SoftDeleteAsync(long id)
         {
-            return _repository.SoftDelete(id);
+            var existing = await _repository.GetByIdAsync(id);
+            if (existing == null || existing.IsDeleted)
+                return false;
+
+            existing.IsDeleted = true;
+            existing.UpdatedOn = DateTime.Now;
+
+            return await _repository.SaveChangesAsync();
         }
+
     }
 }

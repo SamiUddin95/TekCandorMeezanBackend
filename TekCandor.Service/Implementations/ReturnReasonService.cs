@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TekCandor.Repository.Entities;
@@ -16,9 +17,28 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
 
-        public IEnumerable<ReturnReasonDTO> GetAll()
+        public async Task<PagedResult<ReturnReasonDTO>> GetAll(int pageNumber, int pageSize, string? name = null)
         {
-            return _repository.GetAll().Select(r => new ReturnReasonDTO
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var query = await _repository.GetAllQueryableAsync();
+
+            query = query.Where(h => !h.IsDeleted);
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                query = query.Where(h => h.Name.Contains(name.Trim()));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var returnReasons = await query
+                .OrderByDescending(r => r.UpdatedOn ?? r.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var dtos = returnReasons.Select(r => new ReturnReasonDTO
             {
                 Id = r.Id,
                 Code = r.Code,
@@ -26,18 +46,27 @@ namespace TekCandor.Service.Implementations
                 NumericReturnCodes = r.NumericReturnCodes,
                 DescriptionWithReturnCodes = r.DescriptionWithReturnCodes,
                 DefaultCallBack = r.DefaultCallBack,
-                Version = r.Version,
                 Name = r.Name,
-                IsNew = r.IsNew,
                 IsDeleted = r.IsDeleted,
-                CreatedUser = r.CreatedUser,
-                CreatedDateTime = r.CreatedDateTime,
-                ModifiedUser = r.ModifiedUser,
-                ModifiedDateTime = r.ModifiedDateTime
+                CreatedBy = r.CreatedBy,
+                CreatedOn = r.CreatedOn,
+                UpdatedBy = r.UpdatedBy,
+                UpdatedOn = r.UpdatedOn
             });
+
+            return new PagedResult<ReturnReasonDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
-        public ReturnReasonDTO? GetById(Guid id)
+
+
+
+        public ReturnReasonDTO? GetById(long id)
         {
             var r = _repository.GetById(id);
             if (r == null) return null;
@@ -50,14 +79,12 @@ namespace TekCandor.Service.Implementations
                 NumericReturnCodes = r.NumericReturnCodes,
                 DescriptionWithReturnCodes = r.DescriptionWithReturnCodes,
                 DefaultCallBack = r.DefaultCallBack,
-                Version = r.Version,
                 Name = r.Name,
-                IsNew = r.IsNew,
                 IsDeleted = r.IsDeleted,
-                CreatedUser = r.CreatedUser,
-                CreatedDateTime = r.CreatedDateTime,
-                ModifiedUser = r.ModifiedUser,
-                ModifiedDateTime = r.ModifiedDateTime
+                CreatedBy = r.CreatedBy,
+                CreatedOn = r.CreatedOn,
+                UpdatedBy = r.UpdatedBy,
+                UpdatedOn = r.UpdatedOn
             };
         }
 
@@ -65,27 +92,41 @@ namespace TekCandor.Service.Implementations
         {
             var entity = new ReturnReason
             {
-                Id = dto.Id,
                 Code = dto.Code,
                 AlphaReturnCodes = dto.AlphaReturnCodes,
                 NumericReturnCodes = dto.NumericReturnCodes,
                 DescriptionWithReturnCodes = dto.DescriptionWithReturnCodes,
                 DefaultCallBack = dto.DefaultCallBack,
-                Version = dto.Version,
                 Name = dto.Name,
-                IsNew = dto.IsNew,
-                IsDeleted = dto.IsDeleted,
-                CreatedUser = dto.CreatedUser,
-                CreatedDateTime = dto.CreatedDateTime,
-                ModifiedUser = dto.ModifiedUser,
-                ModifiedDateTime = dto.ModifiedDateTime
+                IsDeleted = false,
+
+                CreatedBy = dto.CreatedBy,
+                CreatedOn = DateTime.Now,
+
+                UpdatedBy = null,
+                UpdatedOn = null
             };
 
-            var created = _repository.Add(entity);
-            dto.Id = created.Id;
-            return dto;
-        }
+           
+            var createdEntity = _repository.Add(entity);
 
+      
+            return new ReturnReasonDTO
+            {
+                Id = createdEntity.Id,
+                Code = createdEntity.Code,
+                AlphaReturnCodes = createdEntity.AlphaReturnCodes,
+                NumericReturnCodes = createdEntity.NumericReturnCodes,
+                DescriptionWithReturnCodes = createdEntity.DescriptionWithReturnCodes,
+                DefaultCallBack = createdEntity.DefaultCallBack,
+                Name = createdEntity.Name,
+                IsDeleted = createdEntity.IsDeleted,
+                CreatedBy = createdEntity.CreatedBy,
+                CreatedOn = createdEntity.CreatedOn,
+                UpdatedBy = createdEntity.UpdatedBy,
+                UpdatedOn = createdEntity.UpdatedOn
+            };
+        }
         public ReturnReasonDTO? Update(ReturnReasonDTO dto)
         {
             var entity = new ReturnReason
@@ -96,14 +137,11 @@ namespace TekCandor.Service.Implementations
                 NumericReturnCodes = dto.NumericReturnCodes,
                 DescriptionWithReturnCodes = dto.DescriptionWithReturnCodes,
                 DefaultCallBack = dto.DefaultCallBack,
-                Version = dto.Version,
                 Name = dto.Name,
-                IsNew = dto.IsNew,
                 IsDeleted = dto.IsDeleted,
-                CreatedUser = dto.CreatedUser,
-                CreatedDateTime = dto.CreatedDateTime,
-                ModifiedUser = dto.ModifiedUser,
-                ModifiedDateTime = dto.ModifiedDateTime
+                CreatedOn = dto.CreatedOn,
+                UpdatedBy = dto.UpdatedBy,
+                UpdatedOn = dto.UpdatedOn
             };
 
             var updated = _repository.Update(entity);
@@ -117,18 +155,16 @@ namespace TekCandor.Service.Implementations
                 NumericReturnCodes = updated.NumericReturnCodes,
                 DescriptionWithReturnCodes = updated.DescriptionWithReturnCodes,
                 DefaultCallBack = updated.DefaultCallBack,
-                Version = updated.Version,
                 Name = updated.Name,
-                IsNew = updated.IsNew,
                 IsDeleted = updated.IsDeleted,
-                CreatedUser = updated.CreatedUser,
-                CreatedDateTime = updated.CreatedDateTime,
-                ModifiedUser = updated.ModifiedUser,
-                ModifiedDateTime = updated.ModifiedDateTime
+                CreatedBy = updated.CreatedBy,
+                CreatedOn = updated.CreatedOn,
+                UpdatedBy = updated.UpdatedBy,
+                UpdatedOn = updated.UpdatedOn
             };
         }
 
-        public bool SoftDelete(Guid id)
+        public bool SoftDelete(long id)
         {
             return _repository.SoftDelete(id);
         }

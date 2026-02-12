@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿
 using TekCandor.Service.Models;
 
 namespace TekCandor.Service.Interfaces
 {
     public interface IBranchService
     {
-        IEnumerable<BranchDTO> GetBranches();
-        BranchDTO CreateBranch(BranchDTO branch);
-        
-        BranchDTO? UpdateBranch(BranchDTO branch);
-        bool SoftDelete(Guid id);
+        Task<PagedResult<BranchDTO>> GetAllBranchesAsync(int pageNumber, int pageSize, string? name = null);
+        bool CreateBranch(BranchDTO branch);
 
-        BranchDTO? GetById(Guid Id);
+        BranchDTO? GetById(long id);
+        BranchDTO? Update(BranchDTO branch);
+        bool SoftDelete(long id);
     }
 }
