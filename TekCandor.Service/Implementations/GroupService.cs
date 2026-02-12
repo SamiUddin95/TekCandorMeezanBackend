@@ -77,7 +77,7 @@ namespace TekCandor.Service.Implementations
                 Description = group.Description,
                 IsDeleted = false,
                 CreatedBy = group.CreatedBy,
-                UpdatedBy = string.IsNullOrWhiteSpace(group.UpdatedBy) ? group.CreatedBy : group.UpdatedBy,
+                UpdatedBy = null,
                 CreatedOn = DateTime.Now,
                 UpdatedOn = null
             };

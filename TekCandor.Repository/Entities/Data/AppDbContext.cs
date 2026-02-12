@@ -32,6 +32,9 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Manual_ImportData> Manual_ImportData { get; set; }
         public DbSet<Manual_ImportDataDetails> Manual_ImportDataDetails { get; set; }
 
+        public DbSet<SecurityGroup_PermissionRecord> SecurityGroup_PermissionRecord { get; set; }
+        public DbSet<SecurityGroup_User> SecurityGroup_User { get; set; }
+
 
 
 
