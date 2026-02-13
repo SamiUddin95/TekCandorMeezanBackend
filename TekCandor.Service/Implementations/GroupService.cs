@@ -138,8 +138,8 @@ namespace TekCandor.Service.Implementations
 
         public async Task AssignPermissionsAsync(AssignPermissionsDTO dto)
         {
-            if (dto.PermissionIds == null || !dto.PermissionIds.Any())
-                throw new Exception("Permission list cannot be empty");
+            //if (dto.PermissionIds == null || !dto.PermissionIds.Any())
+            //    throw new Exception("Permission list cannot be empty");
 
             await _repository.AssignPermissionsAsync(dto.GroupId, dto.PermissionIds);
         }
