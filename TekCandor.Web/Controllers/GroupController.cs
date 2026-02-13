@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
+using TekCandor.Web.Authorization;
 using TekCandor.Web.Models;
 
 namespace TekCandor.Web.Controllers
@@ -101,5 +102,15 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
+        [HttpPost("assign-permissions")]
+        [HasPermission("Security.Groups")]
+        public async Task<IActionResult> AssignPermissions([FromBody] AssignPermissionsDTO dto)
+        {
+            await _service.AssignPermissionsAsync(dto);
+
+            return Ok("Permissions assigned successfully.");
+        }
+
     }
 }

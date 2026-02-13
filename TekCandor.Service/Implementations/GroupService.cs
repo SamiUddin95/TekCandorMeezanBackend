@@ -135,5 +135,14 @@ namespace TekCandor.Service.Implementations
 
             return await _repository.SaveChangesAsync();
         }
+
+        public async Task AssignPermissionsAsync(AssignPermissionsDTO dto)
+        {
+            if (dto.PermissionIds == null || !dto.PermissionIds.Any())
+                throw new Exception("Permission list cannot be empty");
+
+            await _repository.AssignPermissionsAsync(dto.GroupId, dto.PermissionIds);
+        }
+
     }
 }
