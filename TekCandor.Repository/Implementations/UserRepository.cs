@@ -110,10 +110,18 @@ namespace TekCandor.Repository.Implementations
 
         public async Task<User> AddAsync(User user, string passwordHash)
         {
-            user.PasswordHash = passwordHash;
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return user;
+            try
+            {
+                user.PasswordHash = passwordHash;
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        
         }
 
 
