@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
+using TekCandor.Web.Authorization;
 using TekCandor.Web.Models;
 
 namespace TekCandor.Web.Controllers
@@ -17,7 +18,7 @@ namespace TekCandor.Web.Controllers
         {
             _service = service;
         }
-
+        [HasPermission("basicSetUp.Branch")]
         [HttpGet]
         public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10, string? name = null)
         {

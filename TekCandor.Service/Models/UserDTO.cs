@@ -28,6 +28,7 @@ namespace TekCandor.Service.Models
         public DateTime? UpdatedOn { get; set; }
         public long? UserLimit { get; set; }
 
+        public List<string> Permissions { get; set; } = new();
 
 
 

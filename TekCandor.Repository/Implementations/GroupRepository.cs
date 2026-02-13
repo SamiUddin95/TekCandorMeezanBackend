@@ -36,5 +36,25 @@ namespace TekCandor.Repository.Implementations
         {
             return await _context.SaveChangesAsync() > 0;
         }
+
+        public async Task AssignPermissionsAsync(long groupId, List<long> permissionIds)
+        {
+            // Remove existing permissions
+            var existing = _context.SecurityGroup_PermissionRecord
+                .Where(x => x.GroupId == groupId);
+
+            _context.SecurityGroup_PermissionRecord.RemoveRange(existing);
+
+            // Add new permissions
+            var newRecords = permissionIds.Select(pid => new SecurityGroup_PermissionRecord
+            {
+                GroupId = groupId,
+                PermissionId = pid
+            });
+
+            await _context.SecurityGroup_PermissionRecord.AddRangeAsync(newRecords);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

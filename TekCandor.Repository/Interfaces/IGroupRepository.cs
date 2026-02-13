@@ -10,7 +10,7 @@ namespace TekCandor.Repository.Interfaces
         Task<Group?> GetByIdAsync(long id);
         Task AddAsync(Group group);
         Task<bool> SaveChangesAsync();
+        Task AssignPermissionsAsync(long groupId, List<long> permissionIds);
 
-        
     }
 }

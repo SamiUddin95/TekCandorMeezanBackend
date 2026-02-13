@@ -20,7 +20,6 @@ namespace TekCandor.Repository.Implementations
         public async Task<IEnumerable<Permission>> GetAllQueryableAsync()
         {
             return _context.Permission
-                           .Include(p => p.Group)
                            .ToList();
         }
     }

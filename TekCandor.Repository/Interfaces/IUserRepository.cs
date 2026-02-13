@@ -16,7 +16,7 @@ namespace TekCandor.Repository.Interfaces
 
         Task<User> AddAsync(User user, string passwordHash);
 
-
+        Task<List<string>> GetUserPermissionsAsync(long userId);
 
 
     }

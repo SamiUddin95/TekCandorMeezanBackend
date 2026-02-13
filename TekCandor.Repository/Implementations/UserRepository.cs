@@ -110,12 +110,39 @@ namespace TekCandor.Repository.Implementations
 
         public async Task<User> AddAsync(User user, string passwordHash)
         {
-            user.PasswordHash = passwordHash;
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
-            return user;
+            try
+            {
+                user.PasswordHash = passwordHash;
+                _context.Users.Add(user);
+                await _context.SaveChangesAsync();
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        
         }
 
+        public async Task<List<string>> GetUserPermissionsAsync(long userId)
+        {
+            var groupId = await _context.Users
+               .Where(x => x.Id == userId)
+               .Select(x => x.GroupId)
+               .FirstOrDefaultAsync();
+
+            return await (
+                from u in _context.Users
+                join gp in _context.SecurityGroup_PermissionRecord
+                    on u.GroupId equals gp.GroupId
+                join p in _context.Permission
+                    on gp.PermissionId equals p.Id
+                where u.Id == userId && !p.IsDeleted
+                select p.Name
+            )
+            .Distinct()
+            .ToListAsync();
+        }
 
     }
 }
