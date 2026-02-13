@@ -218,7 +218,8 @@ namespace TekCandor.Service.Implementations
             var user = await _repository.GetByIdAsync(auth.Value.Id);
             if (user == null) return null;
 
-           
+            var permissions = await _repository.GetUserPermissionsAsync(user.Id);
+
             return new UserDTO
             {
                 Id = user.Id,
@@ -240,7 +241,8 @@ namespace TekCandor.Service.Implementations
                 CreatedOn = DateTime.Now,
                 UpdatedBy = user.UpdatedBy,
                 UpdatedOn = DateTime.Now,
-                UserLimit= user.UserLimit
+                UserLimit= user.UserLimit,
+                Permissions = permissions
             };
         }
 

@@ -686,9 +686,6 @@ namespace TekCandor.Repository.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
-
                     b.Property<bool>("IsDeleted")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("bit")
@@ -706,8 +703,6 @@ namespace TekCandor.Repository.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.ToTable("Permission");
                 });
@@ -815,21 +810,6 @@ namespace TekCandor.Repository.Migrations
                     b.HasIndex("PermissionId");
 
                     b.ToTable("SecurityGroup_PermissionRecord");
-                });
-
-            modelBuilder.Entity("TekCandor.Repository.Entities.SecurityGroup_User", b =>
-                {
-                    b.Property<long>("GroupId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("GroupId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("SecurityGroup_User");
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.User", b =>
@@ -958,17 +938,6 @@ namespace TekCandor.Repository.Migrations
                     b.Navigation("Manual_ImportData");
                 });
 
-            modelBuilder.Entity("TekCandor.Repository.Entities.Permission", b =>
-                {
-                    b.HasOne("TekCandor.Repository.Entities.Group", "Group")
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-                });
-
             modelBuilder.Entity("TekCandor.Repository.Entities.SecurityGroup_PermissionRecord", b =>
                 {
                     b.HasOne("TekCandor.Repository.Entities.Group", null)
@@ -980,21 +949,6 @@ namespace TekCandor.Repository.Migrations
                     b.HasOne("TekCandor.Repository.Entities.Permission", null)
                         .WithMany()
                         .HasForeignKey("PermissionId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("TekCandor.Repository.Entities.SecurityGroup_User", b =>
-                {
-                    b.HasOne("TekCandor.Repository.Entities.Group", null)
-                        .WithMany()
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("TekCandor.Repository.Entities.User", null)
-                        .WithMany()
-                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });

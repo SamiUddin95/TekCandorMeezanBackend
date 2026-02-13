@@ -13,6 +13,7 @@ using TekCandor.Repository.Implementations;
 using TekCandor.Repository.Interfaces;
 using TekCandor.Service.Implementations;
 using TekCandor.Service.Interfaces;
+using TekCandor.Web.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,6 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
-
 
 
 
@@ -100,11 +100,14 @@ var key = jwtSection.GetValue<string>("Key");
 var issuer = jwtSection.GetValue<string>("Issuer");
 var audience = jwtSection.GetValue<string>("Audience");
 
+
+// Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-}).AddJwtBearer(options =>
+})
+.AddJwtBearer(options =>
 {
     options.TokenValidationParameters = new TokenValidationParameters
     {
@@ -117,17 +120,22 @@ builder.Services.AddAuthentication(options =>
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key ?? string.Empty)),
         ClockSkew = TimeSpan.FromSeconds(5)
     };
+
     options.Events = new JwtBearerEvents
     {
         OnTokenValidated = async context =>
         {
             var jti = context.Principal?.FindFirst(JwtRegisteredClaimNames.Jti)?.Value;
+
             if (string.IsNullOrEmpty(jti))
             {
                 context.Fail("Missing jti");
                 return;
             }
-            var repo = context.HttpContext.RequestServices.GetRequiredService<ITokenRevocationRepository>();
+
+            var repo = context.HttpContext.RequestServices
+                .GetRequiredService<ITokenRevocationRepository>();
+
             if (await repo.IsRevokedAsync(jti))
             {
                 context.Fail("Token revoked");
@@ -142,6 +150,8 @@ builder.Services.AddAuthorization(options =>
         .Build();
 });
 
+builder.Services.AddSingleton<IAuthorizationHandler, PermissionHandler>();
+builder.Services.AddSingleton<IAuthorizationPolicyProvider, PermissionPolicyProvider>();
 
 var app = builder.Build();
 

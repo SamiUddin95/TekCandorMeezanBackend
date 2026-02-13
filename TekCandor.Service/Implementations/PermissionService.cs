@@ -33,8 +33,6 @@ namespace TekCandor.Service.Implementations
                 .Select(p => new PermissionDTO
                 {
                     Id = p.Id,
-                    GroupId = p.GroupId,
-                    GroupName = p.Group != null ? p.Group.Name : null,
                     Name = p.Name,
                     Description = p.Description,
                     IsDeleted = p.IsDeleted,

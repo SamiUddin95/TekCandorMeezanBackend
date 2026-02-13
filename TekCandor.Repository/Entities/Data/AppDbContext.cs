@@ -33,11 +33,6 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Manual_ImportDataDetails> Manual_ImportDataDetails { get; set; }
 
         public DbSet<SecurityGroup_PermissionRecord> SecurityGroup_PermissionRecord { get; set; }
-        public DbSet<SecurityGroup_User> SecurityGroup_User { get; set; }
-
-
-
-
 
 
 
@@ -243,408 +238,400 @@ namespace TekCandor.Repository.Entities.Data
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
-                      .IsRequired()                 // NOT NULL
-                      .ValueGeneratedOnAdd();       // Auto Identity
+                      .IsRequired()                 
+                      .ValueGeneratedOnAdd();      
 
                 entity.Property(e => e.Key)
                       .HasMaxLength(256)
-                      .IsRequired(false);           // NULL allowed
+                      .IsRequired(false);           
 
                 entity.Property(e => e.Value)
                       .HasMaxLength(500)
-                      .IsRequired(false);           // NULL allowed
+                      .IsRequired(false);           
 
                 entity.Property(e => e.Name)
                       .HasMaxLength(256)
-                      .IsRequired(false);           // NULL allowed
+                      .IsRequired(false);           
 
                 entity.Property(e => e.IsDeleted)
-                      .IsRequired()                 // NOT NULL
-                      .HasDefaultValue(false);      // Default false
+                      .IsRequired()               
+                      .HasDefaultValue(false);     
 
                 entity.Property(e => e.CreatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);           // NULL allowed
+                      .IsRequired(false);           
 
                 entity.Property(e => e.UpdatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);           // NULL allowed
+                      .IsRequired(false);           
 
                 entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);           // NULL allowed
+                      .IsRequired(false);           
 
                 entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);           // NULL allowed
+                      .IsRequired(false);           
             });
             modelBuilder.Entity<HostCall>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
-                      .IsRequired()                    // NOT NULL
-                      .ValueGeneratedOnAdd();          // Identity
+                      .IsRequired()          
+                      .ValueGeneratedOnAdd();      
 
                 entity.Property(e => e.ChequeDeposit_Id)
-                      .IsRequired();                   // NOT NULL
+                      .IsRequired();                
 
                 entity.Property(e => e.RequsetDate)
-                      .IsRequired();                   // NOT NULL
+                      .IsRequired();             
 
                 entity.Property(e => e.ResponseDate)
-                      .IsRequired();                   // NOT NULL
+                      .IsRequired();               
 
                 entity.Property(e => e.URL)
                       .HasMaxLength(500)
-                      .IsRequired(false);              // NULL allowed
+                      .IsRequired(false);              
 
                 entity.Property(e => e.RequestMsg)
-                      .IsRequired(false);              // NULL allowed
+                      .IsRequired(false);              
 
                 entity.Property(e => e.ResponseMsg)
-                      .IsRequired(false);              // NULL allowed
+                      .IsRequired(false);              
 
                 entity.Property(e => e.ResponseCode)
                       .HasMaxLength(50)
-                      .IsRequired(false);              // NULL allowed
+                      .IsRequired(false);              
 
                 entity.Property(e => e.Name)
                       .HasMaxLength(256)
-                      .IsRequired(false);              // NULL allowed
+                      .IsRequired(false);              
 
                 entity.Property(e => e.IsApproved)
-                      .IsRequired();                   // NOT NULL (bool default)
+                      .IsRequired();                   
 
                 entity.Property(e => e.IsDeleted)
-                      .IsRequired()                    // NOT NULL
-                      .HasDefaultValue(false);         // default false
+                      .IsRequired()               
+                      .HasDefaultValue(false);        
 
                 entity.Property(e => e.CreatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);              // NULL allowed
+                      .IsRequired(false);              
 
                 entity.Property(e => e.UpdatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);              // NULL allowed
+                      .IsRequired(false);              
 
                 entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);              // NULL allowed
+                      .IsRequired(false);              
 
                 entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);              // NULL allowed
+                      .IsRequired(false);              
             });
             modelBuilder.Entity<HostCallConfig>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
-                      .IsRequired()                   // NOT NULL
-                      .ValueGeneratedOnAdd();         // Identity
+                      .IsRequired()               
+                      .ValueGeneratedOnAdd();      
 
                 entity.Property(e => e.ParamName)
                       .HasMaxLength(256)
-                      .IsRequired(false);             // NULL allowed
+                      .IsRequired(false);             
 
                 entity.Property(e => e.ParamValue)
                       .HasMaxLength(500)
-                      .IsRequired(false);             // NULL allowed
+                      .IsRequired(false);             
 
                 entity.Property(e => e.DataType)
                       .HasMaxLength(100)
-                      .IsRequired(false);             // NULL allowed
+                      .IsRequired(false);             
 
                 entity.Property(e => e.Name)
                       .HasMaxLength(256)
-                      .IsRequired(false);             // NULL allowed
+                      .IsRequired(false);             
 
                 entity.Property(e => e.IsDeleted)
-                      .IsRequired()                   // NOT NULL
-                      .HasDefaultValue(false);        // Default false
+                      .IsRequired()              
+                      .HasDefaultValue(false);      
 
                 entity.Property(e => e.CreatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);             // NULL allowed
+                      .IsRequired(false);             
 
                 entity.Property(e => e.UpdatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);             // NULL allowed
+                      .IsRequired(false);             
 
                 entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);             // NULL allowed
+                      .IsRequired(false);             
 
                 entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);             // NULL allowed
+                      .IsRequired(false);             
             });
             modelBuilder.Entity<ImportData>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
-                      .IsRequired()                  // NOT NULL
-                      .ValueGeneratedOnAdd();        // Identity
+                      .IsRequired()        
+                      .ValueGeneratedOnAdd();       
 
                 entity.Property(e => e.FileName)
                       .HasMaxLength(256)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.Date)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();             
 
                 entity.Property(e => e.TotalRecords)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();          
 
                 entity.Property(e => e.SuccessfullRecords)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();                
 
                 entity.Property(e => e.FailureRecords)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();               
 
                 entity.Property(e => e.Name)
                       .HasMaxLength(256)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.IsDeleted)
-                      .IsRequired()                  // NOT NULL
-                      .HasDefaultValue(false);       // Default false
+                      .IsRequired()                 
+                      .HasDefaultValue(false);     
 
                 entity.Property(e => e.CreatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
             });
             modelBuilder.Entity<ImportDataDetail>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
-                      .IsRequired()                  // NOT NULL
-                      .ValueGeneratedOnAdd();        // Identity
+                      .IsRequired()                
+                      .ValueGeneratedOnAdd();   
 
                 entity.Property(e => e.Data)
                       .HasMaxLength(500)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.Date)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();             
 
                 entity.Property(e => e.Error)
-                      .IsRequired();                 // NOT NULL (bool)
+                      .IsRequired();               
 
                 entity.Property(e => e.ErrorDescription)
                       .HasMaxLength(500)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.ImportDataId)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();            
 
                 entity.HasOne(e => e.ImportData)
-                      .WithMany()                     // 1 ImportData has many ImportDataDetails
+                      .WithMany()                     
                       .HasForeignKey(e => e.ImportDataId)
-                      .OnDelete(DeleteBehavior.Restrict); // Restrict delete
+                      .OnDelete(DeleteBehavior.Restrict); 
 
                 entity.Property(e => e.Name)
                       .HasMaxLength(256)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.IsDeleted)
-                      .IsRequired()                  // NOT NULL
-                      .HasDefaultValue(false);       // Default false
+                      .IsRequired()                  
+                      .HasDefaultValue(false);       
 
                 entity.Property(e => e.CreatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
             });
             modelBuilder.Entity<Manual_ImportData>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
-                      .IsRequired()                  // NOT NULL
-                      .ValueGeneratedOnAdd();        // Identity
+                      .IsRequired()              
+                      .ValueGeneratedOnAdd();    
 
                 entity.Property(e => e.FileName)
                       .HasMaxLength(256)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.Date)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();               
 
                 entity.Property(e => e.TotalRecords)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();            
 
                 entity.Property(e => e.SuccessfullRecords)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();           
 
                 entity.Property(e => e.FailureRecords)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();                
 
                 entity.Property(e => e.Name)
                       .HasMaxLength(256)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.IsDeleted)
-                      .IsRequired()                  // NOT NULL
-                      .HasDefaultValue(false);       // Default false
+                      .IsRequired()                 
+                      .HasDefaultValue(false);      
 
                 entity.Property(e => e.CreatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
             });
             modelBuilder.Entity<Manual_ImportDataDetails>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
-                      .IsRequired()                  // NOT NULL
-                      .ValueGeneratedOnAdd();        // Identity
+                      .IsRequired()          
+                      .ValueGeneratedOnAdd();  
 
                 entity.Property(e => e.Data)
                       .HasMaxLength(500)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.Date)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();                 
 
                 entity.Property(e => e.Error)
-                      .IsRequired();                 // NOT NULL (bool)
+                      .IsRequired();                 
 
                 entity.Property(e => e.ErrorDescription)
                       .HasMaxLength(500)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.Manual_ImportDataId)
                       .IsRequired();                 // NOT NULL
 
                 entity.HasOne(e => e.Manual_ImportData)
-                      .WithMany()                     // 1 Manual_ImportData has many Manual_ImportDataDetails
+                      .WithMany()                     
                       .HasForeignKey(e => e.Manual_ImportDataId)
-                      .OnDelete(DeleteBehavior.Restrict); // Restrict delete
+                      .OnDelete(DeleteBehavior.Restrict); 
 
                 entity.Property(e => e.IsDeleted)
-                      .IsRequired()                  // NOT NULL
-                      .HasDefaultValue(false);       // Default false
+                      .IsRequired()                 
+                      .HasDefaultValue(false);    
 
                 entity.Property(e => e.CreatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
             });
             modelBuilder.Entity<Group>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
-                      .IsRequired()                  // NOT NULL
-                      .ValueGeneratedOnAdd();        // Identity
+                      .IsRequired()                  
+                      .ValueGeneratedOnAdd();        
 
                 entity.Property(e => e.Description)
                       .HasMaxLength(500)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.Name)
                       .HasMaxLength(256)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.IsDeleted)
-                      .IsRequired()                  // NOT NULL
-                      .HasDefaultValue(false);       // Default false
+                      .IsRequired()              
+                      .HasDefaultValue(false);       
 
                 entity.Property(e => e.CreatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
             });
             modelBuilder.Entity<Permission>(entity =>
             {
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
-                      .IsRequired()                  // NOT NULL
-                      .ValueGeneratedOnAdd();        // Identity
-
-                entity.Property(e => e.GroupId)
-                      .IsRequired();                 // NOT NULL FK
-
-                entity.HasOne(e => e.Group)
-                      .WithMany()                    // 1 Group can have many Permissions
-                      .HasForeignKey(e => e.GroupId)
-                      .OnDelete(DeleteBehavior.Restrict);
+                      .IsRequired()                
+                      .ValueGeneratedOnAdd();       
 
                 entity.Property(e => e.Name)
                       .HasMaxLength(256)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.Description)
                       .HasMaxLength(500)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.IsDeleted)
-                      .IsRequired()                  // NOT NULL
-                      .HasDefaultValue(false);       // Default false
+                      .IsRequired()                  
+                      .HasDefaultValue(false);       
 
                 entity.Property(e => e.CreatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);            
 
                 entity.Property(e => e.UpdatedBy)
                       .HasMaxLength(128)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);         
 
                 entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);        
 
                 entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            // NULL allowed
+                      .IsRequired(false);           
             });
             modelBuilder.Entity<SecurityGroup_PermissionRecord>(entity =>
             {
-                entity.HasKey(e => new { e.GroupId, e.PermissionId }); // Composite PK
+                entity.HasKey(e => new { e.GroupId, e.PermissionId }); 
 
                 entity.Property(e => e.GroupId).IsRequired();
                 entity.Property(e => e.PermissionId).IsRequired();
@@ -662,39 +649,6 @@ namespace TekCandor.Repository.Entities.Data
                       .HasForeignKey(e => e.PermissionId)
                       .OnDelete(DeleteBehavior.Restrict);
             });
-            modelBuilder.Entity<SecurityGroup_User>(entity =>
-            {
-                // Composite Primary Key
-                entity.HasKey(e => new { e.GroupId, e.UserId });
-
-                entity.Property(e => e.GroupId).IsRequired();  // NOT NULL
-                entity.Property(e => e.UserId).IsRequired();   // NOT NULL
-
-              
-
-                // Foreign key to Group
-                entity.HasOne<Group>()
-                      .WithMany()  // 1 Group can have many SecurityGroup_User entries
-                      .HasForeignKey(e => e.GroupId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                // Foreign key to User
-                entity.HasOne<User>()
-                      .WithMany()  // 1 User can have many SecurityGroup_User entries
-                      .HasForeignKey(e => e.UserId)
-                      .OnDelete(DeleteBehavior.Restrict);
-            });
-
-
-
-
-
-
-
-
-
-
-
 
         }
 

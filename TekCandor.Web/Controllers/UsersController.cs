@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
+using TekCandor.Web.Authorization;
 using TekCandor.Web.Models;
 
 namespace TekCandor.Web.Controllers
@@ -18,6 +19,7 @@ namespace TekCandor.Web.Controllers
         {
             _service = service;
         }
+        [HasPermission("Security.Users")]
         [HttpGet]
         public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10)
         {
@@ -75,7 +77,6 @@ namespace TekCandor.Web.Controllers
         public class CreateUserRequest
         {
             public UserDTO User { get; set; } = new UserDTO();
-            //public string Password { get; set; } = string.Empty;
         }
 
 

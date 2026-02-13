@@ -131,11 +131,10 @@ namespace TekCandor.Web.Controllers
             };
 
             // Add permissions as claims
-            //foreach (var permission in userPermissions)
-            //{
-            //    claims.Add(new Claim("permission", permission));
-            //}
-
+            foreach (var permission in user.Permissions)
+            {
+                claims.Add(new Claim("Permission", permission));
+            }
             var hours = _config.GetValue<int>("Jwt:ExpiresHours", 8);
             var expires = DateTime.UtcNow.AddHours(hours);
 
