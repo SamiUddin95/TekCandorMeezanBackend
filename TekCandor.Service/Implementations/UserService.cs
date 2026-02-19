@@ -25,7 +25,7 @@ namespace TekCandor.Service.Implementations
         }
 
 
-        public async Task<PagedResult<UserDTO>> GetAll(int pageNumber, int pageSize)
+        public async Task<UserPagedResult<UserDTO>> GetAll(int pageNumber, int pageSize)
         {
             if (pageNumber < 1) pageNumber = 1;
             if (pageSize < 1) pageSize = 10;
@@ -76,7 +76,7 @@ namespace TekCandor.Service.Implementations
 
             });
 
-            return new PagedResult<UserDTO>
+            return new UserPagedResult<UserDTO>
             {
                 Items = dtos,
                 TotalCount = totalUsers,
@@ -86,7 +86,6 @@ namespace TekCandor.Service.Implementations
                 TotalHubUser = totalHubUser,
                 TotalActiveUser = totalActiveUsers,
                 TotalBranchUser = totalBranchUser
-
             };
         }
 

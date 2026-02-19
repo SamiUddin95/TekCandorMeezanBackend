@@ -44,8 +44,14 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 
+// Cheque Deposit Import
+builder.Services.AddScoped<IImportDataRepository, ImportDataRepository>();
+builder.Services.AddScoped<IManualImportDataRepository, ManualImportDataRepository>();
+builder.Services.AddScoped<IChequeDepositRepository, ChequeDepositRepository>();
+builder.Services.AddScoped<IChequeDepositImportService, ChequeDepositImportService>();
 
-
+builder.Services.AddScoped<IImportHistoryRepository, ImportHistoryRepository>();
+builder.Services.AddScoped<IImportHistoryService, ImportHistoryService>();
 // Swagger & Controllers
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

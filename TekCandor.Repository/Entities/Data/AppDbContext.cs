@@ -34,7 +34,7 @@ namespace TekCandor.Repository.Entities.Data
 
         public DbSet<SecurityGroup_PermissionRecord> SecurityGroup_PermissionRecord { get; set; }
 
-
+        public DbSet<ChequedepositInfo> chequedepositInformation { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -536,7 +536,7 @@ namespace TekCandor.Repository.Entities.Data
                       .IsRequired(false);            
 
                 entity.Property(e => e.Manual_ImportDataId)
-                      .IsRequired();                 // NOT NULL
+                      .IsRequired();                 
 
                 entity.HasOne(e => e.Manual_ImportData)
                       .WithMany()                     

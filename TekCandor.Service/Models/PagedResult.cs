@@ -11,6 +11,10 @@ namespace TekCandor.Service.Models
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
         public int TotalPages => PageSize > 0 ? (TotalCount + PageSize - 1) / PageSize : 0;
+    }
+
+    public class UserPagedResult<T> : PagedResult<T>
+    {
         public int TotalUsers { get; set; }
         public int TotalHubUser { get; set; }
         public int TotalBranchUser { get; set; }

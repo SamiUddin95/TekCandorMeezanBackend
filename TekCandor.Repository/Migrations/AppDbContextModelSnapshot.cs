@@ -168,6 +168,259 @@ namespace TekCandor.Repository.Migrations
                     b.ToTable("Branch");
                 });
 
+            modelBuilder.Entity("TekCandor.Repository.Entities.ChequedepositInfo", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<long>("Id"));
+
+                    b.Property<string>("AboveMaximumCompressedImageSize")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountBalance")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AccountTitle")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("ApproverId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("AuthorizerId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal?>("AverageChequeAmount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("BelowMinimumCompressedImageSize")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchRemarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("BranchStaffId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("Callback")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("CallbackEmailSend")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Callbacksend")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CaptureAtNIFT_Branch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CarbonStrip")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ChequeNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CityCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CoreFTId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Currency")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("CycleCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("Date")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("DeferredCheque")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DocumentSkew")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("Error")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("ErrorInFields")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("Export")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("FoldedOrTornDocumentEdges")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FoldedorTornDocumentCorners")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FramingError")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FraudChequeHistory")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FrontRearDimensionMismatch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HorizontalStreaks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("HubCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IBAN")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IQATag")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageTooDark")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageToolight")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("Importtime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("InstrumentDuplicate")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InstrumentNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MICRPresent")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("MobileNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldAccount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OldChequeNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OutOfFocus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("OversizeImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Piggyback")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostRestriction")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PostingTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("QRCodeMatch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReceiverBankCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ReceiverBranchCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Returnreasone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderBankCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SenderBranchCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("SequenceNumber")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("StandardCheque")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TotalChequesCount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TotalChequesReturnCount")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrProcORRecTime")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrRecTimeBranch")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TrRecTimeCCU")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransactionCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UV")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UndersizeImage")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("chqRecSMSSend")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("chqRetSMSSend")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("imgB")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("imgF")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("imgU")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("isEditing")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("manual_imp")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("poStatus")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("serialNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("serviceRun")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("stan")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("chequedepositInformation");
+                });
+
             modelBuilder.Entity("TekCandor.Repository.Entities.ClearingStatuses", b =>
                 {
                     b.Property<long>("Id")
