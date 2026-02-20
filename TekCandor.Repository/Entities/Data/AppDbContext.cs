@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TekCandor.Repository.Models;
 
 namespace TekCandor.Repository.Entities.Data
 {
@@ -36,6 +37,7 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Setting> Setting { get; set; }
 
         public DbSet<ChequedepositInfo> chequedepositInformation { get; set; }
+        public DbSet<ChequeDepositListResponseDTO> ChequeDepositListResults { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -687,6 +689,7 @@ namespace TekCandor.Repository.Entities.Data
 
             });
 
+            modelBuilder.Entity<ChequeDepositListResponseDTO>().HasNoKey();
         }
 
     }

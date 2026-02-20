@@ -51,6 +51,9 @@ builder.Services.AddScoped<IChequeDepositImportService, ChequeDepositImportServi
 builder.Services.AddScoped<IImportDataRepository, ImportDataRepository>();
 builder.Services.AddScoped<IManualImportDataRepository, ManualImportDataRepository>();
 builder.Services.AddScoped<IChequeDepositRepository, ChequeDepositRepository>();
+builder.Services.AddScoped<IChequeDepositRepository, ChequeDepositRepository>();
+builder.Services.AddScoped<IChequeDepositService, ChequeDepositService>();
+builder.Services.AddScoped<IUserContextService, UserContextService>(); 
 // Swagger & Controllers
 builder.Services.AddControllers().AddJsonOptions(options =>
 {

@@ -3,9 +3,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using TekCandor.Repository.Entities.Data;
+using TekCandor.Repository.Models;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
 using TekCandor.Web.Models;
@@ -17,18 +19,21 @@ namespace TekCandor.Web.Controllers
     public class ChequeDepositController : ControllerBase
     {
         private readonly IChequeDepositImportService _importService;
+        private readonly IChequeDepositService _chequeDepositService;
         private readonly IImportHistoryService _importHistoryService;
         private readonly IConfiguration _configuration;
         private readonly ILogger<ChequeDepositController> _logger;
         private readonly AppDbContext _context;
         public ChequeDepositController(
             IChequeDepositImportService importService,
+            IChequeDepositService chequeDepositService,
             IImportHistoryService importHistoryService,
             IConfiguration configuration,
             ILogger<ChequeDepositController> logger,
             AppDbContext context)
         {
             _importService = importService;
+            _chequeDepositService = chequeDepositService;
             _importHistoryService = importHistoryService;
             _configuration = configuration;
             _logger = logger;
@@ -203,6 +208,28 @@ namespace TekCandor.Web.Controllers
             {
                 return StatusCode(500, ex.Message);
             }
+        }
+
+        //List
+        [HttpGet("list")]
+        [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> List(
+           [FromQuery] ChequeDepositListRequestDTO request,
+           CancellationToken cancellationToken)
+        {
+            if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
+                return BadRequest("Page must be >= 1 and PageSize must be between 1 and 500.");
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var result = await _chequeDepositService.GetChequeDepositListAsync(
+                request, userId, cancellationToken);
+
+            return Ok(result);
         }
     }
 }
