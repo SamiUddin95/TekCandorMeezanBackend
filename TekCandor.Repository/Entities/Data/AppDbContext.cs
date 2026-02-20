@@ -33,6 +33,7 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Manual_ImportDataDetails> Manual_ImportDataDetails { get; set; }
 
         public DbSet<SecurityGroup_PermissionRecord> SecurityGroup_PermissionRecord { get; set; }
+        public DbSet<Setting> Setting { get; set; }
 
 
 
@@ -648,6 +649,42 @@ namespace TekCandor.Repository.Entities.Data
                       .WithMany()
                       .HasForeignKey(e => e.PermissionId)
                       .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Setting>(entity =>
+            {
+                entity.HasKey(u => u.Id);
+
+                entity.Property(u => u.Id)
+                      .ValueGeneratedOnAdd();
+
+                entity.Property(u => u.Value)
+                      .HasMaxLength(2048)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.Name)
+                      .HasMaxLength(256)
+                      .IsUnicode(false);
+
+                entity.Property(e => e.IsDeleted)
+                      .IsRequired()
+                      .HasDefaultValue(false);
+
+                entity.Property(u => u.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.CreatedOn)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(u => u.UpdatedOn)
+                      .IsRequired(false);
+
+
             });
 
         }

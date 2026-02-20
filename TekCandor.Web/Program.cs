@@ -44,6 +44,9 @@ builder.Services.AddScoped<IGroupService, GroupService>();
 builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
 builder.Services.AddScoped<IPermissionService, PermissionService>();
 
+builder.Services.AddScoped<ISettingRepository, SettingRepository>();
+builder.Services.AddScoped<ISettingService, SettingService>();
+
 
 
 // Swagger & Controllers
