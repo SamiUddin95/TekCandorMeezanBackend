@@ -36,6 +36,10 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Setting> Setting { get; set; }
 
         public DbSet<ChequedepositInfo> chequedepositInformation { get; set; }
+        public DbSet<Bank> Bank { get; set; }
+        public DbSet<Currency> Currency { get; set; }
+        public DbSet<Instruments> Instruments { get; set; }
+        public DbSet<PostingRestriction> PostingRestriction { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -686,6 +690,194 @@ namespace TekCandor.Repository.Entities.Data
 
 
             });
+            modelBuilder.Entity<Bank>(entity =>
+            {
+                entity.HasKey(b => b.Id);
+
+                entity.Property(b => b.Id)
+                      .ValueGeneratedOnAdd();   
+
+                entity.Property(b => b.Code)
+                      .HasMaxLength(256)
+                      .IsUnicode(true);   
+
+                entity.Property(b => b.Name)
+                      .HasMaxLength(256)
+                      .IsUnicode(true);   
+
+                entity.Property(b => b.Version)
+                      .IsRequired();
+
+                entity.Property(b => b.IsNew)
+                      .HasDefaultValue(false);
+
+                entity.Property(b => b.IsDeleted)
+                      .HasDefaultValue(false);
+
+                entity.Property(b => b.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(b => b.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(b => b.CreatedOn)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(b => b.UpdatedOn)
+                      .IsRequired(false);
+            });
+            modelBuilder.Entity<Currency>(entity =>
+            {
+                entity.HasKey(c => c.Id);
+
+                entity.Property(c => c.Id)
+                      .ValueGeneratedOnAdd();   
+
+                entity.Property(c => c.CurrencyCode)
+                      .HasMaxLength(64)
+                      .IsUnicode(true);   
+
+                entity.Property(c => c.Rate)
+                      .HasColumnType("decimal(19,4)")
+                      .IsRequired();
+
+                entity.Property(c => c.DisplayLocale)
+                      .HasMaxLength(64)
+                      .IsUnicode(true);
+
+                entity.Property(c => c.CustomFormatting)
+                      .HasMaxLength(64)
+                      .IsUnicode(true);
+
+                entity.Property(c => c.Description)
+                      .HasMaxLength(128)
+                      .IsUnicode(true);
+
+                entity.Property(c => c.Name)
+                      .HasMaxLength(256)
+                      .IsUnicode(true);
+
+                entity.Property(c => c.Version)
+                      .IsRequired();
+
+                entity.Property(c => c.DisplayOrder)
+                      .IsRequired();
+
+                entity.Property(c => c.Published)
+                      .HasDefaultValue(false);
+
+                entity.Property(c => c.IsNew)
+                      .HasDefaultValue(false);
+
+                entity.Property(c => c.IsDeleted)
+                      .HasDefaultValue(false);
+
+                entity.Property(c => c.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(c => c.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(c => c.CreatedOn)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(c => c.UpdatedOn)
+                      .IsRequired(false);
+
+            });
+            modelBuilder.Entity<Instruments>(entity =>
+            {
+                entity.HasKey(i => i.Id);
+
+                entity.Property(i => i.Id)
+                      .ValueGeneratedOnAdd();   
+
+                entity.Property(i => i.Code)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);   
+
+                entity.Property(i => i.Name)
+                      .HasMaxLength(256)
+                      .IsUnicode(true);   
+
+                entity.Property(i => i.Version)
+                      .IsRequired();
+
+                entity.Property(i => i.IsNew)
+                      .HasDefaultValue(false);
+
+                entity.Property(i => i.IsDeleted)
+                      .HasDefaultValue(false);
+
+                entity.Property(i => i.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(i => i.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(i => i.CreatedOn)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(i => i.UpdatedOn)
+                      .IsRequired(false);
+
+            });
+            modelBuilder.Entity<PostingRestriction>(entity =>
+            {
+                entity.HasKey(p => p.Id);
+
+                entity.Property(p => p.Id)
+                      .ValueGeneratedOnAdd();   
+
+                entity.Property(p => p.Description)
+                      .HasMaxLength(8000)
+                      .IsUnicode(false);   
+
+                entity.Property(p => p.Code)
+                      .HasMaxLength(8000)
+                      .IsUnicode(false);
+
+                entity.Property(p => p.RestrictionType)
+                      .HasMaxLength(8000)
+                      .IsUnicode(false);
+
+                entity.Property(p => p.Name)
+                      .HasMaxLength(256)
+                      .IsUnicode(true);   
+
+                entity.Property(p => p.Version)
+                      .IsRequired();
+
+                entity.Property(p => p.IsNew)
+                      .HasDefaultValue(false);
+
+                entity.Property(p => p.IsDeleted)
+                      .HasDefaultValue(false);
+
+                entity.Property(p => p.CreatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(p => p.UpdatedBy)
+                      .HasMaxLength(128)
+                      .IsUnicode(false);
+
+                entity.Property(p => p.CreatedOn)
+                      .HasDefaultValueSql("GETUTCDATE()");
+
+                entity.Property(p => p.UpdatedOn)
+                      .IsRequired(false);
+
+            });
+
+
+
 
         }
 
