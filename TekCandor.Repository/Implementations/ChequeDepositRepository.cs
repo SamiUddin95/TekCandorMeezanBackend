@@ -155,7 +155,7 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountStatus,
                     Currency.Name                      AS Currency,
                     Hub.Name + '-' + Hub.Code          AS HubCode,
-                    Cycle.Name                         AS CycleCode,
+                    Cycles.Name                         AS CycleCode,
                     Instruments.Name                   AS InstrumentNo,
                     ChequeDepositInformation.BranchRemarks,
                     ChequeDepositInformation.Error,
@@ -179,7 +179,7 @@ namespace TekCandor.Repository.Implementations
                 """;
 
             var countSql = $"""
-                SELECT COUNT(1)
+                SELECT COUNT(1) AS Value
                 FROM ChequeDepositInformation WITH (NOLOCK)
                 INNER JOIN Cycles          ON Cycles.Code          = ChequeDepositInformation.CycleCode
                 INNER JOIN Instruments    ON Instruments.Code     = ChequeDepositInformation.InstrumentNo
@@ -201,8 +201,8 @@ namespace TekCandor.Repository.Implementations
                 .Select(p => new SqlParameter(p.ParameterName, p.Value))
                 .ToArray();
 
-            var data = await _context.ChequeDepositListResults
-                .FromSqlRaw(dataSql, sqlParams.ToArray<object>())
+            var data = await _context.Database
+                .SqlQueryRaw<ChequeDepositListResponseDTO>(dataSql, sqlParams.ToArray<object>())
                 .ToListAsync(cancellationToken);
 
             var totalCount = await _context.Database

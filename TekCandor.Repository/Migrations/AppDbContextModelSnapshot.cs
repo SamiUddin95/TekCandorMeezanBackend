@@ -356,6 +356,9 @@ namespace TekCandor.Repository.Migrations
                     b.Property<string>("InstrumentNo")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MICRPresent")
                         .HasColumnType("nvarchar(max)");
 

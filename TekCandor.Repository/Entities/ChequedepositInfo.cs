@@ -122,7 +122,7 @@ namespace TekCandor.Repository.Entities
         public string? Currency { get; set; }
         public string? MobileNo { get; set; }
         public System.DateTime? Importtime { get; set; }
-
         public bool? manual_imp { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

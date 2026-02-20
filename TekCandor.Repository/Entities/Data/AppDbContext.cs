@@ -42,8 +42,6 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Currency> Currency { get; set; }
         public DbSet<Instruments> Instruments { get; set; }
         public DbSet<PostingRestriction> PostingRestriction { get; set; }
-        public DbSet<ChequeDepositListResponseDTO> ChequeDepositListResults { get; set; }
-
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cycle>(entity =>
