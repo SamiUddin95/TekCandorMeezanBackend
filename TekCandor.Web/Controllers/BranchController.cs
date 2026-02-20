@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
+using TekCandor.Web.Authorization;
 using TekCandor.Web.Models;
 
 namespace TekCandor.Web.Controllers

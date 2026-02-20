@@ -89,6 +89,12 @@ namespace TekCandor.Service.Implementations
                 var files = Directory.GetFiles(folderPath);
                 var random = new Random();
 
+                if (files.Length == 0)
+                {
+                    skippedFiles = ["File not Found"];
+                    return skippedFiles;
+                }
+
                 foreach (var filePath in files)
                 {
                     var fileInfo = new FileInfo(filePath);
@@ -288,6 +294,12 @@ namespace TekCandor.Service.Implementations
                 const int batchSize = 1000;
                 var files = Directory.GetFiles(folderPath);
                 var random = new Random();
+
+                if (files.Length == 0)
+                {
+                    skippedFiles = ["File not Found"];
+                    return skippedFiles;
+                }
 
                 foreach (var filePath in files)
                 {
