@@ -7,7 +7,8 @@ namespace TekCandor.Service.Interfaces
 {
     public interface IUserService
     {
-        Task<PagedResult<UserDTO>> GetAll(int pageNumber, int pageSize); UserDTO? GetById(long id);
+        Task<UserPagedResult<UserDTO>> GetAll(int pageNumber, int pageSize);
+        UserDTO? GetById(long id);
         UserDTO Create(UserDTO user);
         UserDTO? Update(UserDTO user);
         bool SoftDelete(long id);
