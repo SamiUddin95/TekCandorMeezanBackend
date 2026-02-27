@@ -8,6 +8,8 @@ namespace TekCandor.Repository.Entities
     public class Hub
     {
         public long Id { get; set; }
+        public int Version { get; set; }
+        public bool IsNew { get; set; }
         public bool IsDeleted { get; set; }
         [MaxLength(128)]
         public string? Code { get; set; }

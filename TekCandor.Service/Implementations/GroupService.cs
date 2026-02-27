@@ -71,31 +71,44 @@ namespace TekCandor.Service.Implementations
 
         public async Task<GroupDTO> CreateGroupAsync(GroupDTO group)
         {
-            var entity = new Group
+            try
             {
-                Name = group.Name,
-                Description = group.Description,
-                IsDeleted = false,
-                CreatedBy = group.CreatedBy,
-                UpdatedBy = null,
-                CreatedOn = DateTime.Now,
-                UpdatedOn = null
-            };
+                var entity = new Group
+                {
+                    Name = group.Name,
+                    Description = group.Description,
+                    IsDeleted = false,
+                    CreatedBy = group.CreatedBy,
+                    UpdatedBy = null,
+                    CreatedOn = DateTime.Now,
+                    UpdatedOn = null,
+                    Version = 1,
+                    IsNew = false
+                };
 
-            await _repository.AddAsync(entity);
-            await _repository.SaveChangesAsync();
+                await _repository.AddAsync(entity);
+                await _repository.SaveChangesAsync();
 
-            return new GroupDTO
+                return new GroupDTO
+                {
+                    Id = entity.Id,
+                    Name = entity.Name,
+                    Description = entity.Description,
+                    IsDeleted = entity.IsDeleted,
+                    CreatedBy = entity.CreatedBy,
+                    UpdatedBy = entity.UpdatedBy,
+                    CreatedOn = entity.CreatedOn,
+                    UpdatedOn = entity.UpdatedOn,
+                    Version = entity.Version,
+                    IsNew = entity.IsNew
+                };
+            }
+            catch (Exception ex)
             {
-                Id = entity.Id,
-                Name = entity.Name,
-                Description = entity.Description,
-                IsDeleted = entity.IsDeleted,
-                CreatedBy = entity.CreatedBy,
-                UpdatedBy = entity.UpdatedBy,
-                CreatedOn = entity.CreatedOn,
-                UpdatedOn = entity.UpdatedOn
-            };
+
+                throw;
+            }
+            
         }
 
         public async Task<GroupDTO?> UpdateAsync(GroupDTO group)

@@ -70,8 +70,9 @@ namespace TekCandor.Service.Implementations
                 Id = cycle.Id,
                 Code = cycle.Code,
                 Name = cycle.Name,
+                Description = cycle.Description,
                 IsDeleted = false,
-
+                
                 CreatedBy = cycle.CreatedBy,
                 CreatedOn = DateTime.Now,
 

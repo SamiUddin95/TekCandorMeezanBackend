@@ -2,3 +2,6 @@
 
 dotnet ef database update -p TekCandor.Repository -s TekCandor.Web
 
+
+
+ CREATE TABLE RevokedToken (Id bigint IDENTITY(1,1) PRIMARY KEY, Jti nvarchar(256) NOT NULL, RevokedAt datetime2 NOT NULL, ExpiresAt datetime2 NOT NULL);

@@ -9,7 +9,7 @@ namespace TekCandor.Service.Models
         public long Id { get; set; }
         public string? Code { get; set; }
         public string? AlphaReturnCodes { get; set; }
-        public string NumericReturnCodes { get; set; }
+        public int NumericReturnCodes { get; set; }
         public string? DescriptionWithReturnCodes { get; set; }
         public bool DefaultCallBack { get; set; }
         public string? Name { get; set; }

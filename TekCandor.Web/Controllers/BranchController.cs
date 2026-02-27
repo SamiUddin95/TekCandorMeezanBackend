@@ -18,7 +18,7 @@ namespace TekCandor.Web.Controllers
         {
             _service = service;
         }
-        [HasPermission("basicSetUp.Branch")]
+
         [HttpGet]
         public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10, string? name = null)
         {

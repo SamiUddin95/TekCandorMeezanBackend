@@ -97,14 +97,16 @@ namespace TekCandor.Repository.Implementations
                     Email = u.Email,
                     PhoneNo = u.PhoneNo,
                     LoginName = u.LoginName,
-                    IsDeleted= u.IsDeleted,
+                    BranchorHub = u.BranchorHub,
+                    HubIds = u.HubIds,
+                    BranchIds = u.BranchIds,
+                    IsDeleted = u.IsDeleted,
                     IsActive = u.IsActive,
                     CreatedBy = u.CreatedBy,
                     CreatedOn = u.CreatedOn,
                     UpdatedBy = u.UpdatedBy,
                     UpdatedOn = u.UpdatedOn,
                     PasswordHash = u.PasswordHash,
-
                 }).FirstOrDefaultAsync();
         }
 
@@ -126,18 +128,13 @@ namespace TekCandor.Repository.Implementations
 
         public async Task<List<string>> GetUserPermissionsAsync(long userId)
         {
-            var groupId = await _context.Users
-               .Where(x => x.Id == userId)
-               .Select(x => x.GroupId)
-               .FirstOrDefaultAsync();
-
             return await (
-                from u in _context.Users
+                from sgu in _context.SecurityGroup_User
                 join gp in _context.SecurityGroup_PermissionRecord
-                    on u.GroupId equals gp.GroupId
+                    on sgu.SecurityGroupId equals gp.GroupId
                 join p in _context.Permission
                     on gp.PermissionId equals p.Id
-                where u.Id == userId && !p.IsDeleted
+                where sgu.UserId == userId && !p.IsDeleted
                 select p.Name
             )
             .Distinct()

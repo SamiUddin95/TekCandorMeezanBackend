@@ -19,7 +19,7 @@ namespace TekCandor.Web.Controllers
         {
             _service = service;
         }
-        [HasPermission("Security.Users")]
+        //[HasPermission("Security.Users")]
         [HttpGet]
         public async Task<IActionResult> GetAll(int pageNumber = 1, int pageSize = 10)
         {

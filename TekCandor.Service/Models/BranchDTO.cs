@@ -22,5 +22,6 @@ namespace TekCandor.Service.Models
         public string? Email1 { get; set; }
         public string? Email2 { get; set; }
         public string? Email3 { get; set; }
+
     }
 }

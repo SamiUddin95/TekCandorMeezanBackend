@@ -34,6 +34,7 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Manual_ImportDataDetails> Manual_ImportDataDetails { get; set; }
 
         public DbSet<SecurityGroup_PermissionRecord> SecurityGroup_PermissionRecord { get; set; }
+        public DbSet<SecurityGroup_User> SecurityGroup_User { get; set; }
         public DbSet<Setting> Setting { get; set; }
 
         public DbSet<ChequedepositInfo> chequedepositInformation { get; set; }
@@ -46,10 +47,17 @@ namespace TekCandor.Repository.Entities.Data
         {
             modelBuilder.Entity<Cycle>(entity =>
             {
+                entity.ToTable("Cycle");
                 entity.HasKey(c => c.Id);
                 entity.Property(c => c.Code).IsRequired().HasMaxLength(10);
                 entity.Property(c => c.Name).IsRequired().HasMaxLength(100);
-                entity.Property(c => c.CreatedOn).HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(c => c.Description).HasMaxLength(100);
+                entity.Property(c => c.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(c => c.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(c => c.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(c => c.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
+                entity.Property(c => c.Version).HasDefaultValue(1);
+                entity.Property(c => c.IsNew).HasDefaultValue(false);
             });
 
             modelBuilder.Entity<Hub>(entity =>
@@ -67,12 +75,16 @@ namespace TekCandor.Repository.Entities.Data
                       .HasMaxLength(256)
                       .IsUnicode(false);
 
+                entity.Property(h => h.CreatedBy).HasColumnName("CreatedUser");
                 entity.Property(h => h.CreatedOn)
+                      .HasColumnName("CreatedDateTime")
                       .HasDefaultValueSql("GETUTCDATE()");
-
+                entity.Property(h => h.UpdatedBy).HasColumnName("ModifiedUser");
                 entity.Property(h => h.UpdatedOn)
+                      .HasColumnName("ModifiedDateTime")
                       .IsRequired(false);
-
+                entity.Property(h => h.Version).HasDefaultValue(1);
+                entity.Property(h => h.IsNew).HasDefaultValue(false);
                 entity.Property(h => h.IsDeleted)
                       .HasDefaultValue(false);
 
@@ -112,14 +124,16 @@ namespace TekCandor.Repository.Entities.Data
                       .HasMaxLength(256)
                       .IsUnicode(false);
 
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
                 entity.Property(b => b.CreatedOn)
+                      .HasColumnName("CreatedDateTime")
                       .HasDefaultValueSql("GETUTCDATE()");
-
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
                 entity.Property(b => b.UpdatedOn)
+                      .HasColumnName("ModifiedDateTime")
                       .IsRequired(false);
 
-                entity.Property(b => b.IsDeleted)
-                      .HasDefaultValue(false);                
+                entity.Property(b => b.IsDeleted).HasDefaultValue(false);
 
                 entity.Property(b => b.Email1).HasMaxLength(128).IsUnicode(false);
                 entity.Property(b => b.Email2).HasMaxLength(128).IsUnicode(false);
@@ -147,10 +161,7 @@ namespace TekCandor.Repository.Entities.Data
                       .HasMaxLength(50)
                       .IsUnicode(false);
 
-                entity.Property(r => r.NumericReturnCodes)
-                      .HasMaxLength(50)
-                      .IsUnicode(false)
-                      .IsRequired(); 
+                entity.Property(r => r.NumericReturnCodes).IsRequired(); 
 
                 entity.Property(r => r.DescriptionWithReturnCodes)
                       .HasMaxLength(256)
@@ -162,30 +173,28 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(r => r.DefaultCallBack)
                       .HasDefaultValue(false);
+                entity.Property(r => r.Version).HasDefaultValue(1);
+                entity.Property(r => r.IsNew).HasDefaultValue(false);
 
                 entity.Property(r => r.IsDeleted)
                       .HasDefaultValue(false);
 
-                entity.Property(r => r.CreatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
 
-                entity.Property(r => r.UpdatedOn)
-                      .IsRequired(false);
-
-                entity.Property(r => r.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(r => r.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
             });
             modelBuilder.Entity<User>(entity =>
             {
+                entity.ToTable("User");
                 entity.HasKey(u => u.Id);
 
                 entity.Property(u => u.Id)
                       .ValueGeneratedOnAdd(); 
+
+                entity.Property(u => u.UserGuid)
+                      .HasDefaultValueSql("NEWID()");
 
                 entity.Property(u => u.Name)
                       .HasMaxLength(128)
@@ -196,6 +205,7 @@ namespace TekCandor.Repository.Entities.Data
                       .IsUnicode(false);
 
                 entity.Property(u => u.PasswordHash)
+                      .HasColumnName("LoginPassword")
                       .HasMaxLength(256)
                       .IsUnicode(false);
 
@@ -204,39 +214,43 @@ namespace TekCandor.Repository.Entities.Data
                       .IsUnicode(false);
 
                 entity.Property(u => u.BranchorHub)
+                      .HasColumnName("branchOrHub")
                       .HasMaxLength(50)
                       .IsUnicode(false);
 
-               
+                entity.Property(u => u.HubIds)
+                      .HasColumnName("Hubids")
+                      .HasMaxLength(255)
+                      .IsUnicode(false);
+
+                entity.Property(u => u.BranchIds)
+                      .HasColumnName("BranchIds")
+                      .HasMaxLength(255)
+                      .IsUnicode(false);
 
                 entity.Property(u => u.PhoneNo)
+                      .HasColumnName("Phone")
                       .HasMaxLength(20)
                       .IsUnicode(false);
 
-                entity.Property(u => u.PasswordLastChanged)
-                      .HasMaxLength(50)
-                      .IsUnicode(false);
+                entity.Ignore(u => u.PasswordLastChanged);
+                entity.Ignore(u => u.LastLoginTime);
 
                 entity.Property(u => u.IsActive)
-                      .HasDefaultValue(true);
+                      .HasColumnName("Active");
 
-               
+                entity.Property(r => r.Version).HasDefaultValue(1);
+                entity.Property(r => r.IsNew);
 
-                entity.Property(u => u.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
+                entity.Property(r => r.IsDeleted);
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
 
-                entity.Property(u => u.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(u => u.CreatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
-
-                entity.Property(u => u.UpdatedOn)
-                      .IsRequired(false);
-
-               
+                entity.Ignore(u => u.GroupId);
+                entity.Ignore(u => u.Group);
+                entity.Ignore(u => u.UserLimit);
             });
             modelBuilder.Entity<ApplicationConfig>(entity =>
             {
@@ -316,21 +330,12 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()               
-                      .HasDefaultValue(false);        
+                      .HasDefaultValue(false);
 
-                entity.Property(e => e.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);              
-
-                entity.Property(e => e.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);              
-
-                entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);              
-
-                entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);              
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
             });
             modelBuilder.Entity<HostCallConfig>(entity =>
             {
@@ -358,21 +363,12 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()              
-                      .HasDefaultValue(false);      
+                      .HasDefaultValue(false);
 
-                entity.Property(e => e.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);             
-
-                entity.Property(e => e.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);             
-
-                entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);             
-
-                entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);             
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
             });
             modelBuilder.Entity<ImportData>(entity =>
             {
@@ -404,21 +400,12 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()                 
-                      .HasDefaultValue(false);     
+                      .HasDefaultValue(false);
 
-                entity.Property(e => e.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
             });
             modelBuilder.Entity<ImportDataDetail>(entity =>
             {
@@ -456,21 +443,12 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()                  
-                      .HasDefaultValue(false);       
+                      .HasDefaultValue(false);
 
-                entity.Property(e => e.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
             });
             modelBuilder.Entity<Manual_ImportData>(entity =>
             {
@@ -502,21 +480,12 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()                 
-                      .HasDefaultValue(false);      
+                      .HasDefaultValue(false);
 
-                entity.Property(e => e.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
             });
             modelBuilder.Entity<Manual_ImportDataDetails>(entity =>
             {
@@ -550,24 +519,16 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()                 
-                      .HasDefaultValue(false);    
+                      .HasDefaultValue(false);
 
-                entity.Property(e => e.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
             });
             modelBuilder.Entity<Group>(entity =>
             {
+                entity.ToTable("SecurityGroup");
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
@@ -584,24 +545,17 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()              
-                      .HasDefaultValue(false);       
+                      .HasDefaultValue(false);
 
-                entity.Property(e => e.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);            
+                entity.Property(c => c.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(c => c.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(c => c.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(c => c.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
+                
             });
             modelBuilder.Entity<Permission>(entity =>
             {
+                entity.ToTable("PermissionRecord");
                 entity.HasKey(e => e.Id);
 
                 entity.Property(e => e.Id)
@@ -618,41 +572,33 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()                  
-                      .HasDefaultValue(false);       
+                      .HasDefaultValue(false);
 
-                entity.Property(e => e.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);            
-
-                entity.Property(e => e.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);         
-
-                entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);        
-
-                entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);           
+                entity.Property(c => c.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(c => c.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(c => c.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(c => c.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
             });
             modelBuilder.Entity<SecurityGroup_PermissionRecord>(entity =>
             {
-                entity.HasKey(e => new { e.GroupId, e.PermissionId }); 
+                entity.ToTable("SecurityGroup_PermissionRecord");
+                entity.HasKey(e => new { e.GroupId, e.PermissionId });
 
-                entity.Property(e => e.GroupId).IsRequired();
-                entity.Property(e => e.PermissionId).IsRequired();
+                entity.Property(e => e.GroupId)
+                      .HasColumnName("SecurityGroupId")
+                      .IsRequired();
 
-              
+                entity.Property(e => e.PermissionId)
+                      .HasColumnName("PermissionRecordId")
+                      .IsRequired();
+            });
 
-                // Foreign keys
-                entity.HasOne<Group>()
-                      .WithMany()
-                      .HasForeignKey(e => e.GroupId)
-                      .OnDelete(DeleteBehavior.Restrict);
-
-                entity.HasOne<Permission>()
-                      .WithMany()
-                      .HasForeignKey(e => e.PermissionId)
-                      .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<SecurityGroup_User>(entity =>
+            {
+                entity.ToTable("SecurityGroup_User");
+                entity.HasKey(e => new { e.SecurityGroupId, e.UserId });
+                entity.Property(e => e.SecurityGroupId).IsRequired();
+                entity.Property(e => e.UserId).IsRequired();
             });
 
             modelBuilder.Entity<Setting>(entity =>
@@ -673,21 +619,10 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()
                       .HasDefaultValue(false);
-
-                entity.Property(u => u.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(u => u.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(u => u.CreatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
-
-                entity.Property(u => u.UpdatedOn)
-                      .IsRequired(false);
-
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
 
             });
             modelBuilder.Entity<Bank>(entity =>
@@ -714,19 +649,10 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(b => b.IsDeleted)
                       .HasDefaultValue(false);
 
-                entity.Property(b => b.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(b => b.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(b => b.CreatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
-
-                entity.Property(b => b.UpdatedOn)
-                      .IsRequired(false);
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
             });
             modelBuilder.Entity<Currency>(entity =>
             {
@@ -774,19 +700,10 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(c => c.IsDeleted)
                       .HasDefaultValue(false);
 
-                entity.Property(c => c.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(c => c.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(c => c.CreatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
-
-                entity.Property(c => c.UpdatedOn)
-                      .IsRequired(false);
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
 
             });
             modelBuilder.Entity<Instruments>(entity =>
@@ -813,19 +730,10 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(i => i.IsDeleted)
                       .HasDefaultValue(false);
 
-                entity.Property(i => i.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(i => i.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
-
-                entity.Property(i => i.CreatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
-
-                entity.Property(i => i.UpdatedOn)
-                      .IsRequired(false);
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
 
             });
             modelBuilder.Entity<PostingRestriction>(entity =>
@@ -860,20 +768,26 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(p => p.IsDeleted)
                       .HasDefaultValue(false);
 
-                entity.Property(p => p.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
 
-                entity.Property(p => p.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsUnicode(false);
+            });
 
-                entity.Property(p => p.CreatedOn)
-                      .HasDefaultValueSql("GETUTCDATE()");
+            modelBuilder.Entity<ChequedepositInfo>(entity =>
+            {
+                entity.ToTable("ChequeDepositInformation");
+            });
 
-                entity.Property(p => p.UpdatedOn)
-                      .IsRequired(false);
+            modelBuilder.Entity<RevokedToken>(entity =>
+            {
+                entity.ToTable("RevokedToken");
+            });
 
+            modelBuilder.Entity<AuditLog>(entity =>
+            {
+                entity.ToTable("AuditLog");
             });
 
         }

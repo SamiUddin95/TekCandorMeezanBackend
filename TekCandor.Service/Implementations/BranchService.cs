@@ -74,7 +74,9 @@ namespace TekCandor.Service.Implementations
                 UpdatedOn = null,
                 Email1 = branch.Email1,
                 Email2 = branch.Email2,
-                Email3 = branch.Email3
+                Email3 = branch.Email3,
+                Version = 1,
+                IsNew = false
             };
 
             _repository.Add(entity);

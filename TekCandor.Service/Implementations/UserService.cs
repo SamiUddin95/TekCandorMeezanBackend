@@ -1,14 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Security.Cryptography;
-using System.Security.Cryptography;
-using System.Text;
 using System.Text;
 using TekCandor.Repository.Entities;
 using TekCandor.Repository.Interfaces;
+using TekCandor.Service.Infrastructure;
 using TekCandor.Service.Interfaces;
 using TekCandor.Service.Models;
 
@@ -18,10 +17,12 @@ namespace TekCandor.Service.Implementations
     public class UserService : IUserService
     {
         private readonly IUserRepository _repository;
+        private readonly IConfiguration _config;
 
-        public UserService(IUserRepository repository)
+        public UserService(IUserRepository repository, IConfiguration config)
         {
             _repository = repository;
+            _config = config;
         }
 
 
@@ -41,11 +42,11 @@ namespace TekCandor.Service.Implementations
             int totalActiveUsers = await query.Where(u => u.IsActive == true).CountAsync();
 
             int totalHubUser = await query
-                .Where(u => u.BranchorHub == "Hub")  
+                .Where(u => u.BranchorHub == "HubWise")  
                 .CountAsync();
 
             int totalBranchUser = await query
-                .Where(u => u.BranchorHub == "Branch")  
+                .Where(u => u.BranchorHub == "BranchWise")  
                 .CountAsync();
 
 
@@ -160,11 +161,11 @@ namespace TekCandor.Service.Implementations
 
         private static string HashPassword(string password)
         {
-            using var sha = SHA256.Create();
+            using var sha = SHA1.Create();
             var bytes = sha.ComputeHash(Encoding.UTF8.GetBytes(password));
             var sb = new StringBuilder();
             foreach (var b in bytes)
-                sb.Append(b.ToString("x2"));
+                sb.Append(b.ToString("X2"));
 
             return sb.ToString();
         }
@@ -210,9 +211,24 @@ namespace TekCandor.Service.Implementations
             var auth = await _repository.GetAuthByLoginAsync(loginName);
             if (auth == null) return null;
 
-            var hash = HashPassword(password);
-            if (!string.Equals(auth.Value.PasswordHash, hash, StringComparison.Ordinal))
-                return null;
+            var domain = _config["Ldap:Domain"];
+            var port = _config["Ldap:Port"];
+
+
+            //Un comment before deploy on production
+            //if (!string.IsNullOrWhiteSpace(domain))
+            //{
+            //    var ldap = new LdapManager(domain, Convert.ToInt32(port));
+            //    if (!ldap.Validate(loginName, password))
+            //        return null;
+            //}
+
+            //else
+            //{
+            //    var hash = HashPassword(password);
+            //    if (!string.Equals(auth.Value.PasswordHash, hash, StringComparison.OrdinalIgnoreCase))
+            //        return null;
+            //}
 
             var user = await _repository.GetByIdAsync(auth.Value.Id);
             if (user == null) return null;
@@ -253,6 +269,8 @@ namespace TekCandor.Service.Implementations
                 
                 Name = dto.Name,
                 Email = dto.Email,
+                PasswordFormatId = 1,
+                PasswordFormat = 1,
                 PhoneNo = dto.PhoneNo,
                 LoginName = dto.LoginName,
                 BranchorHub = dto.BranchorHub,
@@ -262,7 +280,13 @@ namespace TekCandor.Service.Implementations
                 IsActive = dto.IsActive,
                 UserLimit = dto.UserLimit,
                 IsDeleted = false,
-
+                IsSystemAccount = true,
+                IsPasswordChangeRequired = false,
+                IsBanned = false,
+                IsActiveDirectoryUser = false,
+                LoggedIn = false,
+                WebApiEnabled = false,
+                IsNew = false,
                 CreatedBy = dto.CreatedBy,
                 CreatedOn = DateTime.Now,
 

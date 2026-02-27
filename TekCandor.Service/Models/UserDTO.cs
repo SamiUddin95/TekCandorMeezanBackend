@@ -23,14 +23,10 @@ namespace TekCandor.Service.Models
 
 
         public string? CreatedBy { get; set; }
-        public DateTime CreatedOn { get; set; }
+        public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public long? UserLimit { get; set; }
-
         public List<string> Permissions { get; set; } = new();
-
-
-
     }
 }

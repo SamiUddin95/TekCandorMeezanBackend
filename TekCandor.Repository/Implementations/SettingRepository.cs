@@ -18,7 +18,7 @@ namespace TekCandor.Repository.Implementations
         public bool UpdateCallbackAmount(string callbackAmount)
         {
             var existing = _context.Setting
-                .FirstOrDefault(s => s.Name == "callbackamount" && !s.IsDeleted);
+                .FirstOrDefault(s => s.Name == "generalsettings.callbackamount" && !s.IsDeleted);
 
             if (existing == null)
                 return false;
