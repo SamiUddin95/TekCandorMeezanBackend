@@ -38,6 +38,7 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Setting> Setting { get; set; }
 
         public DbSet<ChequedepositInfo> chequedepositInformation { get; set; }
+        public DbSet<Signature> Signatures { get; set; }
 
         public DbSet<Bank> Bank { get; set; }
         public DbSet<Currency> Currency { get; set; }
@@ -195,6 +196,17 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(u => u.UserGuid)
                       .HasDefaultValueSql("NEWID()");
+
+                entity.Property(u => u.PasswordFormatId).HasDefaultValue(1);
+                entity.Property(u => u.PasswordFormat).HasDefaultValue(1);
+                entity.Property(u => u.IsSystemAccount).HasDefaultValue(false);
+                entity.Property(u => u.IsPasswordChangeRequired).HasDefaultValue(false);
+                entity.Property(u => u.IsBanned).HasDefaultValue(false);
+                entity.Property(u => u.IsActiveDirectoryUser).HasDefaultValue(false);
+                entity.Property(u => u.LoggedIn).HasDefaultValue(false);
+                entity.Property(u => u.WebApiEnabled).HasDefaultValue(false);
+                entity.Property(u => u.Version).HasDefaultValue(0);
+                entity.Property(u => u.IsNew).HasDefaultValue(false);
 
                 entity.Property(u => u.Name)
                       .HasMaxLength(128)
@@ -788,6 +800,14 @@ namespace TekCandor.Repository.Entities.Data
             modelBuilder.Entity<AuditLog>(entity =>
             {
                 entity.ToTable("AuditLog");
+            });
+
+            modelBuilder.Entity<Signature>(entity =>
+            {
+                entity.ToTable("Signature");
+                entity.HasKey(s => s.Id);
+                entity.Property(s => s.AccountNumber).HasMaxLength(50);
+                entity.Property(s => s.IsDeleted).HasDefaultValue(false);
             });
 
         }

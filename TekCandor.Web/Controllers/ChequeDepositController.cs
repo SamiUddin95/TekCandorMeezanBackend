@@ -40,6 +40,7 @@ namespace TekCandor.Web.Controllers
             _context = context;
         }
 
+        #region Import Files
         [HttpPost("import")]
         public async Task<IActionResult> ImportData()
         {
@@ -210,7 +211,11 @@ namespace TekCandor.Web.Controllers
             }
         }
 
-        //List
+
+        #endregion
+
+        #region Cheque Deposit List
+
         [HttpGet("list")]
         [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -231,5 +236,41 @@ namespace TekCandor.Web.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("callback")]
+        [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> Callback(
+           [FromQuery] ChequeDepositListRequestDTO request,
+           CancellationToken cancellationToken)
+        {
+            if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
+                return BadRequest("Page must be >= 1 and PageSize must be between 1 and 500.");
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var result = await _chequeDepositService.GetChequeDepositListAsync(
+                request, userId, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("{id:long}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Get(long id)
+        {
+            var result = await _chequeDepositService.GetByIdAsync(id);
+
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
     }
-}
+
+        #endregion
+    }

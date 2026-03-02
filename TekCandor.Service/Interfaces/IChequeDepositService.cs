@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TekCandor.Repository.Entities;
 using TekCandor.Repository.Models;
 using TekCandor.Service.Models;
 
@@ -12,5 +13,12 @@ namespace TekCandor.Service.Interfaces
             ChequeDepositListRequestDTO request,
             long userId,
             CancellationToken cancellationToken = default);
+
+        Task<PagedResult<ChequeDepositListResponseDTO>> GetCallbackListAsync(
+            ChequeDepositListRequestDTO request,
+            long userId,
+            CancellationToken cancellationToken = default);
+
+        Task<ChequeDepositResponse?> GetByIdAsync(long id);
     }
 }
