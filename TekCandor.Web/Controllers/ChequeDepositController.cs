@@ -290,6 +290,48 @@ namespace TekCandor.Web.Controllers
             return Ok(result);
         }
 
+        [HttpGet("BranchReturnList")]
+        [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> BranchReturnList(
+           [FromQuery] ChequeDepositListRequestDTO request,
+           CancellationToken cancellationToken)
+        {
+            if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
+                return BadRequest("Page must be >= 1 and PageSize must be between 1 and 500.");
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var result = await _chequeDepositService.GetBranchReturnListAsync(
+                request, userId, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("ApprovedList")]
+        [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ApprovedList(
+          [FromQuery] ChequeDepositListRequestDTO request,
+          CancellationToken cancellationToken)
+        {
+            if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
+                return BadRequest("Page must be >= 1 and PageSize must be between 1 and 500.");
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var result = await _chequeDepositService.GetApprovedListAsync(
+                request, userId, cancellationToken);
+
+            return Ok(result);
+        }
+
         [HttpGet("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
