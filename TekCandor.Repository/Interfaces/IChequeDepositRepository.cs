@@ -27,6 +27,14 @@ namespace TekCandor.Repository.Interfaces
            string? branchCodes,
            CancellationToken cancellationToken = default);
 
+        Task<(IEnumerable<ChequeDepositListResponseDTO> Data, int TotalCount)> GetReturnListAsync(
+           ChequeDepositListRequestDTO request,
+           long userId,
+           string branchOrHub,
+           string? hubIds,
+           string? branchCodes,
+           CancellationToken cancellationToken = default);
+
         Task<ChequeDeposit?> GetByIdAsync(long id);
 
 

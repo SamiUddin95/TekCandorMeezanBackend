@@ -248,11 +248,11 @@ namespace TekCandor.Web.Controllers
             return Ok(result);
         }
 
-        [HttpGet("callback")]
+        [HttpGet("callbackList")]
         [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> Callback(
+        public async Task<IActionResult> CallbackList(
            [FromQuery] ChequeDepositListRequestDTO request,
            CancellationToken cancellationToken)
         {
@@ -264,6 +264,27 @@ namespace TekCandor.Web.Controllers
                 return Unauthorized();
 
             var result = await _chequeDepositService.GetCallbackListAsync(
+                request, userId, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("ReturnList")]
+        [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ReturnList(
+           [FromQuery] ChequeDepositListRequestDTO request,
+           CancellationToken cancellationToken)
+        {
+            if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
+                return BadRequest("Page must be >= 1 and PageSize must be between 1 and 500.");
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var result = await _chequeDepositService.GetReturnListAsync(
                 request, userId, cancellationToken);
 
             return Ok(result);
