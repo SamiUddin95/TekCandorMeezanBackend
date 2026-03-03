@@ -13,6 +13,8 @@ namespace TekCandor.Repository.Entities
         public string ErrorDescription { get; set; }
         public long Manual_ImportDataId { get; set; }
         public Manual_ImportData Manual_ImportData { get; set; }
+        public int Version { get; set; }
+        public bool IsNew { get; set; }
         public bool IsDeleted { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }

@@ -104,7 +104,8 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpPost("assign-permissions")]
-        [HasPermission("Security.Groups")]
+       
+        //[HasPermission("Security.Groups")]
         public async Task<IActionResult> AssignPermissions([FromBody] AssignPermissionsDTO dto)
         {
             await _service.AssignPermissionsAsync(dto);

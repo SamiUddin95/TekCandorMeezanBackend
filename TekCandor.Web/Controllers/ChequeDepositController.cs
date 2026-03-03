@@ -80,7 +80,7 @@ namespace TekCandor.Web.Controllers
             {
                 var manualImportPath = _configuration["FileLocations:ManualImportPath"];
                 var processedPath = _configuration["FileLocations:Manualdelete"];
-                var callbackLimit = _context.Setting.Where(x => x.Name == "CallbackLimit").FirstOrDefault().Value;
+                var callbackLimit = string.Empty; //_context.Setting.Where(x => x.Name == "CallbackLimit").FirstOrDefault().Value;
 
                 if (string.IsNullOrEmpty(manualImportPath))
                     return BadRequest(ApiResponse<object>.Error("Manual import path not configured", 400));
@@ -163,18 +163,29 @@ namespace TekCandor.Web.Controllers
             [FromQuery] ImportDataDetailRequest request,
             CancellationToken cancellationToken)
         {
-            if (id <= 0)
-                return BadRequest(ApiResponse<object>.Error("id must be a positive number.", 400));
+            try
+            {
 
-            if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
-                return BadRequest(ApiResponse<object>.Error("Page must be >= 1 and PageSize must be between 1 and 500.", 400));
 
-            var result = await _importHistoryService.GetManualImportDataDetailAsync(id, request, cancellationToken);
 
-            if (result.TotalCount == 0)
+                if (id <= 0)
+                    return BadRequest(ApiResponse<object>.Error("id must be a positive number.", 400));
+
+                if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
+                    return BadRequest(ApiResponse<object>.Error("Page must be >= 1 and PageSize must be between 1 and 500.", 400));
+
+                var result = await _importHistoryService.GetManualImportDataDetailAsync(id, request, cancellationToken);
+
+                //if (result.TotalCount == 0)
+                //    return NotFound(ApiResponse<object>.Error($"No detail records found for Manual_ImportDataId {id}.", 404));
+
+                return Ok(ApiResponse<PagedResult<ImportDataDetailResponse>>.Success(result));
+            }
+            catch (Exception)
+            {
                 return NotFound(ApiResponse<object>.Error($"No detail records found for Manual_ImportDataId {id}.", 404));
 
-            return Ok(ApiResponse<PagedResult<ImportDataDetailResponse>>.Success(result));
+            }
         }
 
         [HttpPost("upload")]

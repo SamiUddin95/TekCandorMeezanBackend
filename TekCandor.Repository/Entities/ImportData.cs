@@ -13,6 +13,8 @@ namespace TekCandor.Repository.Entities
         public int SuccessfullRecords { get; set; }
         public int FailureRecords { get; set; }
         public string Name {  get; set; }
+        public bool IsNew { get; set; }
+        public int Version { get; set; }
         public bool IsDeleted { get; set; }
         public string? CreatedBy { get; set; }
         public string? UpdatedBy { get; set; }

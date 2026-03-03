@@ -340,7 +340,9 @@ namespace TekCandor.Service.Implementations
                                 TotalRecords = Convert.ToInt32(totalRecords),
                                 SuccessfullRecords = 0,
                                 FailureRecords = 0,
-                                IsDeleted = false
+                                IsDeleted = false,
+                                Version = 1,
+                                IsNew = false
                             };
 
                             importDataId = await _manualImportDataRepository.AddAsync(importData);
@@ -374,10 +376,12 @@ namespace TekCandor.Service.Implementations
                                     ErrorDescription = ex.Message,
                                     Manual_ImportDataId = importDataId,
                                     IsDeleted = false,
-                                    CreatedOn = DateTime.Now
+                                    CreatedOn = DateTime.Now,
+                                    Version = 1,
+                                    IsNew = false
                                 });
 
-                                if (errorRecords.Count >= batchSize)
+                                if (errorRecords.Count >= 0)
                                 {
                                     await _manualImportDataRepository.AddDetailRangeAsync(errorRecords);
                                     failureCount += errorRecords.Count;
