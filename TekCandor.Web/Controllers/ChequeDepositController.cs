@@ -263,7 +263,7 @@ namespace TekCandor.Web.Controllers
             if (!long.TryParse(userIdClaim, out var userId))
                 return Unauthorized();
 
-            var result = await _chequeDepositService.GetChequeDepositListAsync(
+            var result = await _chequeDepositService.GetCallbackListAsync(
                 request, userId, cancellationToken);
 
             return Ok(result);

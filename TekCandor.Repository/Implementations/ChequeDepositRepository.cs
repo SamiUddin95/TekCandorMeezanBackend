@@ -283,7 +283,7 @@ namespace TekCandor.Repository.Implementations
                 sqlParams.Add(new SqlParameter("@CycleCode", request.CycleCode));
             }
 
-            where.Append(" AND ChequeDepositInformation.status IN ('C')");
+            where.Append(" AND ChequeDepositInformation.Callback IN (1)");
             where.Append(" AND ChequeDepositInformation.Date = CAST(CAST(GETDATE() AS date) AS datetime)");
             where.Append(" AND ChequeDepositInformation.IsDeleted = 0");
 
@@ -318,14 +318,14 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountStatus,
                     Currency.Name                      AS Currency,
                     Hub.Name + '-' + Hub.Code          AS HubCode,
-                    Cycles.Name                         AS CycleCode,
+                    Cycle.Name                         AS CycleCode,
                     Instruments.Name                   AS InstrumentNo,
                  ChequeDepositInformation.BranchRemarks AS BranchStatus,
                     ChequeDepositInformation.Error,
                     ChequeDepositInformation.Callbacksend AS CBCStatus,
                     ChequeDepositInformation.Export
                 FROM ChequeDepositInformation WITH (NOLOCK)
-                INNER JOIN Cycles          ON Cycles.Code          = ChequeDepositInformation.CycleCode
+                INNER JOIN Cycle          ON Cycle.Code          = ChequeDepositInformation.CycleCode
                 INNER JOIN Instruments    ON Instruments.Code     = ChequeDepositInformation.InstrumentNo
                 INNER JOIN ClearingStatuses ON ClearingStatuses.Value = ChequeDepositInformation.status
                 INNER JOIN Branch         ON Branch.NIFTBranchCode = ChequeDepositInformation.ReceiverBranchCode
@@ -344,7 +344,7 @@ namespace TekCandor.Repository.Implementations
             var countSql = $"""
                 SELECT COUNT(1) AS Value
                 FROM ChequeDepositInformation WITH (NOLOCK)
-                INNER JOIN Cycles          ON Cycles.Code          = ChequeDepositInformation.CycleCode
+                INNER JOIN Cycle          ON Cycle.Code          = ChequeDepositInformation.CycleCode
                 INNER JOIN Instruments    ON Instruments.Code     = ChequeDepositInformation.InstrumentNo
                 INNER JOIN ClearingStatuses ON ClearingStatuses.Value = ChequeDepositInformation.status
                 INNER JOIN Branch         ON Branch.NIFTBranchCode = ChequeDepositInformation.ReceiverBranchCode

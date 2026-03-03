@@ -60,7 +60,7 @@ namespace TekCandor.Service.Implementations
             // Resolve branch/hub scope for this user (replaces old GetBranchCodes + HubWise logic)
             var userInfo = await _userContext.GetUserScopeAsync(userId, cancellationToken);
 
-            var (data, totalCount) = await _repository.GetChequeDepositListAsync(
+            var (data, totalCount) = await _repository.GetCallbackListAsync(
                 request,
                 userId,
                 userInfo.BranchOrHub,
