@@ -410,10 +410,6 @@ namespace TekCandor.Repository.Entities.Data
                       .HasMaxLength(256)
                       .IsRequired(false);            
 
-                entity.Property(e => e.IsDeleted)
-                      .IsRequired()                 
-                      .HasDefaultValue(false);
-
                 entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
                 entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
                 entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
@@ -490,9 +486,6 @@ namespace TekCandor.Repository.Entities.Data
                       .HasMaxLength(256)
                       .IsRequired(false);            
 
-                entity.Property(e => e.IsDeleted)
-                      .IsRequired()                 
-                      .HasDefaultValue(false);
 
                 entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
                 entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
@@ -528,10 +521,6 @@ namespace TekCandor.Repository.Entities.Data
                       .WithMany()                     
                       .HasForeignKey(e => e.Manual_ImportDataId)
                       .OnDelete(DeleteBehavior.Restrict); 
-
-                entity.Property(e => e.IsDeleted)
-                      .IsRequired()                 
-                      .HasDefaultValue(false);
 
                 entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
                 entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
