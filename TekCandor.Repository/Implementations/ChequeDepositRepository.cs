@@ -152,14 +152,15 @@ namespace TekCandor.Repository.Implementations
                             END AS bigint
                         ), '##,###,##,###.00'
                     )                                  AS AccountBalance,
+                    ChequeDepositInformation.Amount AS Amount,
                     ChequeDepositInformation.AccountStatus,
                     Currency.Name                      AS Currency,
                     Hub.Name + '-' + Hub.Code          AS HubCode,
                     Cycle.Name                         AS CycleCode,
                     Instruments.Name                   AS InstrumentNo,
-                    ChequeDepositInformation.BranchRemarks,
+                    ChequeDepositInformation.BranchRemarks AS BranchStatus,
                     ChequeDepositInformation.Error,
-                    ChequeDepositInformation.Callbacksend,
+                    ChequeDepositInformation.Callbacksend AS CBCStatus,
                     ChequeDepositInformation.Export
                 FROM ChequeDepositInformation WITH (NOLOCK)
                 INNER JOIN Cycle          ON Cycle.Code          = ChequeDepositInformation.CycleCode
@@ -313,14 +314,15 @@ namespace TekCandor.Repository.Implementations
                             END AS bigint
                         ), '##,###,##,###.00'
                     )                                  AS AccountBalance,
+                ChequeDepositInformation.Amount AS Amount,
                     ChequeDepositInformation.AccountStatus,
                     Currency.Name                      AS Currency,
                     Hub.Name + '-' + Hub.Code          AS HubCode,
                     Cycles.Name                         AS CycleCode,
                     Instruments.Name                   AS InstrumentNo,
-                    ChequeDepositInformation.BranchRemarks,
+                 ChequeDepositInformation.BranchRemarks AS BranchStatus,
                     ChequeDepositInformation.Error,
-                    ChequeDepositInformation.Callbacksend,
+                    ChequeDepositInformation.Callbacksend AS CBCStatus,
                     ChequeDepositInformation.Export
                 FROM ChequeDepositInformation WITH (NOLOCK)
                 INNER JOIN Cycles          ON Cycles.Code          = ChequeDepositInformation.CycleCode

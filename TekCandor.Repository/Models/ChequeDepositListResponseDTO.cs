@@ -12,15 +12,16 @@ namespace TekCandor.Repository.Models
         public string? AccountNumber { get; set; }
         public string? TransactionCode { get; set; }
         public string? Status { get; set; }
+        public decimal? Amount { get; set; }
         public string? AccountBalance { get; set; }
         public string? AccountStatus { get; set; }
         public string? Currency { get; set; }
         public string? HubCode { get; set; }
         public string? CycleCode { get; set; }
         public string? InstrumentNo { get; set; }
-        public string? BranchRemarks { get; set; }
+        public string? BranchStatus { get; set; }
+        public string? CBCStatus { get; set; } 
         public bool Error { get; set; }
-        public string? Callbacksend { get; set; }
         public bool? Export { get; set; }
     }
 }

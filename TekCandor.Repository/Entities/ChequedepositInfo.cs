@@ -124,5 +124,7 @@ namespace TekCandor.Repository.Entities
         public System.DateTime? Importtime { get; set; }
         public bool? manual_imp { get; set; }
         public bool IsDeleted { get; set; }
+        public int Version { get; set; }
+        public bool IsNew { get; set; }
     }
 }

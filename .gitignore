@@ -37,3 +37,5 @@
 /.vs/TekCandor/CopilotIndices/18.0.988.22099
 /TekCandor.Service/Implementations/ChequeDepositImportService.cs
 /.vs/TekCandor/config/applicationhost.config
+/TekCandor.Web/appsettings.json
+/TekCandor.Web/appsettings.json

@@ -52,7 +52,7 @@ namespace TekCandor.Web.Controllers
                 var sftpPassword = _configuration["SFTP:Password"];
                 var remoteLocation = _configuration["SFTP:FileGetLocation"];
                 var localLocation = _configuration["FileLocations:CLGFolderPath"];
-                var callbackLimit = _context.Setting.Where(x => x.Name == "CallbackLimit").FirstOrDefault().Value;
+                var callbackLimit = _context.Setting.Where(x => x.Name == "generalsettings.callbackamount").FirstOrDefault().Value;
 
                 await _importService.ImportSFTPFilesAsync(
                     sftpHost, sftpPort, sftpUser, sftpPassword, remoteLocation, localLocation);
@@ -80,14 +80,14 @@ namespace TekCandor.Web.Controllers
             {
                 var manualImportPath = _configuration["FileLocations:ManualImportPath"];
                 var processedPath = _configuration["FileLocations:Manualdelete"];
-                var callbackLimit = string.Empty; //_context.Setting.Where(x => x.Name == "CallbackLimit").FirstOrDefault().Value;
+                var callbackLimit = _context.Setting.Where(x => x.Name == "generalsettings.callbackamount").FirstOrDefault().Value;
 
                 if (string.IsNullOrEmpty(manualImportPath))
                     return BadRequest(ApiResponse<object>.Error("Manual import path not configured", 400));
 
                 var skippedFiles = await _importService.ProcessManualImportAsync(manualImportPath, callbackLimit, processedPath);
 
-               if (skippedFiles[0] == "File not Found")
+                if (skippedFiles.Count > 0 && skippedFiles[0] == "File not Found")
                 {
                     return BadRequest(ApiResponse<object>.Error("File Not Found", 200));
                 }
