@@ -56,6 +56,7 @@ builder.Services.AddScoped<IChequeDepositService, ChequeDepositService>();
 builder.Services.AddScoped<IUserContextService, UserContextService>();
 builder.Services.AddScoped<ISettingRepository, SettingRepository>();
 builder.Services.AddScoped<ISettingService, SettingService>();
+builder.Services.AddScoped<IFilterService, FilterService>();
 
 // Swagger & Controllers
 builder.Services.AddControllers().AddJsonOptions(options =>
