@@ -152,6 +152,81 @@ namespace TekCandor.Service.Implementations
             };
         }
 
+        public async Task<PagedResult<ChequeDepositListResponseDTO>> GetUnAuthorizedListAsync(
+            ChequeDepositListRequestDTO request,
+            long userId,
+            CancellationToken cancellationToken = default)
+        {
+            // Resolve branch/hub scope for this user (replaces old GetBranchCodes + HubWise logic)
+            var userInfo = await _userContext.GetUserScopeAsync(userId, cancellationToken);
+
+            var (data, totalCount) = await _repository.GetUnAuthorizedListAsync(
+                request,
+                userId,
+                userInfo.BranchOrHub,
+                userInfo.HubIds,
+                userInfo.BranchCodes,
+                cancellationToken);
+
+            return new PagedResult<ChequeDepositListResponseDTO>
+            {
+                Items = data,
+                TotalCount = totalCount,
+                PageNumber = request.Page,
+                PageSize = request.PageSize
+            };
+        }
+
+        public async Task<PagedResult<ChequeDepositListResponseDTO>> GetRejectListAsync(
+            ChequeDepositListRequestDTO request,
+            long userId,
+            CancellationToken cancellationToken = default)
+        {
+            // Resolve branch/hub scope for this user (replaces old GetBranchCodes + HubWise logic)
+            var userInfo = await _userContext.GetUserScopeAsync(userId, cancellationToken);
+
+            var (data, totalCount) = await _repository.GetRejectListAsync(
+                request,
+                userId,
+                userInfo.BranchOrHub,
+                userInfo.HubIds,
+                userInfo.BranchCodes,
+                cancellationToken);
+
+            return new PagedResult<ChequeDepositListResponseDTO>
+            {
+                Items = data,
+                TotalCount = totalCount,
+                PageNumber = request.Page,
+                PageSize = request.PageSize
+            };
+        }
+
+        public async Task<PagedResult<ChequeDepositListResponseDTO>> GetInProcessListAsync(
+            ChequeDepositListRequestDTO request,
+            long userId,
+            CancellationToken cancellationToken = default)
+        {
+            // Resolve branch/hub scope for this user (replaces old GetBranchCodes + HubWise logic)
+            var userInfo = await _userContext.GetUserScopeAsync(userId, cancellationToken);
+
+            var (data, totalCount) = await _repository.GetInProcessListAsync(
+                request,
+                userId,
+                userInfo.BranchOrHub,
+                userInfo.HubIds,
+                userInfo.BranchCodes,
+                cancellationToken);
+
+            return new PagedResult<ChequeDepositListResponseDTO>
+            {
+                Items = data,
+                TotalCount = totalCount,
+                PageNumber = request.Page,
+                PageSize = request.PageSize
+            };
+        }
+
         public async Task<ChequeDepositResponse?> GetByIdAsync(long id)
         {
             var cheque = await _context.chequedepositInformation

@@ -165,9 +165,6 @@ namespace TekCandor.Web.Controllers
         {
             try
             {
-
-
-
                 if (id <= 0)
                     return BadRequest(ApiResponse<object>.Error("id must be a positive number.", 400));
 
@@ -331,6 +328,71 @@ namespace TekCandor.Web.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("UnAuthorizeList")]
+        [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UnAuthorizeList(
+    [FromQuery] ChequeDepositListRequestDTO request,
+    CancellationToken cancellationToken)
+        {
+            if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
+                return BadRequest("Page must be >= 1 and PageSize must be between 1 and 500.");
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var result = await _chequeDepositService.GetUnAuthorizedListAsync(
+                request, userId, cancellationToken);
+
+            return Ok(result);
+        }
+
+        [HttpGet("RejectList")]
+        [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> RejectList(
+    [FromQuery] ChequeDepositListRequestDTO request,
+    CancellationToken cancellationToken)
+        {
+            if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
+                return BadRequest("Page must be >= 1 and PageSize must be between 1 and 500.");
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var result = await _chequeDepositService.GetRejectListAsync(
+                request, userId, cancellationToken);
+
+            return Ok(result);
+        }
+
+
+        [HttpGet("InProcessList")]
+        [ProducesResponseType(typeof(PagedResult<ChequeDepositListResponseDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> InProcessList(
+   [FromQuery] ChequeDepositListRequestDTO request,
+   CancellationToken cancellationToken)
+        {
+            if (request.Page < 1 || request.PageSize < 1 || request.PageSize > 500)
+                return BadRequest("Page must be >= 1 and PageSize must be between 1 and 500.");
+
+            var userIdClaim = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!long.TryParse(userIdClaim, out var userId))
+                return Unauthorized();
+
+            var result = await _chequeDepositService.GetInProcessListAsync(
+                request, userId, cancellationToken);
+
+            return Ok(result);
+        }
+
 
         [HttpGet("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]

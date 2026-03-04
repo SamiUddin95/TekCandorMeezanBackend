@@ -34,6 +34,20 @@ namespace TekCandor.Service.Interfaces
         long userId,
         CancellationToken cancellationToken = default);
 
+        Task<PagedResult<ChequeDepositListResponseDTO>> GetUnAuthorizedListAsync(
+           ChequeDepositListRequestDTO request,
+           long userId,
+           CancellationToken cancellationToken = default);
+
+        Task<PagedResult<ChequeDepositListResponseDTO>> GetRejectListAsync(
+          ChequeDepositListRequestDTO request,
+          long userId,
+          CancellationToken cancellationToken = default);
+
+        Task<PagedResult<ChequeDepositListResponseDTO>> GetInProcessListAsync(
+        ChequeDepositListRequestDTO request,
+        long userId,
+        CancellationToken cancellationToken = default);
 
         Task<ChequeDepositResponse?> GetByIdAsync(long id);
     }

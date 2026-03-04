@@ -51,6 +51,30 @@ namespace TekCandor.Repository.Interfaces
           string? branchCodes,
           CancellationToken cancellationToken = default);
 
+        Task<(IEnumerable<ChequeDepositListResponseDTO> Data, int TotalCount)> GetUnAuthorizedListAsync(
+          ChequeDepositListRequestDTO request,
+          long userId,
+          string branchOrHub,
+          string? hubIds,
+          string? branchCodes,
+          CancellationToken cancellationToken = default);
+
+        Task<(IEnumerable<ChequeDepositListResponseDTO> Data, int TotalCount)> GetRejectListAsync(
+          ChequeDepositListRequestDTO request,
+          long userId,
+          string branchOrHub,
+          string? hubIds,
+          string? branchCodes,
+          CancellationToken cancellationToken = default);
+
+        Task<(IEnumerable<ChequeDepositListResponseDTO> Data, int TotalCount)> GetInProcessListAsync(
+         ChequeDepositListRequestDTO request,
+         long userId,
+         string branchOrHub,
+         string? hubIds,
+         string? branchCodes,
+         CancellationToken cancellationToken = default);
+
         Task<ChequeDeposit?> GetByIdAsync(long id);
 
 
