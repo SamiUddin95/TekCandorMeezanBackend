@@ -9,5 +9,6 @@ namespace TekCandor.Service.Interfaces
         Task<List<string>> ProcessImportedFilesAsync(string folderPath, string callbackLimit);
         Task<List<string>> ProcessManualImportAsync(string folderPath, string callbackLimit, string processedFolderPath);
         Task<string> GetHubCodeAsync(string receiverBranchCode);
+        Task<int> ProcessImagesAsync(string localPath);
     }
 }
