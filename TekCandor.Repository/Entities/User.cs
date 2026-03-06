@@ -11,11 +11,13 @@ namespace TekCandor.Repository.Entities
         public Guid UserGuid { get; set; }
         public string? Name { get; set; }
         public string? LoginName { get; set; }
-        public string? PasswordHash { get; set; }
+        public string? LoginPassword { get; set; }
         public string? Email { get; set; }
         public long PasswordFormatId { get; set; }
         public int PasswordFormat { get; set; }
+
         public string? PasswordSalt { get; set; }
+        public string? TimeZoneId { get; set; }
         public string? BranchorHub { get; set; }
         [MaxLength(255)]
         public string? HubIds { get; set; }
@@ -36,12 +38,14 @@ namespace TekCandor.Repository.Entities
         public string? PhoneNo { get; set; }
         public string? PasswordLastChanged { get; set; }
         public DateTime? LastLoginTime { get; set; }
-        public bool IsActive { get; set; }
+        public bool Active { get; set; }
+        public bool Supervise { get; set; }
         public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public long? UserLimit { get; set; }
+        public string? UperLimie { get; set; }
+        public long UserType { get; set; }
         public int Version { get; set; }
         public bool IsNew { get; set; }
     }

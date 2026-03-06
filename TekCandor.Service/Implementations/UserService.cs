@@ -39,7 +39,7 @@ namespace TekCandor.Service.Implementations
 
             int totalUsers = await _repository.GetAllQueryable().CountAsync();
 
-            int totalActiveUsers = await query.Where(u => u.IsActive == true).CountAsync();
+            int totalActiveUsers = await query.Where(u => u.Active == true).CountAsync();
 
             int totalHubUser = await query
                 .Where(u => u.BranchorHub == "HubWise")  
@@ -67,12 +67,12 @@ namespace TekCandor.Service.Implementations
                 BranchIds = u.BranchIds,
                 GroupId = u.GroupId,
                 PhoneNo = u.PhoneNo,
-                IsActive = u.IsActive,
+                IsActive = u.Active,
                 CreatedBy = u.CreatedBy,
                 CreatedOn = u.CreatedOn,
                 UpdatedBy = u.UpdatedBy,
                 UpdatedOn = u.UpdatedOn,
-                UserLimit = u.UserLimit,
+                UperLimie = u.UperLimie,
                
 
             });
@@ -101,7 +101,7 @@ namespace TekCandor.Service.Implementations
                 Id = u.Id,
                 Name = u.Name,
                 LoginName = u.LoginName,
-                PasswordHash=u.PasswordHash,
+                PasswordHash=u.LoginPassword,
                 Email = u.Email,
                 BranchorHub= u.BranchorHub,
                
@@ -111,12 +111,12 @@ namespace TekCandor.Service.Implementations
                 PhoneNo = u.PhoneNo,
                 IsDeleted= u.IsDeleted,
 
-                IsActive = u.IsActive,
+                IsActive = u.Active,
                 CreatedBy = u.CreatedBy,
                 CreatedOn = u.CreatedOn,
                 UpdatedBy = u.UpdatedBy,
                 UpdatedOn = u.UpdatedOn,
-                UserLimit= u.UserLimit
+                UperLimie= u.UperLimie
 
             };
         }
@@ -130,7 +130,7 @@ namespace TekCandor.Service.Implementations
                 Id=dto.Id,
                 Name = dto.Name,
                 LoginName = dto.LoginName,
-                PasswordHash = passwordHash,
+                LoginPassword = passwordHash,
                 Email = dto.Email,
                 BranchorHub= dto.BranchorHub,
                
@@ -141,12 +141,12 @@ namespace TekCandor.Service.Implementations
                 IsDeleted= false,
                 //PasswordLastChanged= dto.PasswordLastChanged,
                 //LastLoginTime= dto.LastLoginTime,
-                IsActive = true,
+                Active = true,
                 CreatedBy = dto.CreatedBy ?? "system",
                 CreatedOn = DateTime.Now,
                 UpdatedBy = dto.UpdatedBy,
                 UpdatedOn = dto.UpdatedOn,
-                UserLimit= dto.UserLimit
+                UperLimie= dto.UperLimie
 
             };
 
@@ -176,7 +176,7 @@ namespace TekCandor.Service.Implementations
                 Id = dto.Id,
                 Name = dto.Name,
                 LoginName = dto.LoginName,
-                PasswordHash = dto.PasswordHash,
+                LoginPassword = dto.PasswordHash,
                 Email = dto.Email,
                 BranchorHub = dto.BranchorHub,
                
@@ -186,12 +186,12 @@ namespace TekCandor.Service.Implementations
                 IsDeleted= dto.IsDeleted,
                 PhoneNo = dto.PhoneNo,
               
-                IsActive = dto.IsActive,
+                Active = dto.IsActive,
                 CreatedBy = dto.CreatedBy ?? "system",
                 CreatedOn = DateTime.Now,
                 UpdatedBy = dto.UpdatedBy,
                 UpdatedOn = dto.UpdatedOn,
-                UserLimit = dto.UserLimit
+                UperLimie = dto.UperLimie
             };
 
             var updated = _repository.Update(entity);
@@ -240,7 +240,7 @@ namespace TekCandor.Service.Implementations
                 Id = user.Id,
                 Name = user.Name,
                 LoginName = user.LoginName,
-                PasswordHash = user.PasswordHash,
+                PasswordHash = user.LoginPassword,
                 Email = user.Email,
                 BranchorHub = user.BranchorHub,
                
@@ -256,7 +256,7 @@ namespace TekCandor.Service.Implementations
                 CreatedOn = DateTime.Now,
                 UpdatedBy = user.UpdatedBy,
                 UpdatedOn = DateTime.Now,
-                UserLimit= user.UserLimit,
+                UperLimie = user.UperLimie,
                 Permissions = permissions
             };
         }
@@ -266,7 +266,7 @@ namespace TekCandor.Service.Implementations
         {
             var userEntity = new User
             {
-                
+                UserGuid = Guid.NewGuid(),
                 Name = dto.Name,
                 Email = dto.Email,
                 PasswordFormatId = 1,
@@ -277,16 +277,22 @@ namespace TekCandor.Service.Implementations
                 HubIds = dto.HubIds,
                 BranchIds = dto.BranchIds,
                 GroupId = dto.GroupId,
-                IsActive = dto.IsActive,
-                UserLimit = dto.UserLimit,
+                Active = dto.IsActive,
+                UperLimie = dto.UperLimie,
                 IsDeleted = false,
                 IsSystemAccount = true,
-                IsPasswordChangeRequired = false,
-                IsBanned = false,
-                IsActiveDirectoryUser = false,
+                IsPasswordChangeRequired = true,
+                IsBanned = true,
+                IsActiveDirectoryUser = true,
                 LoggedIn = false,
-                WebApiEnabled = false,
-                IsNew = false,
+                WebApiEnabled = true,
+                LoginPassword = "CEBB56B59E82245BD23AC7FAC61C92A63B909E5D",
+                PasswordSalt = "Mv8e+GI=",
+                TimeZoneId = "Pakistan Standard Time",
+                IsNew = true,
+                Supervise = true,
+                Version = 1,
+                UserType=0,
                 CreatedBy = dto.CreatedBy,
                 CreatedOn = DateTime.Now,
 
@@ -294,7 +300,7 @@ namespace TekCandor.Service.Implementations
                 UpdatedOn = null
             };
 
-            var hash = HashPassword(password);
+            var hash = "CEBB56B59E82245BD23AC7FAC61C92A63B909E5D";//HashPassword(password);
 
             var createdUser = await _repository.AddAsync(userEntity, hash);
 
@@ -305,18 +311,19 @@ namespace TekCandor.Service.Implementations
                 Email = createdUser.Email,
                 PhoneNo = createdUser.PhoneNo,
                 LoginName = createdUser.LoginName,
-                PasswordHash = createdUser.PasswordHash,
+                PasswordHash = createdUser.LoginPassword,
                 BranchorHub = createdUser.BranchorHub,
                 HubIds = createdUser.HubIds,
                 BranchIds = createdUser.BranchIds,
                 IsDeleted = createdUser.IsDeleted,
                 GroupId = createdUser.GroupId,
-                IsActive = createdUser.IsActive,
+                IsActive = createdUser.Active,
                 CreatedBy = createdUser.CreatedBy,
                 CreatedOn = createdUser.CreatedOn,
                 UpdatedBy = createdUser.UpdatedBy,   
                 UpdatedOn = createdUser.UpdatedOn,   
-                UserLimit = createdUser.UserLimit
+                UperLimie = createdUser.UperLimie,
+                IsPasswordChangeRequired=createdUser.IsPasswordChangeRequired
             };
         }
 
