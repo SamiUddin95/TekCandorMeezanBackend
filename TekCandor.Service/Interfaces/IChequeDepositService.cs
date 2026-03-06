@@ -52,5 +52,7 @@ namespace TekCandor.Service.Interfaces
         Task<ChequeDepositResponse?> GetByIdAsync(long id);
         Task<ChequeDepositCallbackResponse?> GetCallBackEditAsync(long id);
         Task<ChequeDepositBranchReturnResponse?> GetBranchReturnEditAsync(long id);
+        Task<ChequeDepositAuthorizerResponse?> GetAuthorizerEditAsync(long id);
+        Task<ChequeDepositRejectResponse?> GetRejectEditAsync(long id);
     }
 }

@@ -448,6 +448,48 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<object>.Error(ex.Message));
             }
         }
+
+        [HttpGet("{id:long}/authorizer-edit")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> AuthorizerEdit(long id)
+        {
+            try
+            {
+                var result = await _chequeDepositService.GetAuthorizerEditAsync(id);
+
+                if (result == null)
+                    return NotFound(ApiResponse<object>.Error("Cheque deposit not found", 404));
+
+                return Ok(ApiResponse<ChequeDepositAuthorizerResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in AuthorizerEdit for id: {Id}", id);
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpGet("{id:long}/system-reject-edit")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SystemRejectEdit(long id)
+        {
+            try
+            {
+                var result = await _chequeDepositService.GetRejectEditAsync(id);
+
+                if (result == null)
+                    return NotFound(ApiResponse<object>.Error("Cheque deposit not found", 404));
+
+                return Ok(ApiResponse<ChequeDepositRejectResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in RejectEdit for id: {Id}", id);
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
     }
 
         #endregion

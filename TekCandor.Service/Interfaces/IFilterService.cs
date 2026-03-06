@@ -11,5 +11,6 @@ namespace TekCandor.Service.Interfaces
         Task<InstrumentFilterResponse> GetInstrumentFilterAsync();
         Task<CycleFilterResponse> GetCycleFilterAsync();
         Task<ServiceRunFilterResponse> GetServiceRunFilterAsync();
+        Task<ReturnReasonFilterResponse> GetReturnReasonFilterAsync();
     }
 }

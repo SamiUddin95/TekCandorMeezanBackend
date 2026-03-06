@@ -39,4 +39,9 @@ namespace TekCandor.Service.Models
     {
         public List<FilterOptionDTO> Options { get; set; } = new List<FilterOptionDTO>();
     }
+
+    public class ReturnReasonFilterResponse
+    {
+        public List<FilterOptionDTO> ReturnReasons { get; set; } = new List<FilterOptionDTO>();
+    }
 }

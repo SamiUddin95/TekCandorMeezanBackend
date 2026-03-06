@@ -192,5 +192,23 @@ namespace TekCandor.Service.Implementations
 
             return Task.FromResult(response);
         }
+
+        public async Task<ReturnReasonFilterResponse> GetReturnReasonFilterAsync()
+        {
+            var response = new ReturnReasonFilterResponse();
+
+            response.ReturnReasons = await _context.ReturnReason
+                .AsNoTracking()
+                .Where(r => !r.IsDeleted)
+                .OrderBy(r => r.Name)
+                .Select(r => new FilterOptionDTO
+                {
+                    Text = r.Name ?? string.Empty,
+                    Value = r.Code ?? string.Empty
+                })
+                .ToListAsync();
+
+            return response;
+        }
     }
 }

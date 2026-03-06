@@ -122,5 +122,19 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
+        [HttpGet("returnreason")]
+        public async Task<IActionResult> GetReturnReasonFilter()
+        {
+            try
+            {
+                var result = await _filterService.GetReturnReasonFilterAsync();
+                return Ok(ApiResponse<ReturnReasonFilterResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
     }
 }
