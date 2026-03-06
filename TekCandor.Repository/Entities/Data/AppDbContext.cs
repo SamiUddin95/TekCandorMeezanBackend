@@ -200,7 +200,6 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(u => u.PasswordFormatId).HasDefaultValue(1);
                 entity.Property(u => u.PasswordFormat).HasDefaultValue(1);
                 entity.Property(u => u.IsSystemAccount).HasDefaultValue(false);
-                entity.Property(u => u.IsPasswordChangeRequired).HasDefaultValue(false);
                 entity.Property(u => u.IsBanned).HasDefaultValue(false);
                 entity.Property(u => u.IsActiveDirectoryUser).HasDefaultValue(false);
                 entity.Property(u => u.LoggedIn).HasDefaultValue(false);
@@ -216,7 +215,7 @@ namespace TekCandor.Repository.Entities.Data
                       .HasMaxLength(50)
                       .IsUnicode(false);
 
-                entity.Property(u => u.PasswordHash)
+                entity.Property(u => u.LoginPassword)
                       .HasColumnName("LoginPassword")
                       .HasMaxLength(256)
                       .IsUnicode(false);
@@ -248,11 +247,10 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Ignore(u => u.PasswordLastChanged);
                 entity.Ignore(u => u.LastLoginTime);
 
-                entity.Property(u => u.IsActive)
+                entity.Property(u => u.Active)
                       .HasColumnName("Active");
 
                 entity.Property(r => r.Version).HasDefaultValue(1);
-                entity.Property(r => r.IsNew);
 
                 entity.Property(r => r.IsDeleted);
                 entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
@@ -262,7 +260,7 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Ignore(u => u.GroupId);
                 entity.Ignore(u => u.Group);
-                entity.Ignore(u => u.UserLimit);
+                entity.Ignore(u => u.UperLimie);
             });
             modelBuilder.Entity<ApplicationConfig>(entity =>
             {

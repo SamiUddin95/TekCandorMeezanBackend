@@ -20,13 +20,18 @@ namespace TekCandor.Service.Models
         public string? PhoneNo { get; set; }
         public bool IsActive { get; set; }
         public bool IsDeleted { get; set; }
+        public long UserType { get; set; }
+        public int Version { get; set; }
 
 
         public string? CreatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
-        public long? UserLimit { get; set; }
+        //public long? UserLimit { get; set; }
+        public bool IsPasswordChangeRequired { get; set; }
+
+        public string? UperLimie { get; set; }
         public List<string> Permissions { get; set; } = new();
     }
 }

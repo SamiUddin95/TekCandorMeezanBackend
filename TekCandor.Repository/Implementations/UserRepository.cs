@@ -32,7 +32,7 @@ namespace TekCandor.Repository.Implementations
         {
 
             user.CreatedOn = DateTime.Now;
-            user.IsActive = true;
+            user.Active = true;
 
             _context.Users.Add(user);
             _context.SaveChanges();
@@ -53,11 +53,11 @@ namespace TekCandor.Repository.Implementations
             existing.IsDeleted= user.IsDeleted;
             existing.PhoneNo = user.PhoneNo;
             existing.LoginName = user.LoginName;
-            existing.PasswordHash = user.PasswordHash;
-            existing.IsActive = user.IsActive;
+            existing.LoginPassword = user.LoginPassword;
+            existing.Active = user.Active;
             existing.UpdatedBy = user.UpdatedBy;
             existing.UpdatedOn = DateTime.Now;
-            existing.UserLimit = user.UserLimit;
+            existing.UperLimie = user.UperLimie;
 
 
             _context.SaveChanges();
@@ -80,10 +80,10 @@ namespace TekCandor.Repository.Implementations
         {
             var data = await _context.Users.AsNoTracking()
                 .Where(u => u.LoginName == loginName)
-                .Select(u => new { u.Id, u.PasswordHash, u.IsActive })
+                .Select(u => new { u.Id, u.LoginPassword, u.Active })
                 .FirstOrDefaultAsync();
             if (data == null) return null;
-            return (data.Id, data.PasswordHash!, data.IsActive);
+            return (data.Id, data.LoginPassword!, data.Active);
         }
 
         public async Task<User?> GetByIdAsync(long id)
@@ -101,12 +101,12 @@ namespace TekCandor.Repository.Implementations
                     HubIds = u.HubIds,
                     BranchIds = u.BranchIds,
                     IsDeleted = u.IsDeleted,
-                    IsActive = u.IsActive,
+                    Active = u.Active,
                     CreatedBy = u.CreatedBy,
                     CreatedOn = u.CreatedOn,
                     UpdatedBy = u.UpdatedBy,
                     UpdatedOn = u.UpdatedOn,
-                    PasswordHash = u.PasswordHash,
+                    LoginPassword = u.LoginPassword,
                 }).FirstOrDefaultAsync();
         }
 
@@ -114,7 +114,7 @@ namespace TekCandor.Repository.Implementations
         {
             try
             {
-                user.PasswordHash = passwordHash;
+                user.LoginPassword = passwordHash;
                 _context.Users.Add(user);
                 await _context.SaveChangesAsync();
                 return user;
