@@ -25,5 +25,6 @@ namespace TekCandor.Repository.Models
         public bool Error { get; set; }
         public bool? Export { get; set; }
         public string? ReturnReason { get; set; }
+        public string? PostRestriction { get; set; }
     }
 }

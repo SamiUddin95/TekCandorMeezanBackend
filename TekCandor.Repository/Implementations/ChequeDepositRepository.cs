@@ -142,6 +142,7 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountNumber,
                     ChequeDepositInformation.AccountTitle As AccountTitle,
                     ChequeDepositInformation.TransactionCode,
+                    ChequeDepositInformation.PostRestriction,
                     ClearingStatuses.Text              AS Status,
                     FORMAT(
                         CAST(
@@ -306,6 +307,7 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountNumber,
                     ChequeDepositInformation.AccountTitle As AccountTitle,
                     ChequeDepositInformation.TransactionCode,
+                    ChequeDepositInformation.PostRestriction,
                     ClearingStatuses.Text              AS Status,
                     FORMAT(
                         CAST(
@@ -469,6 +471,7 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountNumber,
                     ChequeDepositInformation.AccountTitle As AccountTitle,
                     ChequeDepositInformation.TransactionCode,
+                    ChequeDepositInformation.PostRestriction,
                     ClearingStatuses.Text              AS Status,
                     FORMAT(
                         CAST(
@@ -632,6 +635,7 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountNumber,
                     ChequeDepositInformation.AccountTitle As AccountTitle,
                     ChequeDepositInformation.TransactionCode,
+                    ChequeDepositInformation.PostRestriction,
                     ClearingStatuses.Text              AS Status,
                     FORMAT(
                         CAST(
@@ -795,6 +799,7 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountNumber,
                     ChequeDepositInformation.AccountTitle As AccountTitle,
                     ChequeDepositInformation.TransactionCode,
+                    ChequeDepositInformation.PostRestriction,
                     ClearingStatuses.Text              AS Status,
                     FORMAT(
                         CAST(
@@ -959,6 +964,7 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountNumber,
                     ChequeDepositInformation.AccountTitle As AccountTitle,
                     ChequeDepositInformation.TransactionCode,
+                    ChequeDepositInformation.PostRestriction,
                     ClearingStatuses.Text              AS Status,
                     FORMAT(
                         CAST(
@@ -1122,6 +1128,7 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountNumber,
                     ChequeDepositInformation.AccountTitle As AccountTitle,
                     ChequeDepositInformation.TransactionCode,
+                    ChequeDepositInformation.PostRestriction,
                     ClearingStatuses.Text              AS Status,
                     FORMAT(
                         CAST(
@@ -1285,6 +1292,7 @@ namespace TekCandor.Repository.Implementations
                     ChequeDepositInformation.AccountNumber,
                     ChequeDepositInformation.AccountTitle As AccountTitle,
                     ChequeDepositInformation.TransactionCode,
+                    ChequeDepositInformation.PostRestriction,
                     ClearingStatuses.Text              AS Status,
                     FORMAT(
                         CAST(
