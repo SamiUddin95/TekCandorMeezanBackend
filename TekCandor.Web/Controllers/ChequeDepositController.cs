@@ -406,6 +406,48 @@ namespace TekCandor.Web.Controllers
 
             return Ok(result);
         }
+
+        [HttpGet("{id:long}/callback-edit")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> CallBackEdit(long id)
+        {
+            try
+            {
+                var result = await _chequeDepositService.GetCallBackEditAsync(id);
+
+                if (result == null)
+                    return NotFound(ApiResponse<object>.Error("Cheque deposit not found", 404));
+
+                return Ok(ApiResponse<ChequeDepositCallbackResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in CallBackEdit for id: {Id}", id);
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpGet("{id:long}/branch-return-edit")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> BranchReturnEdit(long id)
+        {
+            try
+            {
+                var result = await _chequeDepositService.GetBranchReturnEditAsync(id);
+
+                if (result == null)
+                    return NotFound(ApiResponse<object>.Error("Cheque deposit not found", 404));
+
+                return Ok(ApiResponse<ChequeDepositBranchReturnResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in BranchReturnEdit for id: {Id}", id);
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
     }
 
         #endregion

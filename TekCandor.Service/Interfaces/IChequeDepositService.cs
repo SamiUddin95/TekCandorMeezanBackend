@@ -50,5 +50,7 @@ namespace TekCandor.Service.Interfaces
         CancellationToken cancellationToken = default);
 
         Task<ChequeDepositResponse?> GetByIdAsync(long id);
+        Task<ChequeDepositCallbackResponse?> GetCallBackEditAsync(long id);
+        Task<ChequeDepositBranchReturnResponse?> GetBranchReturnEditAsync(long id);
     }
 }

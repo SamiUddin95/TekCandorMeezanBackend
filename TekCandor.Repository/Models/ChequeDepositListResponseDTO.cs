@@ -14,6 +14,7 @@ namespace TekCandor.Repository.Models
         public string? Status { get; set; }
         public decimal? Amount { get; set; }
         public string? AccountBalance { get; set; }
+        public string? AccountTitle { get; set; }
         public string? AccountStatus { get; set; }
         public string? Currency { get; set; }
         public string? HubCode { get; set; }
@@ -23,5 +24,6 @@ namespace TekCandor.Repository.Models
         public string? CBCStatus { get; set; } 
         public bool Error { get; set; }
         public bool? Export { get; set; }
+        public string? ReturnReason { get; set; }
     }
 }

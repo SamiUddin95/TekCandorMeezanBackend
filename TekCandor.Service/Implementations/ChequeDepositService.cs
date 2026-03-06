@@ -296,5 +296,208 @@ namespace TekCandor.Service.Implementations
 
             return response;
         }
+
+        public async Task<ChequeDepositCallbackResponse?> GetCallBackEditAsync(long id)
+        {
+            var cheque = await _context.chequedepositInformation
+                .AsNoTracking()
+                .Where(x => x.Id == id)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Date,
+                    x.SequenceNumber,
+                    x.AccountNumber,
+                    x.AccountTitle,
+                    x.Amount,
+                    x.AccountBalance,
+                    x.poStatus,
+                    x.ErrorInFields,
+                    x.ReceiverBranchCode,
+                    x.ChequeNumber,
+                    x.InstrumentNo,
+                    x.TransactionCode,
+                    x.Remarks,
+                    x.Returnreasone,
+                    x.Currency,
+                    x.Callback,
+                    x.Callbacksend
+                })
+                .FirstOrDefaultAsync();
+
+            if (cheque == null)
+                return null;
+
+            var response = new ChequeDepositCallbackResponse
+            {
+                Id = cheque.Id,
+                Date = cheque.Date,
+                Status = "Call Back",
+                AccountNumber = cheque.AccountNumber ?? string.Empty,
+                AccountTitle = cheque.AccountTitle ?? string.Empty,
+                Amount = cheque.Amount ?? 0,
+                PoStatus = cheque.poStatus ?? string.Empty,
+                ErrorFieldsName = cheque.ErrorInFields,
+                ReceiverBranchCode = cheque.ReceiverBranchCode ?? string.Empty,
+                ChequeNumber = cheque.ChequeNumber ?? string.Empty,
+                InstrumentNo = cheque.InstrumentNo ?? string.Empty,
+                SequenceNumber = cheque.SequenceNumber ?? string.Empty,
+                TransactionCode = cheque.TransactionCode ?? string.Empty,
+                Remarks = cheque.Remarks ?? string.Empty,
+                Returnreasone = cheque.Returnreasone ?? string.Empty,
+                Currency = cheque.Currency ?? string.Empty,
+                Callback = cheque.Callback,
+                CBCStatus = cheque.Callbacksend
+            };
+
+            // Images
+            if (!string.IsNullOrEmpty(cheque.SequenceNumber))
+            {
+                response.ImgF = cheque.SequenceNumber + "F";
+                response.ImgR = cheque.SequenceNumber + "B";
+                response.ImgU = cheque.SequenceNumber + "U";
+            }
+
+            // Check if account is PO account (starts with 00017571 or 00017574)
+            bool isPOAccount = cheque.AccountNumber != null && 
+                              (cheque.AccountNumber.StartsWith("00017571") || 
+                               cheque.AccountNumber.StartsWith("00017574"));
+
+            if (!isPOAccount)
+            {
+                // For non-PO accounts, get signatures
+                response.Signature = await _context.Signatures
+                    .AsNoTracking()
+                    .Where(x => x.AccountNumber == cheque.AccountNumber)
+                    .Select(x => x.Sign)
+                    .ToArrayAsync();
+
+                // Balance formatting
+                if (!string.IsNullOrEmpty(cheque.AccountBalance) &&
+                    decimal.TryParse(cheque.AccountBalance, out decimal balance))
+                {
+                    response.AccountBalance = (balance / 100).ToString("#,##.##");
+                }
+                else
+                {
+                    response.AccountBalance = string.Empty;
+                }
+            }
+            else
+            {
+                // For PO accounts, set beneficiary detail from account title
+                response.BeneficiaryDetail = cheque.AccountTitle ?? string.Empty;
+            }
+
+            return response;
+        }
+
+        public async Task<ChequeDepositBranchReturnResponse?> GetBranchReturnEditAsync(long id)
+        {
+            var cheque = await _context.chequedepositInformation
+                .AsNoTracking()
+                .Where(x => x.Id == id)
+                .Select(x => new
+                {
+                    x.Id,
+                    x.Date,
+                    x.SequenceNumber,
+                    x.AccountNumber,
+                    x.AccountTitle,
+                    x.Amount,
+                    x.AccountBalance,
+                    x.poStatus,
+                    x.ErrorInFields,
+                    x.ReceiverBranchCode,
+                    x.ChequeNumber,
+                    x.InstrumentNo,
+                    x.TransactionCode,
+                    x.Remarks,
+                    x.Returnreasone,
+                    x.Currency,
+                    x.Callbacksend,
+                    x.BranchRemarks
+                })
+                .FirstOrDefaultAsync();
+
+            if (cheque == null)
+                return null;
+
+            var response = new ChequeDepositBranchReturnResponse
+            {
+                Id = cheque.Id,
+                Date = cheque.Date,
+                Status = "Rejected",
+                AccountNumber = cheque.AccountNumber ?? string.Empty,
+                AccountTitle = cheque.AccountTitle ?? string.Empty,
+                Amount = cheque.Amount ?? 0,
+                PoStatus = cheque.poStatus ?? string.Empty,
+                ErrorFieldsName = cheque.ErrorInFields,
+                ReceiverBranchCode = cheque.ReceiverBranchCode ?? string.Empty,
+                ChequeNumber = cheque.ChequeNumber ?? string.Empty,
+                InstrumentNo = cheque.InstrumentNo ?? string.Empty,
+                SequenceNumber = cheque.SequenceNumber ?? string.Empty,
+                TransactionCode = cheque.TransactionCode ?? string.Empty,
+                Remarks = cheque.Remarks ?? string.Empty,
+                Currency = cheque.Currency ?? string.Empty,
+                Callbacksend = cheque.Callbacksend,
+                BranchRemarks = cheque.BranchRemarks ?? string.Empty,
+                RejectedReasonsByCCU = cheque.Returnreasone ?? string.Empty
+            };
+
+            // Images
+            if (!string.IsNullOrEmpty(cheque.SequenceNumber))
+            {
+                response.ImgF = cheque.SequenceNumber + "F";
+                response.ImgR = cheque.SequenceNumber + "B";
+                response.ImgU = cheque.SequenceNumber + "U";
+            }
+
+            // Check if account is PO account (starts with 00017571 or 00017574)
+            bool isPOAccount = cheque.AccountNumber != null && 
+                              (cheque.AccountNumber.StartsWith("00017571") || 
+                               cheque.AccountNumber.StartsWith("00017574"));
+
+            if (!isPOAccount)
+            {
+                // For non-PO accounts, get signatures
+                response.Signature = await _context.Signatures
+                    .AsNoTracking()
+                    .Where(x => x.AccountNumber == cheque.AccountNumber)
+                    .Select(x => x.Sign)
+                    .ToArrayAsync();
+
+                // Balance formatting
+                if (!string.IsNullOrEmpty(cheque.AccountBalance) &&
+                    decimal.TryParse(cheque.AccountBalance, out decimal balance))
+                {
+                    response.AccountBalance = (balance / 100).ToString("#,##.##");
+                }
+                else
+                {
+                    response.AccountBalance = string.Empty;
+                }
+
+                // Get return reason name if return reason code exists
+                if (!string.IsNullOrEmpty(cheque.Returnreasone))
+                {
+                    var returnReason = await _context.ReturnReason
+                        .AsNoTracking()
+                        .Where(r => r.Code == cheque.Returnreasone && !r.IsDeleted)
+                        .Select(r => r.Name)
+                        .FirstOrDefaultAsync();
+
+                    response.RejectedReasonsByCCU = returnReason ?? cheque.Returnreasone;
+                }
+            }
+            else
+            {
+                // For PO accounts, set beneficiary detail from account title
+                response.BeneficiaryDetail = cheque.AccountTitle ?? string.Empty;
+                response.RejectedReasonsByCCU = cheque.Returnreasone ?? string.Empty;
+            }
+
+            return response;
+        }
     }
 }
