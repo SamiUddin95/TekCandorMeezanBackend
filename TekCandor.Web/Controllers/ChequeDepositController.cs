@@ -24,13 +24,15 @@ namespace TekCandor.Web.Controllers
         private readonly IConfiguration _configuration;
         private readonly ILogger<ChequeDepositController> _logger;
         private readonly AppDbContext _context;
+        private readonly ICoreBankingService _coreBankingService;
         public ChequeDepositController(
             IChequeDepositImportService importService,
             IChequeDepositService chequeDepositService,
             IImportHistoryService importHistoryService,
             IConfiguration configuration,
             ILogger<ChequeDepositController> logger,
-            AppDbContext context)
+            AppDbContext context,
+            ICoreBankingService coreBankingService)
         {
             _importService = importService;
             _chequeDepositService = chequeDepositService;
@@ -38,6 +40,7 @@ namespace TekCandor.Web.Controllers
             _configuration = configuration;
             _logger = logger;
             _context = context;
+            _coreBankingService = coreBankingService;
         }
 
         #region Import Files
@@ -488,6 +491,327 @@ namespace TekCandor.Web.Controllers
             {
                 _logger.LogError(ex, "Error in RejectEdit for id: {Id}", id);
                 return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("manual-start-service")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ManualStartService([FromQuery] bool isChecked = false)
+        {
+            try
+            {
+                await _coreBankingService.ImportRecordsAfterImportFileAsync();
+                
+                return Ok(ApiResponse<string>.Success("Services Run Successfully"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in ManualStartService");
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("start-service")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> StartService([FromQuery] bool isChecked = false)
+        {
+            try
+            {
+                await _coreBankingService.ImportRecordsAfterImportFileAsync(isChecked);
+                
+                string message = isChecked 
+                    ? "Send SMS and Services Run Successfully" 
+                    : "Services Run Successfully";
+                
+                return Ok(ApiResponse<string>.Success(message));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in StartService");
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("get-signatures")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSign()
+        {
+            try
+            {
+                await _coreBankingService.GetSignaturesAsync();
+                
+                return Ok(ApiResponse<string>.Success("Signatures retrieved successfully"));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetSign");
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("get-signature")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetSignature([FromBody] GetSignatureRequest request)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(request.AccountNumber) || string.IsNullOrEmpty(request.ChequeNumber))
+                {
+                    return BadRequest(ApiResponse<object>.Error("Please fill all the required fields", 400));
+                }
+
+                var result = await _chequeDepositService.GetSignatureAsync(request.Id, request.AccountNumber, request.ChequeNumber);
+                
+                if (!result)
+                {
+                    return StatusCode(500, ApiResponse<object>.Error("SS Card Server Not Responding Please Retry"));
+                }
+
+                return Ok(ApiResponse<object>.Success(new { message = "Signature retrieved successfully", id = request.Id }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetSignature");
+                return StatusCode(500, ApiResponse<object>.Error("SS Card Server Not Responding Please Retry"));
+            }
+        }
+
+        [HttpPost("pending-to-inprocess")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> PendingToInprocess([FromBody] PendingToInprocessRequest request)
+        {
+            try
+            {
+                if (request.SelectedIds == null || request.SelectedIds.Count == 0)
+                {
+                    return BadRequest(ApiResponse<object>.Error("No cheques selected", 400));
+                }
+
+                var result = await _chequeDepositService.PendingToInprocessAsync(request.SelectedIds);
+
+                return Ok(ApiResponse<PendingToInprocessResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in PendingToInprocess");
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("pending-approve-selected")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> PendingApproveSelected([FromBody] PendingApproveSelectedRequest request)
+        {
+            try
+            {
+                if (request.SelectedIds == null || request.SelectedIds.Count == 0)
+                {
+                    return BadRequest(ApiResponse<object>.Error("No cheques selected", 400));
+                }
+
+                // Get current user ID and login name from claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var loginName = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+
+                if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out long userId))
+                {
+                    return Unauthorized(ApiResponse<object>.Error("User not authenticated", 401));
+                }
+
+                var result = await _chequeDepositService.PendingApproveSelectedAsync(request.SelectedIds, userId, loginName);
+
+                return Ok(ApiResponse<PendingApproveSelectedResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in PendingApproveSelected");
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("pending-cheque-approve")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> PendingChequeApprove([FromBody] PendingChequeApproveRequest request)
+        {
+            try
+            {
+                // Get current user ID and login name from claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var loginName = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+
+                if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out long userId))
+                {
+                    return Unauthorized(ApiResponse<object>.Error("User not authenticated", 401));
+                }
+
+                var result = await _chequeDepositService.PendingChequeApproveAsync(
+                    request.Id, 
+                    request.AccountNumber, 
+                    request.ChequeNumber, 
+                    userId, 
+                    loginName);
+
+                if (result.Success)
+                {
+                    return Ok(ApiResponse<PendingChequeApproveResponse>.Success(result));
+                }
+                else
+                {
+                    return Ok(ApiResponse<PendingChequeApproveResponse>.Success(result));
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in PendingChequeApprove");
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("pending-po-approve")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> PendingPOApprove([FromBody] PendingPOApproveRequest request)
+        {
+            try
+            {
+                // Get current user ID and login name from claims
+                var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                var loginName = User.FindFirst(ClaimTypes.Name)?.Value ?? string.Empty;
+
+                if (string.IsNullOrEmpty(userIdClaim) || !long.TryParse(userIdClaim, out long userId))
+                {
+                    return Unauthorized(ApiResponse<object>.Error("User not authenticated", 401));
+                }
+
+                var result = await _chequeDepositService.PendingPOApproveAsync(request.Id, userId, loginName);
+
+                return Ok(ApiResponse<PendingPOApproveResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in PendingPOApprove");
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("import-images")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        public async Task<IActionResult> ImportImages()
+        {
+            try
+            {
+                var sftpHost = _configuration["SFTP:sftphostName"];
+                var sftpPort = int.Parse(_configuration["SFTP:Port"] ?? "22");
+                var sftpUsername = _configuration["SFTP:sftpUserName"];
+                var sftpPassword = _configuration["SFTP:sftpPassword"];
+                var sftpImgFolder = _configuration["SFTP:sftpImgFolder"];
+                var localPath = _configuration["FileLocations:NiftImages"];
+
+                if (string.IsNullOrEmpty(sftpHost) || string.IsNullOrEmpty(sftpImgFolder) || string.IsNullOrEmpty(localPath))
+                {
+                    return BadRequest(ApiResponse<object>.Error("SFTP configuration is missing", 400));
+                }
+
+                // Ensure local directory exists
+                if (!Directory.Exists(localPath))
+                {
+                    Directory.CreateDirectory(localPath);
+                }
+
+                int downloadedCount = 0;
+                int extractedCount = 0;
+
+                using (var sftpClient = new Renci.SshNet.SftpClient(sftpHost, sftpPort, sftpUsername, sftpPassword))
+                {
+                    sftpClient.Connect();
+
+                    var files = sftpClient.ListDirectory(sftpImgFolder);
+
+                    foreach (var file in files)
+                    {
+                        if (file.Name == "." || file.Name == "..") continue;
+
+                        string remoteFilePath = file.FullName;
+                        string localFilePath = Path.Combine(localPath, file.Name);
+
+                        // Process ZIP files
+                        if (file.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Download the ZIP file
+                            using (var fileStream = System.IO.File.Create(localFilePath))
+                            {
+                                sftpClient.DownloadFile(remoteFilePath, fileStream);
+                            }
+                            downloadedCount++;
+
+                            // Extract the ZIP file
+                            ExtractZipFile(localFilePath, localPath);
+                            extractedCount++;
+
+                            // Delete the ZIP file from SFTP after successful transfer
+                            sftpClient.DeleteFile(remoteFilePath);
+
+                            _logger.LogInformation("Downloaded and extracted ZIP file: {FileName}", file.Name);
+                        }
+                        // Process JPG files
+                        else if (file.Name.EndsWith(".jpg", StringComparison.OrdinalIgnoreCase) || 
+                                 file.Name.EndsWith(".jpeg", StringComparison.OrdinalIgnoreCase))
+                        {
+                            // Download the JPG file
+                            using (var fileStream = System.IO.File.Create(localFilePath))
+                            {
+                                sftpClient.DownloadFile(remoteFilePath, fileStream);
+                            }
+                            downloadedCount++;
+
+                            // Delete the JPG file from SFTP after successful transfer
+                            sftpClient.DeleteFile(remoteFilePath);
+
+                            _logger.LogInformation("Downloaded JPG file: {FileName}", file.Name);
+                        }
+                    }
+
+                    sftpClient.Disconnect();
+
+                    _logger.LogInformation("Import Images completed. Downloaded: {Downloaded}, Extracted: {Extracted}", 
+                        downloadedCount, extractedCount);
+                }
+
+                // Process images using the service
+                var imageCount = await _importService.ProcessImagesAsync(localPath);
+
+                return Ok(ApiResponse<object>.Success(new 
+                { 
+                    Message = "Images are Uploaded",
+                    Downloaded = downloadedCount,
+                    Extracted = extractedCount,
+                    TotalImages = imageCount
+                }));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in ImportImages");
+                return StatusCode(500, ApiResponse<object>.Error(ex.Message));
+            }
+        }
+
+        private void ExtractZipFile(string zipFilePath, string extractPath)
+        {
+            try
+            {
+                System.IO.Compression.ZipFile.ExtractToDirectory(zipFilePath, extractPath, true);
+                
+                // Delete the ZIP file after extraction
+                if (System.IO.File.Exists(zipFilePath))
+                {
+                    System.IO.File.Delete(zipFilePath);
+                }
+
+                _logger.LogInformation("Extracted ZIP file: {ZipFile}", zipFilePath);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error extracting ZIP file: {ZipFile}", zipFilePath);
+                throw;
             }
         }
     }

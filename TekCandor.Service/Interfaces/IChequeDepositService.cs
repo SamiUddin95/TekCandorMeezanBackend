@@ -54,5 +54,11 @@ namespace TekCandor.Service.Interfaces
         Task<ChequeDepositBranchReturnResponse?> GetBranchReturnEditAsync(long id);
         Task<ChequeDepositAuthorizerResponse?> GetAuthorizerEditAsync(long id);
         Task<ChequeDepositRejectResponse?> GetRejectEditAsync(long id);
+        Task<bool> GetSignatureAsync(long id, string accountNumber, string chequeNumber);
+        Task<PendingToInprocessResponse> PendingToInprocessAsync(List<long> selectedIds);
+        Task<decimal> GetLimitAsync(long userId);
+        Task<PendingApproveSelectedResponse> PendingApproveSelectedAsync(List<long> selectedIds, long userId, string loginName);
+        Task<PendingChequeApproveResponse> PendingChequeApproveAsync(long id, string? accountNumber, string? chequeNumber, long userId, string loginName);
+        Task<PendingPOApproveResponse> PendingPOApproveAsync(long id, long userId, string loginName);
     }
 }

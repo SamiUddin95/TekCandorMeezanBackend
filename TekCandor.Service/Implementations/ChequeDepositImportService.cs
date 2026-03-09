@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Renci.SshNet;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -461,6 +463,98 @@ namespace TekCandor.Service.Implementations
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error processing manual import files");
+                throw;
+            }
+        }
+
+        public async Task<int> ProcessImagesAsync(string localPath)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(localPath) || !Directory.Exists(localPath))
+                {
+                    _logger.LogWarning("Local path is invalid or does not exist: {Path}", localPath);
+                    return 0;
+                }
+
+                // Process any remaining ZIP files
+                await ProcessZipFilesAsync(localPath);
+
+                // Get all image files from the directory after ZIP extraction
+                var imageFiles = Directory.GetFiles(localPath, "*.jpg", SearchOption.TopDirectoryOnly)
+                    .Concat(Directory.GetFiles(localPath, "*.jpeg", SearchOption.TopDirectoryOnly))
+                    .ToArray();
+
+                _logger.LogInformation("Found {Count} image files in {Path}", imageFiles.Length, localPath);
+
+                return imageFiles.Length;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error processing images in path: {Path}", localPath);
+                throw;
+            }
+        }
+
+        private async Task ProcessZipFilesAsync(string localFolder)
+        {
+            try
+            {
+                // Get all .zip files in the folder
+                var zipFiles = Directory.GetFiles(localFolder, "*.zip");
+
+                if (zipFiles.Length == 0)
+                {
+                    _logger.LogInformation("No .zip files found in the folder.");
+                    return;
+                }
+
+                _logger.LogInformation("Found {Count} ZIP files to process", zipFiles.Length);
+
+                foreach (var zipFilePath in zipFiles)
+                {
+                    try
+                    {
+                        _logger.LogInformation("Processing ZIP file: {ZipFile}", zipFilePath);
+
+                        // Open the ZIP file
+                        using (System.IO.Compression.ZipArchive archive = System.IO.Compression.ZipFile.OpenRead(zipFilePath))
+                        {
+                            foreach (var entry in archive.Entries)
+                            {
+                                string destinationPath = Path.Combine(localFolder, entry.FullName);
+
+                                // Ensure the destination path is not a directory
+                                if (!string.IsNullOrEmpty(entry.Name))
+                                {
+                                    string directoryPath = Path.GetDirectoryName(destinationPath);
+                                    if (!string.IsNullOrEmpty(directoryPath) && !Directory.Exists(directoryPath))
+                                    {
+                                        Directory.CreateDirectory(directoryPath);
+                                    }
+
+                                    // Extract the file
+                                    entry.ExtractToFile(destinationPath, overwrite: true);
+                                    _logger.LogInformation("Extracted: {DestinationPath}", destinationPath);
+                                }
+                            }
+                        }
+
+                        // Delete the ZIP file
+                        System.IO.File.Delete(zipFilePath);
+                        _logger.LogInformation("Deleted ZIP file: {ZipFile}", zipFilePath);
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "Error processing ZIP file: {ZipFile}", zipFilePath);
+                    }
+                }
+
+                await Task.CompletedTask;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in ProcessZipFilesAsync");
                 throw;
             }
         }
