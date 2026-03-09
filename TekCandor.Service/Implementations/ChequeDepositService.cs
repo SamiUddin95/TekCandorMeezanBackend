@@ -1126,10 +1126,13 @@ namespace TekCandor.Service.Implementations
         {
             try
             {
-                var user = await _context.Users.FindAsync(userId);
-                if (user == null) return 0;
-
-                return user.UserLimit ?? 0;
+                var limit = await (from u in _context.Users
+                                   join sgu in _context.SecurityGroup_User on u.Id equals sgu.UserId
+                                   join sg in _context.Group on sgu.SecurityGroupId equals sg.Id
+                                   where u.Id == userId
+                                   select sg.UpperLimit)
+                            .FirstOrDefaultAsync();
+                return limit;
             }
             catch (Exception ex)
             {
