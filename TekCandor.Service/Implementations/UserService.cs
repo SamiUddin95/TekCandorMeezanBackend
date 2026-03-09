@@ -49,12 +49,17 @@ namespace TekCandor.Service.Implementations
                 .Where(u => u.BranchorHub == "BranchWise")  
                 .CountAsync();
 
+            try
+            {
 
-            var users = await query
-                .OrderByDescending(u => u.UpdatedOn ?? u.CreatedOn)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+                var users = await query
+                    .OrderByDescending(u => u.UpdatedOn ?? u.CreatedOn)
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+         
+
+
 
             var dtos = users.Select(u => new UserDTO
             {
@@ -88,6 +93,12 @@ namespace TekCandor.Service.Implementations
                 TotalActiveUser = totalActiveUsers,
                 TotalBranchUser = totalBranchUser
             };
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
         }
 
 
