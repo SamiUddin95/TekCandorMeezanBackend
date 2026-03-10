@@ -18,6 +18,7 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Branch> Branch { get; set; }
         public DbSet<ReturnReason> ReturnReason { get; set; }
         public DbSet<ClearingStatuses> ClearingStatuses { get; set; }
+        public DbSet<CallBack> CallBack { get; set; }
         public DbSet<User>Users { get; set; }
         public DbSet<RevokedToken> RevokedTokens { get; set; }
         public DbSet<AuditLog> AuditLogs { get; set; }

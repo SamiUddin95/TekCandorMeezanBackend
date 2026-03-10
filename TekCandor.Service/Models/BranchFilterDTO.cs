@@ -25,6 +25,10 @@ namespace TekCandor.Service.Models
         public List<FilterOptionDTO> Statuses { get; set; } = new List<FilterOptionDTO>();
     }
 
+    public class CbcStatusFilterResponse
+    {
+        public List<FilterOptionDTO> CbcStatus { get; set; } = new List<FilterOptionDTO>();
+    }
     public class InstrumentFilterResponse
     {
         public List<FilterOptionDTO> Instruments { get; set; } = new List<FilterOptionDTO>();
