@@ -22,6 +22,7 @@ namespace TekCandor.Service.Models
         public bool IsDeleted { get; set; }
         public long UserType { get; set; }
         public int Version { get; set; }
+        public DateTime? LastLoginTime { get; set; }
 
 
         public string? CreatedBy { get; set; }

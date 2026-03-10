@@ -78,6 +78,7 @@ namespace TekCandor.Service.Implementations
                 UpdatedBy = u.UpdatedBy,
                 UpdatedOn = u.UpdatedOn,
                 UperLimie = u.UperLimie,
+                LastLoginTime=u.LastLoginTime
                
 
             });

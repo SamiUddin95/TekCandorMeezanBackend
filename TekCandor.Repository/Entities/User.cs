@@ -45,7 +45,7 @@ namespace TekCandor.Repository.Entities
         public string? UpdatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public string? UperLimie { get; set; }
-        public long UserType { get; set; }
+        public int UserType { get; set; }
         public int Version { get; set; }
         public bool IsNew { get; set; }
     }
