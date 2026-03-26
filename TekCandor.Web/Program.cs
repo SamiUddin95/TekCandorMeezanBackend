@@ -59,6 +59,9 @@ builder.Services.AddScoped<ISettingService, SettingService>();
 builder.Services.AddScoped<IFilterService, FilterService>();
 builder.Services.AddScoped<ICoreBankingService, CoreBankingService>();
 
+builder.Services.AddScoped<IReportService,ReportsService>();
+builder.Services.AddScoped<IReportRepository, ReportRepository>();
+
 // Swagger & Controllers
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
