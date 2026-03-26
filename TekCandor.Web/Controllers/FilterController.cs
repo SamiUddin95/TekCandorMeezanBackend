@@ -81,6 +81,20 @@ namespace TekCandor.Web.Controllers
             }
         }
 
+        [HttpGet("cbcStatus")]
+        public async Task<IActionResult> GetCbcStatusFilter()
+        {
+            try
+            {
+                var result = await _filterService.GetCbcStatusFilterAsync();
+                return Ok(ApiResponse<CbcStatusFilterResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpGet("instrument")]
         public async Task<IActionResult> GetInstrumentFilter()
         {

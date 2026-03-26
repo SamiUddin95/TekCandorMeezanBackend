@@ -143,6 +143,24 @@ namespace TekCandor.Service.Implementations
             return response;
         }
 
+        public async Task<CbcStatusFilterResponse> GetCbcStatusFilterAsync()
+        {
+            var response = new CbcStatusFilterResponse();
+
+            response.CbcStatus = await _context.CallBack
+                .AsNoTracking()
+                .Where(s => !s.IsDeleted)
+                .OrderBy(s => s.Comments)
+                .Select(s => new FilterOptionDTO
+                {
+                    Text = s.Comments ?? string.Empty,
+                    Value = s.Code ?? string.Empty
+                })
+                .ToListAsync();
+
+            return response;
+        }
+
         public async Task<InstrumentFilterResponse> GetInstrumentFilterAsync()
         {
             var response = new InstrumentFilterResponse();

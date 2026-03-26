@@ -8,6 +8,7 @@ namespace TekCandor.Service.Interfaces
         Task<BranchFilterResponse> GetBranchFilterForUserAsync(long userId);
         Task<HubFilterResponse> GetHubFilterForUserAsync(long userId);
         Task<StatusFilterResponse> GetStatusFilterAsync();
+        Task<CbcStatusFilterResponse> GetCbcStatusFilterAsync();
         Task<InstrumentFilterResponse> GetInstrumentFilterAsync();
         Task<CycleFilterResponse> GetCycleFilterAsync();
         Task<ServiceRunFilterResponse> GetServiceRunFilterAsync();
