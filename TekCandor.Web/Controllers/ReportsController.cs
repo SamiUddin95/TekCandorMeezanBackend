@@ -160,7 +160,29 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+        [HttpGet("InwardClearingReport")]
+        public async Task<IActionResult> InwardClearingReport(int pageNumber = 1, int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? status = null, string? branch = null, string? hub = null)
 
+        {
+            try
+            {
+                var result = await _service.GetInwardClearingReportAsync(
+                    pageNumber, pageSize, fromDate, toDate, status, branch, hub);
+
+                return Ok(ApiResponse<object>.Success(new
+                {
+                    items = result.Items,
+                    totalCount = result.TotalCount,
+                    pageNumber = result.PageNumber,
+                    pageSize = result.PageSize,
+                    totalPages = result.TotalPages
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
 
     }
 }

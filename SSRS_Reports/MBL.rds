@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<RptDataSource xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="MBL">
+  <ConnectionProperties>
+    <Extension>SQL</Extension>
+    <ConnectString>Data Source=175.107.195.221;Initial Catalog=MBL2</ConnectString>
+  </ConnectionProperties>
+  <DataSourceID>86b16b4d-f89e-4fc0-a4e5-211465f90d82</DataSourceID>
+</RptDataSource>

@@ -478,5 +478,92 @@ namespace TekCandor.Service.Implementations
                 PageSize = pageSize
             };
         }
+        public async Task<PagedResult<InwardClearingReportDTO>> GetInwardClearingReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? status, string? branch, string? hub)
+
+        {
+            if (pageNumber < 1) pageNumber = 1;
+            if (pageSize < 1) pageSize = 10;
+
+            var chequeQuery = await _repository.GetChequeQueryableAsync();
+            var branchQuery = await _repository.GetBranchQueryableAsync();
+            var cycleQuery = await _repository.GetCycleQueryableAsync();
+            var bankQuery = await _repository.GetBankQueryableAsync();
+
+            var query = from c in chequeQuery
+                        join b in branchQuery on c.ReceiverBranchCode equals b.NIFTBranchCode
+                        join cy in cycleQuery on c.CycleCode equals cy.Code
+                        join bk in bankQuery on c.SenderBankCode equals bk.Code into bkg
+                        from bk in bkg.DefaultIfEmpty() 
+                        where !c.IsDeleted
+                        select new
+                        {
+                            c,
+                            BranchName = b.Name,
+                            CycleName = cy.Name,
+                            BankName = bk != null ? bk.Name : null
+                        };
+
+            
+            if (string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(x => x.c.status == "A");
+            }
+            else
+            {
+                query = query.Where(x => x.c.status == status);
+            }
+
+            
+            if (fromDate.HasValue)
+            {
+                query = query.Where(x => x.c.Date >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                var toDateEnd = toDate.Value.Date.AddDays(1);
+                query = query.Where(x => x.c.Date < toDateEnd);
+            }
+
+           
+            if (!string.IsNullOrWhiteSpace(branch))
+            {
+                query = query.Where(x => x.BranchName.Contains(branch));
+            }
+
+           
+            if (!string.IsNullOrWhiteSpace(hub))
+            {
+                query = query.Where(x => x.c.CityCode.Contains(hub));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var data = await query
+                .OrderByDescending(x => x.c.Date)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var dtos = data.Select(x => new InwardClearingReportDTO
+            {
+                CoreFTId = x.c.CoreFTId,
+                AccountNumber = x.c.AccountNumber,
+                OldAccount = x.c.OldAccount,
+                Amount = x.c.Amount,
+                ApproverId = x.c.ApproverId,
+                ChequeNumber = x.c.ChequeNumber,
+                AuthorizerId = x.c.AuthorizerId,
+                TrProcORRecTime = x.c.TrProcORRecTime
+            });
+
+            return new PagedResult<InwardClearingReportDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
     }
 }
