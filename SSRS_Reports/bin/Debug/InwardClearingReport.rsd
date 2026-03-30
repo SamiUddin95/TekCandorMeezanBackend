@@ -1,0 +1,75 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSet Name="DataSet1">
+    <Query>
+      <DataSourceReference>MBL</DataSourceReference>
+      <CommandText>select ReceiverBankCode as Id,FORMAT(ChequeDepositInformation.Amount,'N') AS "Amount", ChequeDepositInformation.AccountNumber,
+ChequeDepositInformation.ApproverId,ChequeDepositInformation.CoreFTId,ChequeDepositInformation.ChequeNumber,
+ChequeDepositInformation.AccountTitle,ChequeDepositInformation.TrProcORRecTime,ChequeDepositInformation.AuthorizerId,
+Bank.Name as 'SenderbankCode',Branch.Name as 'ReceiverBranchCode', ChequeDepositInformation.OldAccount,
+Cycle.Name as 'CycleCode'
+from ChequeDepositInformation
+inner join Branch on ChequeDepositInformation.ReceiverBranchCode = Branch.NIFTBranchCode
+inner join Cycle on ChequeDepositInformation.CycleCode = Cycle.Code
+left join Bank on ChequeDepositInformation.SenderBankCode = Bank.Code
+
+  /**where**/
+
+and status = 'A'</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Id">
+        <DataField>Id</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Amount">
+        <DataField>Amount</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AccountNumber">
+        <DataField>AccountNumber</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ApproverId">
+        <DataField>ApproverId</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="CoreFTId">
+        <DataField>CoreFTId</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ChequeNumber">
+        <DataField>ChequeNumber</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AccountTitle">
+        <DataField>AccountTitle</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="TrProcORRecTime">
+        <DataField>TrProcORRecTime</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AuthorizerId">
+        <DataField>AuthorizerId</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="SenderbankCode">
+        <DataField>SenderbankCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ReceiverBranchCode">
+        <DataField>ReceiverBranchCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="OldAccount">
+        <DataField>OldAccount</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="CycleCode">
+        <DataField>CycleCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

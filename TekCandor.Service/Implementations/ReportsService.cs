@@ -69,9 +69,9 @@ namespace TekCandor.Service.Implementations
                 AccountTitle = x.c.AccountTitle,
                 Amount = x.c.Amount,
 
-                ReceiverBranchCode = x.ReturnReasonName,
+                //ReceiverBranchCode = x.ReturnReasonName,
 
-                TransactionCode = x.c.ApproverId,
+                //TransactionCode = x.c.ApproverId,
                 HubCode = x.c.AuthorizerId,
                 //Date = x.c.TrProcORRecTime
             });
@@ -85,7 +85,7 @@ namespace TekCandor.Service.Implementations
             };
         }
       
-        public async Task<PagedResult<CBCReportDTO>> GetCBCReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch)
+        public async Task<PagedResult<CBCReportDTO>> GetCBCReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch, string? accountNumber, string? status, string? hub)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -131,6 +131,18 @@ namespace TekCandor.Service.Implementations
             {
                 query = query.Where(x => x.ReturnReasonName.Contains(branch));
             }
+            if (!string.IsNullOrWhiteSpace(accountNumber))
+            {
+                query = query.Where(x => x.c.AccountNumber.Contains(accountNumber));
+            }
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(x => x.c.status == status);
+            }
+            if (!string.IsNullOrWhiteSpace(hub))
+            {
+                query = query.Where(x => x.c.AuthorizerId == hub);
+            }
 
             var totalCount = await query.CountAsync();
 
@@ -153,7 +165,8 @@ namespace TekCandor.Service.Implementations
                 IBAN = x.c.IBAN,
                 AccountTitle = x.c.AccountTitle,
                 Remarks = x.c.Remarks,
-                BranchStaffId = x.c.BranchStaffId
+                BranchStaffId = x.c.BranchStaffId,
+                CBCStatus=x.c.status
             });
 
             return new PagedResult<CBCReportDTO>
@@ -173,6 +186,7 @@ namespace TekCandor.Service.Implementations
 
             var chequeQuery = await _repository.GetChequeQueryableAsync();
             var returnReasonQuery = await _repository.GetReturnReasonQueryableAsync();
+
 
             var query = from c in chequeQuery
                         join r in returnReasonQuery
@@ -231,7 +245,7 @@ namespace TekCandor.Service.Implementations
             };
         }
        
-        public async Task<PagedResult<ReturnMemoReportDTO>> GetReturnMemoReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch)
+        public async Task<PagedResult<ReturnMemoReportDTO>> GetReturnMemoReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch,string? chequenumber,string? accountnumber)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -269,6 +283,15 @@ namespace TekCandor.Service.Implementations
             {
                 query = query.Where(x => x.ReturnReasonName.Contains(branch));
             }
+            if (!string.IsNullOrWhiteSpace(chequenumber))
+            {
+                query = query.Where(x => x.c.ChequeNumber.Contains(chequenumber));
+            }
+            if (!string.IsNullOrWhiteSpace(accountnumber))
+            {
+                query = query.Where(x => x.c.AccountNumber.Contains(accountnumber));
+            }
+
 
             var totalCount = await query.CountAsync();
 

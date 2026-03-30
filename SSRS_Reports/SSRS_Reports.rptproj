@@ -50,14 +50,24 @@
   </PropertyGroup>
   <ItemGroup>
     <DataSet Include="BranchWiseReport.rsd" />
+    <DataSet Include="CBCReport.rsd" />
+    <DataSet Include="ClearingLogReport.rsd" />
     <DataSet Include="FinalReport.rsd" />
+    <DataSet Include="InwardClearingReport.rsd" />
+    <DataSet Include="ReturnMemoReport.rsd" />
+    <DataSet Include="ReturnRegisterReport.rsd" />
   </ItemGroup>
   <ItemGroup>
     <DataSource Include="MBL.rds" />
   </ItemGroup>
   <ItemGroup>
     <Report Include="BranchWise.rdl" />
+    <Report Include="CBCReport.rdl" />
+    <Report Include="ClearingLogReport.rdl" />
     <Report Include="FinalReport.rdl" />
+    <Report Include="InwardClearingReport.rdl" />
+    <Report Include="RetrunMemoReport.rdl" />
+    <Report Include="RetrunRegisterReport.rdl" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Reporting Services\Microsoft.ReportingServices.MSBuilder.targets" />
 </Project>

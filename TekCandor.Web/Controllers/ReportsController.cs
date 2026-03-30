@@ -42,13 +42,13 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet("CBCReport")]
-        public async Task<IActionResult> CBCReport(int pageNumber = 1,int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? branch = null)
+        public async Task<IActionResult> CBCReport(int pageNumber = 1,int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? branch = null, string? accountNumber = null, string? status = null, string? hub = null)
 
         {
             try
             {
                 var result = await _service.GetCBCReportAsync(
-                    pageNumber, pageSize, fromDate, toDate, branch);
+                    pageNumber, pageSize, fromDate, toDate, branch,accountNumber,status,hub);
 
                 return Ok(ApiResponse<object>.Success(new
                 {
@@ -90,13 +90,13 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet("ReturnMemoReport")]
-        public async Task<IActionResult> ReturnMemoReport(int pageNumber = 1, int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? branch = null)
+        public async Task<IActionResult> ReturnMemoReport(int pageNumber = 1, int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? branch = null,string? chequeNumber = null,string? accountnumber=null )
 
         {
             try
             {
                 var result = await _service.GetReturnMemoReportAsync(
-                    pageNumber, pageSize, fromDate, toDate, branch);
+                    pageNumber, pageSize, fromDate, toDate, branch,chequeNumber,accountnumber);
 
                 return Ok(ApiResponse<object>.Success(new
                 {

@@ -18,6 +18,8 @@ namespace TekCandor.Service.Models
         public string? AccountTitle { get; set; }
         public string? Remarks { get; set; }
         public string? BranchStaffId { get; set; }
+        public string? CBCStatus { get; set; }
+
 
     }
 }

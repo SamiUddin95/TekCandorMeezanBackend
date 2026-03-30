@@ -1,0 +1,64 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSet Name="DataSet1">
+    <Query>
+      <DataSourceReference>MBL</DataSourceReference>
+      <CommandText>select FORMAT(ChequeDepositInformation.Amount,'N') AS "Amount", ChequeDepositInformation.AccountNumber,
+ChequeDepositInformation.ApproverId,ChequeDepositInformation.CoreFTId,ChequeDepositInformation.ChequeNumber,
+ChequeDepositInformation.AccountTitle,ChequeDepositInformation.TrProcORRecTime,Bank.Name as "SenderBankCode",
+Branch.Name as "OldAccount", Cycle.Name as "CycleCode", ReturnReason.Name 'Returnreasone' from ChequeDepositInformation
+inner join Branch on ChequeDepositInformation.ReceiverBranchCode = Branch.NIFTBranchCode
+inner join Cycle on ChequeDepositInformation.CycleCode = Cycle.Code
+inner join Bank on ChequeDepositInformation.SenderBankCode = Bank.Code
+inner join ReturnReason on ChequeDepositInformation.Returnreasone = ReturnReason.code
+/**where**/
+and status = 'R'</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Amount">
+        <DataField>Amount</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AccountNumber">
+        <DataField>AccountNumber</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ApproverId">
+        <DataField>ApproverId</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="CoreFTId">
+        <DataField>CoreFTId</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ChequeNumber">
+        <DataField>ChequeNumber</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AccountTitle">
+        <DataField>AccountTitle</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="TrProcORRecTime">
+        <DataField>TrProcORRecTime</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="SenderBankCode">
+        <DataField>SenderBankCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="OldAccount">
+        <DataField>OldAccount</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="CycleCode">
+        <DataField>CycleCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Returnreasone">
+        <DataField>Returnreasone</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

@@ -16,8 +16,8 @@ namespace TekCandor.Service.Models
         //public string? SenderBankCode { get; set; }
         //public string? SenderBranchCode { get; set; }
         //public string? ReceiverBankCode { get; set; }
-        public string? ReceiverBranchCode { get; set; }
-        public string? TransactionCode { get; set; }
+        //public string? ReceiverBranchCode { get; set; }
+        //public string? TransactionCode { get; set; }
         //public DateTime? Date { get; set; }
         //public string? code { get; set; }
         //public string? TrProcORRecTime { get; set; }

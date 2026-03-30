@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSet Name="DataSet1">
+    <Query>
+      <DataSourceReference>MBL</DataSourceReference>
+      <CommandText>Select FORMAT(ChequeDepositInformation.Amount,'N') AS "Amount",ChequeDepositInformation.AccountNumber,ChequeDepositInformation.Date,ChequeDepositInformation.OldAccount,
+ChequeDepositInformation.CoreFTId,ChequeDepositInformation.HubCode as "CityCode", ChequeDepositInformation.TrProcORRecTime,
+ChequeDepositInformation.SenderBranchCode,ChequeDepositInformation.TrRecTimeBranch,ChequeDepositInformation.BranchRemarks,
+ChequeDepositInformation.ChequeNumber,ChequeDepositInformation.AccountTitle,
+ChequeDepositInformation.SenderBankCode as "ReceiverBankCode", ChequeDepositInformation.Remarks, Bank.Name as "SenderbankCode",
+ChequeDepositInformation.ReceiverBranchCode as "ReceiverBranchCode", ChequeDepositInformation.ApproverId,
+ChequeDepositInformation.AuthorizerId,ChequeDepositInformation.BranchStaffId, Cycle.Name as "CycleCode",
+ReturnReason.Name as "Returnreasone" from ChequeDepositInformation
+inner join Branch on ChequeDepositInformation.ReceiverBranchCode = Branch.NIFTBranchCode
+inner join Cycle on ChequeDepositInformation.CycleCode = Cycle.Code
+inner join Bank on ChequeDepositInformation.SenderBankCode = Bank.Code
+left join ReturnReason on ChequeDepositInformation.Returnreasone= ReturnReason.code
+/**where**/
+--and status = 'R'
+and CoreFTId is not null</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Amount">
+        <DataField>Amount</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AccountNumber">
+        <DataField>AccountNumber</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Date">
+        <DataField>Date</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="OldAccount">
+        <DataField>OldAccount</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="CoreFTId">
+        <DataField>CoreFTId</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="CityCode">
+        <DataField>CityCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="TrProcORRecTime">
+        <DataField>TrProcORRecTime</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="SenderBranchCode">
+        <DataField>SenderBranchCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="TrRecTimeBranch">
+        <DataField>TrRecTimeBranch</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="BranchRemarks">
+        <DataField>BranchRemarks</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ChequeNumber">
+        <DataField>ChequeNumber</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AccountTitle">
+        <DataField>AccountTitle</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ReceiverBankCode">
+        <DataField>ReceiverBankCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Remarks">
+        <DataField>Remarks</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="SenderbankCode">
+        <DataField>SenderbankCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ReceiverBranchCode">
+        <DataField>ReceiverBranchCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ApproverId">
+        <DataField>ApproverId</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AuthorizerId">
+        <DataField>AuthorizerId</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="BranchStaffId">
+        <DataField>BranchStaffId</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="CycleCode">
+        <DataField>CycleCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Returnreasone">
+        <DataField>Returnreasone</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

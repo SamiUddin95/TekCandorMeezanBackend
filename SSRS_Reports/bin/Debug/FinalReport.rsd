@@ -3,8 +3,7 @@
   <DataSet Name="DataSet1">
     <Query>
       <DataSourceReference>MBL</DataSourceReference>
-      <CommandText>
-select ChequeNumber,AccountNumber,AccountTitle,Amount,ReturnReason.Name as "ReceiverBranchCode",ChequeDepositInformation.ApproverId as "TransactionCode",ChequeDepositInformation.AuthorizerId as "HubCode",ChequeDepositInformation.TrProcORRecTime as "Date" from ChequeDepositInformation  left join ReturnReason on ChequeDepositInformation.Returnreasone=ReturnReason.code  /**where**/</CommandText>
+      <CommandText>select ChequeNumber,AccountNumber,AccountTitle,Amount,ReturnReason.Name as "ReceiverBranchCode",ChequeDepositInformation.ApproverId as "TransactionCode",ChequeDepositInformation.AuthorizerId as "HubCode",ChequeDepositInformation.TrProcORRecTime as "Date" from ChequeDepositInformation  left join ReturnReason on ChequeDepositInformation.Returnreasone=ReturnReason.code  /**where**/</CommandText>
     </Query>
     <Fields>
       <Field Name="ChequeNumber">
