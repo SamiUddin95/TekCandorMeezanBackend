@@ -3,7 +3,44 @@
   <DataSet Name="DataSet1">
     <Query>
       <DataSourceReference>MBL</DataSourceReference>
-      <CommandText>select ChequeNumber,AccountNumber,AccountTitle,Amount,ReturnReason.Name as "ReceiverBranchCode",ChequeDepositInformation.ApproverId as "TransactionCode",ChequeDepositInformation.AuthorizerId as "HubCode",ChequeDepositInformation.TrProcORRecTime as "Date" from ChequeDepositInformation  left join ReturnReason on ChequeDepositInformation.Returnreasone=ReturnReason.code  /**where**/</CommandText>
+      <DataSetParameters>
+        <DataSetParameter Name="@DateFrom">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>DateTime</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@DateTo">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>DateTime</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@Branch">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>String</rd:DbType>
+        </DataSetParameter>
+      </DataSetParameters>
+      <CommandText>SELECT 
+    ChequeNumber,
+    AccountNumber,
+    AccountTitle,
+    Amount,
+    ReturnReason.Name AS "ReceiverBranchCode",
+    ChequeDepositInformation.ApproverId AS "TransactionCode",
+    ChequeDepositInformation.AuthorizerId AS "HubCode",
+    ChequeDepositInformation.TrProcORRecTime AS "Date"
+FROM 
+    ChequeDepositInformation
+LEFT JOIN 
+    ReturnReason 
+    ON ChequeDepositInformation.Returnreasone = ReturnReason.code
+WHERE
+    (@DateFrom IS NULL OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= @DateFrom)
+    AND (@DateTo IS NULL OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= @DateTo)
+    AND (@Branch IS NULL OR ChequeDepositInformation.AuthorizerId = @Branch)</CommandText>
     </Query>
     <Fields>
       <Field Name="ChequeNumber">
