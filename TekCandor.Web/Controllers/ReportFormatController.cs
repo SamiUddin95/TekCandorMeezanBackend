@@ -38,6 +38,138 @@ namespace TekCandor.Web.Controllers
 
             return File(bytes, contentType, safeName);
         }
+        [HttpPost("CBCReport")]
+        public async Task<IActionResult> CBCReport([FromBody] ReportRenderRequest request, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var (bytes, contentType, ext) = await _renderService.RenderAsync(
+                request.ReportPath,
+                request.Format ?? "PDF",
+                request.Parameters,
+                ct);
+
+            var safeName = string.IsNullOrWhiteSpace(request.FileName)
+                ? SlugFromPath(request.ReportPath) + ext
+                : request.FileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)
+                    ? request.FileName
+                    : request.FileName + ext;
+
+            return File(bytes, contentType, safeName);
+        }
+        [HttpPost("ClearingLogReport")]
+        public async Task<IActionResult> ClearingLogReport([FromBody] ReportRenderRequest request, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var (bytes, contentType, ext) = await _renderService.RenderAsync(
+                request.ReportPath,
+                request.Format ?? "PDF",
+                request.Parameters,
+                ct);
+
+            var safeName = string.IsNullOrWhiteSpace(request.FileName)
+                ? SlugFromPath(request.ReportPath) + ext
+                : request.FileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)
+                    ? request.FileName
+                    : request.FileName + ext;
+
+            return File(bytes, contentType, safeName);
+        }
+        [HttpPost("FinalReport")]
+        public async Task<IActionResult> FinalReport([FromBody] ReportRenderRequest request, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var (bytes, contentType, ext) = await _renderService.RenderAsync(
+                request.ReportPath,
+                request.Format ?? "PDF",
+                request.Parameters,
+                ct);
+
+            var safeName = string.IsNullOrWhiteSpace(request.FileName)
+                ? SlugFromPath(request.ReportPath) + ext
+                : request.FileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)
+                    ? request.FileName
+                    : request.FileName + ext;
+
+            return File(bytes, contentType, safeName);
+        }
+        [HttpPost("InwardClearingReport")]
+        public async Task<IActionResult> InwardClearingReport([FromBody] ReportRenderRequest request, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var (bytes, contentType, ext) = await _renderService.RenderAsync(
+                request.ReportPath,
+                request.Format ?? "PDF",
+                request.Parameters,
+                ct);
+
+            var safeName = string.IsNullOrWhiteSpace(request.FileName)
+                ? SlugFromPath(request.ReportPath) + ext
+                : request.FileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)
+                    ? request.FileName
+                    : request.FileName + ext;
+
+            return File(bytes, contentType, safeName);
+        }
+        [HttpPost("ReturnMemoReport")]
+        public async Task<IActionResult> ReturnMemoReport([FromBody] ReportRenderRequest request, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var (bytes, contentType, ext) = await _renderService.RenderAsync(
+                request.ReportPath,
+                request.Format ?? "PDF",
+                request.Parameters,
+                ct);
+
+            var safeName = string.IsNullOrWhiteSpace(request.FileName)
+                ? SlugFromPath(request.ReportPath) + ext
+                : request.FileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)
+                    ? request.FileName
+                    : request.FileName + ext;
+
+            return File(bytes, contentType, safeName);
+        }
+        [HttpPost("ReturnRegisterReport")]
+        public async Task<IActionResult> ReturnRegisterReport([FromBody] ReportRenderRequest request, CancellationToken ct)
+        {
+            if (!ModelState.IsValid)
+            {
+                return ValidationProblem(ModelState);
+            }
+
+            var (bytes, contentType, ext) = await _renderService.RenderAsync(
+                request.ReportPath,
+                request.Format ?? "PDF",
+                request.Parameters,
+                ct);
+
+            var safeName = string.IsNullOrWhiteSpace(request.FileName)
+                ? SlugFromPath(request.ReportPath) + ext
+                : request.FileName.EndsWith(ext, StringComparison.OrdinalIgnoreCase)
+                    ? request.FileName
+                    : request.FileName + ext;
+
+            return File(bytes, contentType, safeName);
+        }
 
         private static string SlugFromPath(string path)
         {

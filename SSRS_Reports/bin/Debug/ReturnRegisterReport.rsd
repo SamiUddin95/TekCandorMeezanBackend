@@ -3,16 +3,24 @@
   <DataSet Name="DataSet1">
     <Query>
       <DataSourceReference>MBL</DataSourceReference>
-      <CommandText>select FORMAT(ChequeDepositInformation.Amount,'N') AS "Amount", ChequeDepositInformation.AccountNumber,
-ChequeDepositInformation.ApproverId,ChequeDepositInformation.CoreFTId,ChequeDepositInformation.ChequeNumber,
-ChequeDepositInformation.AccountTitle,ChequeDepositInformation.TrProcORRecTime,Bank.Name as "SenderBankCode",
-Branch.Name as "OldAccount", Cycle.Name as "CycleCode", ReturnReason.Name 'Returnreasone' from ChequeDepositInformation
-inner join Branch on ChequeDepositInformation.ReceiverBranchCode = Branch.NIFTBranchCode
-inner join Cycle on ChequeDepositInformation.CycleCode = Cycle.Code
-inner join Bank on ChequeDepositInformation.SenderBankCode = Bank.Code
-inner join ReturnReason on ChequeDepositInformation.Returnreasone = ReturnReason.code
-/**where**/
-and status = 'R'</CommandText>
+      <CommandText>SELECT 
+    FORMAT(CDI.Amount,'N') AS Amount,
+    CDI.AccountNumber,
+    CDI.ApproverId,
+    CDI.CoreFTId,
+    CDI.ChequeNumber,
+    CDI.AccountTitle,
+    CDI.TrProcORRecTime,
+    B.Name AS SenderBankCode,
+    BR.Name AS OldAccount,
+    C.Name AS CycleCode,
+    RR.Name AS ReturnReason
+FROM ChequeDepositInformation CDI
+INNER JOIN Branch BR ON CDI.ReceiverBranchCode = BR.NIFTBranchCode
+INNER JOIN Cycle C ON CDI.CycleCode = C.Code
+INNER JOIN Bank B ON CDI.SenderBankCode = B.Code
+INNER JOIN ReturnReason RR ON CDI.Returnreasone = RR.Code
+WHERE CDI.Status = 'R'</CommandText>
     </Query>
     <Fields>
       <Field Name="Amount">
@@ -55,8 +63,8 @@ and status = 'R'</CommandText>
         <DataField>CycleCode</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
-      <Field Name="Returnreasone">
-        <DataField>Returnreasone</DataField>
+      <Field Name="ReturnReason">
+        <DataField>ReturnReason</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
     </Fields>
