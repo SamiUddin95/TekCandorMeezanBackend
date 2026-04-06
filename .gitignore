@@ -39,3 +39,8 @@
 /.vs/TekCandor/config/applicationhost.config
 /TekCandor.Web/appsettings.json
 /TekCandor.Web/appsettings.json
+/.vs/TekCandor/CopilotIndices/18.0.981.45449/CodeChunks.db-shm
+/.vs/TekCandor/CopilotIndices/18.0.981.45449/CodeChunks.db-wal
+/.vs/TekCandor/CopilotIndices/18.0.981.45449/SemanticSymbols.db-shm
+/.vs/TekCandor/CopilotIndices/18.0.981.45449/SemanticSymbols.db-wal
+/TekCandor.Repository/Interfaces/DashboardDTO.cs

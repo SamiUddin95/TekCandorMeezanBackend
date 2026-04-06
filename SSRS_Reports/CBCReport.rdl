@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>18.1.11312.151</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2026-03-31T06:55:40.4696769Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-04-03T13:29:37.8187552Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -17,6 +17,26 @@
     <DataSet Name="DataSet1">
       <SharedDataSet>
         <SharedDataSetReference>CBCReport</SharedDataSetReference>
+        <QueryParameters>
+          <QueryParameter Name="@DateFrom">
+            <Value>=Parameters!DateFrom.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@DateTo">
+            <Value>=Parameters!DateTo.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@BranchCode">
+            <Value>=Parameters!BranchCode.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@AccountNumber">
+            <Value>=Parameters!AccountNumber.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Status">
+            <Value>=Parameters!Status.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@HubCode">
+            <Value>=Parameters!HubCode.Value</Value>
+          </QueryParameter>
+        </QueryParameters>
       </SharedDataSet>
       <Fields>
         <Field Name="ChequeNumber">
@@ -53,6 +73,10 @@
         </Field>
         <Field Name="Date">
           <DataField>Date</DataField>
+          <rd:TypeName>System.String</rd:TypeName>
+        </Field>
+        <Field Name="Status">
+          <DataField>Status</DataField>
           <rd:TypeName>System.String</rd:TypeName>
         </Field>
       </Fields>
@@ -739,17 +763,52 @@
             <DataSetName>DataSet1</DataSetName>
             <Filters>
               <Filter>
-                <FilterExpression>=Fields!ChequeNumber.Value</FilterExpression>
+                <FilterExpression>=Fields!Date.Value</FilterExpression>
                 <Operator>Equal</Operator>
                 <FilterValues>
-                  <FilterValue>=Parameters!ChequeNumber.Value</FilterValue>
+                  <FilterValue>=Parameters!DateFrom.Value</FilterValue>
+                </FilterValues>
+              </Filter>
+              <Filter>
+                <FilterExpression>=Fields!Date.Value</FilterExpression>
+                <Operator>Equal</Operator>
+                <FilterValues>
+                  <FilterValue>=Parameters!DateTo.Value</FilterValue>
+                </FilterValues>
+              </Filter>
+              <Filter>
+                <FilterExpression>=Fields!AccountNumber.Value</FilterExpression>
+                <Operator>Equal</Operator>
+                <FilterValues>
+                  <FilterValue>=Parameters!AccountNumber.Value</FilterValue>
+                </FilterValues>
+              </Filter>
+              <Filter>
+                <FilterExpression>=Fields!ReceiverBranchCode.Value</FilterExpression>
+                <Operator>Equal</Operator>
+                <FilterValues>
+                  <FilterValue>=Parameters!BranchCode.Value</FilterValue>
+                </FilterValues>
+              </Filter>
+              <Filter>
+                <FilterExpression>=Fields!Status.Value</FilterExpression>
+                <Operator>Equal</Operator>
+                <FilterValues>
+                  <FilterValue>=Parameters!Status.Value</FilterValue>
+                </FilterValues>
+              </Filter>
+              <Filter>
+                <FilterExpression>=Fields!HubCode.Value</FilterExpression>
+                <Operator>Equal</Operator>
+                <FilterValues>
+                  <FilterValue>=Parameters!HubCode.Value</FilterValue>
                 </FilterValues>
               </Filter>
             </Filters>
             <Top>0.14111cm</Top>
             <Left>0.2577cm</Left>
             <Height>1.2cm</Height>
-            <Width>20.20933cm</Width>
+            <Width>20.20934cm</Width>
             <Style>
               <Border>
                 <Style>None</Style>
@@ -763,7 +822,7 @@
       <Width>9.30493in</Width>
       <Page>
         <PageHeader>
-          <Height>2.54cm</Height>
+          <Height>3.9cm</Height>
           <PrintOnFirstPage>true</PrintOnFirstPage>
           <PrintOnLastPage>true</PrintOnLastPage>
           <ReportItems>
@@ -799,6 +858,251 @@
                 <PaddingBottom>2pt</PaddingBottom>
               </Style>
             </Textbox>
+            <Textbox Name="CBCFilterDateFrom">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Date From: </Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=IIF(IsNothing(Parameters!DateFrom.Value) OR Parameters!DateFrom.Value = "", "All", Parameters!DateFrom.Value)</Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>CBCFilterDateFrom</rd:DefaultName>
+              <Top>2.9cm</Top>
+              <Height>0.6cm</Height>
+              <Width>4.2cm</Width>
+              <ZIndex>1</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="CBCFilterDateTo">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Date To: </Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=IIF(IsNothing(Parameters!DateTo.Value) OR Parameters!DateTo.Value = "", "All", Parameters!DateTo.Value)</Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>CBCFilterDateTo</rd:DefaultName>
+              <Top>2.9cm</Top>
+              <Left>4.3cm</Left>
+              <Height>0.6cm</Height>
+              <Width>4.2cm</Width>
+              <ZIndex>2</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="CBCFilterBranch">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Branch: </Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=IIF(IsNothing(Parameters!BranchCode.Value) OR Parameters!BranchCode.Value = "", "All", Parameters!BranchCode.Value)</Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>CBCFilterBranch</rd:DefaultName>
+              <Top>2.9cm</Top>
+              <Left>8.6cm</Left>
+              <Height>0.6cm</Height>
+              <Width>4.2cm</Width>
+              <ZIndex>3</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="CBCFilterAccount">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Account No: </Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=IIF(IsNothing(Parameters!AccountNumber.Value) OR Parameters!AccountNumber.Value = "", "All", Parameters!AccountNumber.Value)</Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>CBCFilterAccount</rd:DefaultName>
+              <Top>2.9cm</Top>
+              <Left>12.9cm</Left>
+              <Height>0.6cm</Height>
+              <Width>4.2cm</Width>
+              <ZIndex>4</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="CBCFilterStatus">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Status: </Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=IIF(IsNothing(Parameters!Status.Value) OR Parameters!Status.Value = "", "All", Parameters!Status.Value)</Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>CBCFilterStatus</rd:DefaultName>
+              <Top>2.9cm</Top>
+              <Left>17.2cm</Left>
+              <Height>0.6cm</Height>
+              <Width>4.2cm</Width>
+              <ZIndex>5</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
+            <Textbox Name="CBCFilterHub">
+              <CanGrow>true</CanGrow>
+              <KeepTogether>true</KeepTogether>
+              <Paragraphs>
+                <Paragraph>
+                  <TextRuns>
+                    <TextRun>
+                      <Value>Hub: </Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                        <FontWeight>Bold</FontWeight>
+                      </Style>
+                    </TextRun>
+                    <TextRun>
+                      <Value>=IIF(IsNothing(Parameters!HubCode.Value) OR Parameters!HubCode.Value = "", "All", Parameters!HubCode.Value)</Value>
+                      <Style>
+                        <FontFamily>Arial</FontFamily>
+                        <FontSize>8pt</FontSize>
+                      </Style>
+                    </TextRun>
+                  </TextRuns>
+                  <Style />
+                </Paragraph>
+              </Paragraphs>
+              <rd:DefaultName>CBCFilterHub</rd:DefaultName>
+              <Top>2.9cm</Top>
+              <Left>21.5cm</Left>
+              <Height>0.6cm</Height>
+              <Width>4.2cm</Width>
+              <ZIndex>6</ZIndex>
+              <Style>
+                <Border>
+                  <Style>None</Style>
+                </Border>
+                <PaddingLeft>2pt</PaddingLeft>
+                <PaddingRight>2pt</PaddingRight>
+                <PaddingTop>2pt</PaddingTop>
+                <PaddingBottom>2pt</PaddingBottom>
+              </Style>
+            </Textbox>
             <Image Name="Image1">
               <Source>Embedded</Source>
               <Value>Meezan_Bank_Logo</Value>
@@ -807,7 +1111,7 @@
               <Left>11.54352cm</Left>
               <Height>1.9445cm</Height>
               <Width>6.98216cm</Width>
-              <ZIndex>1</ZIndex>
+              <ZIndex>7</ZIndex>
               <Style>
                 <Border>
                   <Style>None</Style>
@@ -833,11 +1137,71 @@
     </ReportSection>
   </ReportSections>
   <ReportParameters>
-    <ReportParameter Name="ChequeNumber">
+    <ReportParameter Name="DateFrom">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
       <AllowBlank>true</AllowBlank>
-      <Prompt>Enter a Cheque Number</Prompt>
+      <Prompt>Date From</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="DateTo">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Date To</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="AccountNumber">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Account Number</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="BranchCode">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Branch</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="HubCode">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Hub</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Status">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Status</Prompt>
     </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
@@ -847,8 +1211,33 @@
       <CellDefinitions>
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>DateFrom</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>DateTo</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>AccountNumber</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>BranchCode</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
           <RowIndex>1</RowIndex>
-          <ParameterName>ChequeNumber</ParameterName>
+          <ParameterName>HubCode</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>Status</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>

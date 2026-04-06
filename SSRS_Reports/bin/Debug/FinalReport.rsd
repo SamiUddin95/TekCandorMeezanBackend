@@ -3,7 +3,49 @@
   <DataSet Name="DataSet1">
     <Query>
       <DataSourceReference>MBL</DataSourceReference>
-      <CommandText>select ChequeNumber,AccountNumber,AccountTitle,Amount,ReturnReason.Name as "ReceiverBranchCode",ChequeDepositInformation.ApproverId as "TransactionCode",ChequeDepositInformation.AuthorizerId as "HubCode",ChequeDepositInformation.TrProcORRecTime as "Date" from ChequeDepositInformation  left join ReturnReason on ChequeDepositInformation.Returnreasone=ReturnReason.code  /**where**/</CommandText>
+      <DataSetParameters>
+        <DataSetParameter Name="@FromDate">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@ToDate">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@BranchCode">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@CycleCode">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+      </DataSetParameters>
+      <CommandText>SELECT 
+    ChequeNumber,
+    AccountNumber,
+    AccountTitle,
+    Amount,
+    ReturnReason.Name AS "ReceiverBranchCode",
+    ChequeDepositInformation.ApproverId AS "TransactionCode",
+    ChequeDepositInformation.AuthorizerId AS "HubCode",
+    ChequeDepositInformation.TrProcORRecTime AS "Date",
+    ChequeDepositInformation.CycleCode AS "CycleCode"
+FROM ChequeDepositInformation 
+LEFT JOIN ReturnReason ON ChequeDepositInformation.Returnreasone = ReturnReason.code
+WHERE
+    (@FromDate IS NULL OR @FromDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@FromDate AS DATE))
+    AND (@ToDate IS NULL OR @ToDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@ToDate AS DATE))
+    AND (@BranchCode IS NULL OR @BranchCode = '' OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode)
+    AND (@CycleCode IS NULL OR @CycleCode = '' OR ChequeDepositInformation.CycleCode = @CycleCode)</CommandText>
     </Query>
     <Fields>
       <Field Name="ChequeNumber">
@@ -36,6 +78,10 @@
       </Field>
       <Field Name="Date">
         <DataField>Date</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="CycleCode">
+        <DataField>CycleCode</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
     </Fields>

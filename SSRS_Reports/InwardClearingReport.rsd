@@ -3,19 +3,77 @@
   <DataSet Name="DataSet1">
     <Query>
       <DataSourceReference>MBL</DataSourceReference>
-      <CommandText>select ReceiverBankCode as Id,FORMAT(ChequeDepositInformation.Amount,'N') AS "Amount", ChequeDepositInformation.AccountNumber,
-ChequeDepositInformation.ApproverId,ChequeDepositInformation.CoreFTId,ChequeDepositInformation.ChequeNumber,
-ChequeDepositInformation.AccountTitle,ChequeDepositInformation.TrProcORRecTime,ChequeDepositInformation.AuthorizerId,
-Bank.Name as 'SenderbankCode',Branch.Name as 'ReceiverBranchCode', ChequeDepositInformation.OldAccount,
-Cycle.Name as 'CycleCode'
-from ChequeDepositInformation
-inner join Branch on ChequeDepositInformation.ReceiverBranchCode = Branch.NIFTBranchCode
-inner join Cycle on ChequeDepositInformation.CycleCode = Cycle.Code
-left join Bank on ChequeDepositInformation.SenderBankCode = Bank.Code
-
-  /**where**/
-
-and status = 'A'</CommandText>
+      <DataSetParameters>
+        <DataSetParameter Name="@FromDate">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@ToDate">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@ChequeNumber">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@BranchCode">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@AccountNumber">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@Status">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@HubCode">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+      </DataSetParameters>
+      <CommandText>SELECT 
+    ReceiverBankCode AS Id,
+    FORMAT(ChequeDepositInformation.Amount,'N') AS "Amount",
+    ChequeDepositInformation.AccountNumber,
+    ChequeDepositInformation.ApproverId,
+    ChequeDepositInformation.CoreFTId,
+    ChequeDepositInformation.ChequeNumber,
+    ChequeDepositInformation.AccountTitle,
+    ChequeDepositInformation.TrProcORRecTime,
+    ChequeDepositInformation.AuthorizerId,
+    Bank.Name AS 'SenderbankCode',
+    Branch.Name AS 'ReceiverBranchCode',
+    ChequeDepositInformation.OldAccount,
+    Cycle.Name AS 'CycleCode',
+    ChequeDepositInformation.Status
+FROM ChequeDepositInformation
+INNER JOIN Branch ON ChequeDepositInformation.ReceiverBranchCode = Branch.NIFTBranchCode
+INNER JOIN Cycle ON ChequeDepositInformation.CycleCode = Cycle.Code
+LEFT JOIN Bank ON ChequeDepositInformation.SenderBankCode = Bank.Code
+WHERE
+    (@FromDate IS NULL OR @FromDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@FromDate AS DATE))
+    AND (@ToDate IS NULL OR @ToDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@ToDate AS DATE))
+    AND (@ChequeNumber IS NULL OR @ChequeNumber = '' OR ChequeDepositInformation.ChequeNumber = @ChequeNumber)
+    AND (@BranchCode IS NULL OR @BranchCode = '' OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode)
+    AND (@AccountNumber IS NULL OR @AccountNumber = '' OR ChequeDepositInformation.AccountNumber = @AccountNumber)
+    AND (@Status IS NULL OR @Status = '' OR ChequeDepositInformation.Status = @Status)
+    AND (@HubCode IS NULL OR @HubCode = '' OR ChequeDepositInformation.AuthorizerId = @HubCode)</CommandText>
     </Query>
     <Fields>
       <Field Name="Id">
@@ -68,6 +126,10 @@ and status = 'A'</CommandText>
       </Field>
       <Field Name="CycleCode">
         <DataField>CycleCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Status">
+        <DataField>Status</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
     </Fields>

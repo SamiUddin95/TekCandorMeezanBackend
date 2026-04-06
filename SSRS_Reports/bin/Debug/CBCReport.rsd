@@ -3,13 +3,62 @@
   <DataSet Name="DataSet1">
     <Query>
       <DataSourceReference>MBL</DataSourceReference>
+      <DataSetParameters>
+        <DataSetParameter Name="@DateFrom">
+          <DefaultValue>Value: =Parameters!DateFrom.Value</DefaultValue>
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>DateTime</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@DateTo">
+          <DefaultValue>Value: =Parameters!DateTo.Value</DefaultValue>
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>DateTime</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@BranchCode">
+          <DefaultValue>Value: =Parameters!BranchCode.Value</DefaultValue>
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>String</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@AccountNumber">
+          <DefaultValue>Value: =Parameters!AccountNumber.Value</DefaultValue>
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>String</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@Status">
+          <DefaultValue>Value: =Parameters!Status.Value</DefaultValue>
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Boolean</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@HubCode">
+          <DefaultValue>Value: =Parameters!HubCode.Value</DefaultValue>
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Int32</rd:DbType>
+        </DataSetParameter>
+      </DataSetParameters>
       <CommandText>select ChequeNumber,AccountNumber,Returnreasone,AccountTitle,Amount,ReturnReason.Name as "ReceiverBranchCode",
  ChequeDepositInformation.ApproverId as "TransactionCode",ChequeDepositInformation.AuthorizerId as "HubCode",
  ChequeDepositInformation.TrProcORRecTime as "Date" from ChequeDepositInformation  
  left join ReturnReason on ChequeDepositInformation.Returnreasone=ReturnReason.code 
-  /**where**/
-
-and Amount &gt;=(select value from Setting where Name = 'generalsettings.callbackamount')</CommandText>
+WHERE
+    Amount &gt;= (SELECT value FROM Setting WHERE Name = 'generalsettings.callbackamount')
+    AND (@DateFrom IS NULL OR @DateFrom = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@DateFrom AS DATE))
+    AND (@DateTo IS NULL OR @DateTo = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@DateTo AS DATE))
+    AND (@BranchCode IS NULL OR @BranchCode = '' OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode)
+    AND (@AccountNumber IS NULL OR @AccountNumber = '' OR ChequeDepositInformation.AccountNumber = @AccountNumber)
+    AND (@Status IS NULL OR @Status = '' OR ChequeDepositInformation.Status = @Status)
+    AND (@HubCode IS NULL OR @HubCode = '' OR ChequeDepositInformation.AuthorizerId = @HubCode)</CommandText>
     </Query>
     <Fields>
       <Field Name="ChequeNumber">

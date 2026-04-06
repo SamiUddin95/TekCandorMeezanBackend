@@ -3,6 +3,44 @@
   <DataSet Name="DataSet1">
     <Query>
       <DataSourceReference>MBL</DataSourceReference>
+      <DataSetParameters>
+        <DataSetParameter Name="@FromDate">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@ToDate">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@AccountNumber">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@BranchCode">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@Status">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@CycleCode">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>false</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+      </DataSetParameters>
       <CommandText>SELECT 
     FORMAT(CDI.Amount,'N') AS Amount,
     CDI.AccountNumber,
@@ -14,13 +52,20 @@
     B.Name AS SenderBankCode,
     BR.Name AS OldAccount,
     C.Name AS CycleCode,
-    RR.Name AS ReturnReason
+    RR.Name AS ReturnReason,
+    CDI.Status
 FROM ChequeDepositInformation CDI
 INNER JOIN Branch BR ON CDI.ReceiverBranchCode = BR.NIFTBranchCode
 INNER JOIN Cycle C ON CDI.CycleCode = C.Code
 INNER JOIN Bank B ON CDI.SenderBankCode = B.Code
 INNER JOIN ReturnReason RR ON CDI.Returnreasone = RR.Code
-WHERE CDI.Status = 'R'</CommandText>
+WHERE
+    (@FromDate IS NULL OR @FromDate = '' OR CAST(CDI.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@FromDate AS DATE))
+    AND (@ToDate IS NULL OR @ToDate = '' OR CAST(CDI.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@ToDate AS DATE))
+    AND (@AccountNumber IS NULL OR @AccountNumber = '' OR CDI.AccountNumber = @AccountNumber)
+    AND (@BranchCode IS NULL OR @BranchCode = '' OR CDI.ReceiverBranchCode = @BranchCode)
+    AND (@Status IS NULL OR @Status = '' OR CDI.Status = @Status)
+    AND (@CycleCode IS NULL OR @CycleCode = '' OR CDI.CycleCode = @CycleCode)</CommandText>
     </Query>
     <Fields>
       <Field Name="Amount">
@@ -65,6 +110,10 @@ WHERE CDI.Status = 'R'</CommandText>
       </Field>
       <Field Name="ReturnReason">
         <DataField>ReturnReason</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Status">
+        <DataField>Status</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
     </Fields>
