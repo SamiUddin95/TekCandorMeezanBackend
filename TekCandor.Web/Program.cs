@@ -19,6 +19,7 @@ using TekCandor.Service.Services;
 using TekCandor.Web.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddHttpContextAccessor();
 
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -64,6 +65,9 @@ builder.Services.AddScoped<ICoreBankingService, CoreBankingService>();
 
 builder.Services.AddScoped<IReportService,ReportsService>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
+
+builder.Services.AddScoped<IDashboardService,DashboardService>();
+builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
 builder.Services.Configure<SsrsOptions>(builder.Configuration.GetSection("Ssrs"));
 builder.Services.AddHttpClient<ISsrsRenderService, SsrsRenderService>("Ssrs")

@@ -127,7 +127,9 @@ namespace TekCandor.Web.Controllers
                 new Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.UniqueName, user.LoginName ?? string.Empty),
                 new Claim("name", user.Name ?? string.Empty),
-                new Claim(JwtRegisteredClaimNames.Jti, jti)
+                new Claim(JwtRegisteredClaimNames.Jti, jti),
+                new Claim("HubIds", user.HubIds ?? string.Empty),
+                new Claim("BranchorHub", user.BranchorHub ?? string.Empty),
             };
 
             // Add permissions as claims
