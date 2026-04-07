@@ -6,25 +6,25 @@
       <DataSetParameters>
         <DataSetParameter Name="@FromDate">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@ToDate">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@HubCode">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@CycleCode">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
@@ -58,10 +58,14 @@ INNER JOIN Bank ON ChequeDepositInformation.SenderBankCode = Bank.Code
 LEFT JOIN ReturnReason ON ChequeDepositInformation.Returnreasone = ReturnReason.code
 WHERE
     CoreFTId IS NOT NULL
-    AND (@FromDate IS NULL OR @FromDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@FromDate AS DATE))
-    AND (@ToDate IS NULL OR @ToDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@ToDate AS DATE))
-    AND (@HubCode IS NULL OR @HubCode = '' OR ChequeDepositInformation.HubCode = @HubCode)
-    AND (@CycleCode IS NULL OR @CycleCode = '' OR ChequeDepositInformation.CycleCode = @CycleCode)</CommandText>
+    AND (@FromDate IS NULL OR @FromDate = '' 
+         OR ChequeDepositInformation.Date &gt;= @FromDate)
+    AND (@ToDate IS NULL OR @ToDate = '' 
+         OR ChequeDepositInformation.Date &lt;= @ToDate)
+    AND (@HubCode IS NULL OR @HubCode = '' 
+         OR ChequeDepositInformation.HubCode = @HubCode)
+    AND (@CycleCode IS NULL OR @CycleCode = '' 
+         OR ChequeDepositInformation.CycleCode = @CycleCode)</CommandText>
     </Query>
     <Fields>
       <Field Name="Amount">

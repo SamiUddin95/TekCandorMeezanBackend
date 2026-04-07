@@ -60,12 +60,20 @@ namespace TekCandor.Web.Controllers
 
             return File(bytes, contentType, safeName);
         }
+
+
         [HttpPost("ClearingLogReport")]
         public async Task<IActionResult> ClearingLogReport([FromBody] ReportRenderRequest request, CancellationToken ct)
         {
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
+            }
+            var parameters = new Dictionary<string, string>();
+
+            if (request.Parameters != null)
+            {
+                parameters = request.Parameters;
             }
 
             var (bytes, contentType, ext) = await _renderService.RenderAsync(
@@ -89,6 +97,12 @@ namespace TekCandor.Web.Controllers
             {
                 return ValidationProblem(ModelState);
             }
+            var parameters = new Dictionary<string, string>();
+
+            if (request.Parameters != null)
+            {
+                parameters = request.Parameters;
+            }
 
             var (bytes, contentType, ext) = await _renderService.RenderAsync(
                 request.ReportPath,
@@ -110,6 +124,12 @@ namespace TekCandor.Web.Controllers
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
+            }
+            var parameters = new Dictionary<string, string>();
+
+            if (request.Parameters != null)
+            {
+                parameters = request.Parameters;
             }
 
             var (bytes, contentType, ext) = await _renderService.RenderAsync(
@@ -133,6 +153,12 @@ namespace TekCandor.Web.Controllers
             {
                 return ValidationProblem(ModelState);
             }
+            var parameters = new Dictionary<string, string>();
+
+            if (request.Parameters != null)
+            {
+                parameters = request.Parameters;
+            }
 
             var (bytes, contentType, ext) = await _renderService.RenderAsync(
                 request.ReportPath,
@@ -154,6 +180,12 @@ namespace TekCandor.Web.Controllers
             if (!ModelState.IsValid)
             {
                 return ValidationProblem(ModelState);
+            }
+            var parameters = new Dictionary<string, string>();
+
+            if (request.Parameters != null)
+            {
+                parameters = request.Parameters;
             }
 
             var (bytes, contentType, ext) = await _renderService.RenderAsync(

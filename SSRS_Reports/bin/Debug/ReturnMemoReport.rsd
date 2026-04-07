@@ -4,33 +4,38 @@
     <Query>
       <DataSourceReference>MBL</DataSourceReference>
       <DataSetParameters>
-        <DataSetParameter Name="@FromDate">
+        <DataSetParameter Name="@DateFrom">
+          <DefaultValue>Value: =Parameters!DateFrom.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
           <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
-        <DataSetParameter Name="@ToDate">
+        <DataSetParameter Name="@DateTo">
+          <DefaultValue>Value: =Parameters!DateTo.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
           <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@ChequeNumber">
+          <DefaultValue>Value: =Parameters!ChequeNumber.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@BranchCode">
+          <DefaultValue>Value: =Parameters!BranchCode.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@AccountNumber">
+          <DefaultValue>Value: =Parameters!AccountNumber.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
@@ -44,11 +49,14 @@
 FROM ChequeDepositInformation
 LEFT JOIN ReturnReason ON ChequeDepositInformation.Returnreasone = ReturnReason.code
 WHERE
-    (@FromDate IS NULL OR @FromDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@FromDate AS DATE))
-    AND (@ToDate IS NULL OR @ToDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@ToDate AS DATE))
-    AND (@ChequeNumber IS NULL OR @ChequeNumber = '' OR ChequeDepositInformation.ChequeNumber = @ChequeNumber)
-    AND (@BranchCode IS NULL OR @BranchCode = '' OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode)
-    AND (@AccountNumber IS NULL OR @AccountNumber = '' OR ChequeDepositInformation.AccountNumber = @AccountNumber)</CommandText>
+(@DateFrom IS NULL OR @DateFrom = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@DateFrom AS DATE))
+    AND (@DateTo IS NULL OR @DateTo = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@DateTo AS DATE))
+ AND (@ChequeNumber IS NULL OR @ChequeNumber = '' 
+OR ChequeDepositInformation.ChequeNumber = @ChequeNumber)
+    AND (@BranchCode IS NULL OR @BranchCode = '' 
+OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode)
+    AND (@AccountNumber IS NULL OR @AccountNumber = '' 
+OR ChequeDepositInformation.AccountNumber = @AccountNumber)</CommandText>
     </Query>
     <Fields>
       <Field Name="ChequeNumber">

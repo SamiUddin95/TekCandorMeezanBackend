@@ -38,7 +38,7 @@ namespace TekCandor.Service.Services
             {
                 foreach (var kv in parameters)
                 {
-                    if (!string.IsNullOrWhiteSpace(kv.Key) && !string.IsNullOrWhiteSpace(kv.Value) || string.IsNullOrWhiteSpace(kv.Value))
+                    if (!string.IsNullOrWhiteSpace(kv.Key) && !string.IsNullOrWhiteSpace(kv.Value))
                     {
                         var key = Uri.EscapeDataString(kv.Key);
                         var val = Uri.EscapeDataString(kv.Value ?? string.Empty);

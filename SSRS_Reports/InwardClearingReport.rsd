@@ -6,43 +6,43 @@
       <DataSetParameters>
         <DataSetParameter Name="@FromDate">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@ToDate">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@ChequeNumber">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@BranchCode">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@AccountNumber">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@Status">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@HubCode">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
@@ -67,8 +67,8 @@ INNER JOIN Branch ON ChequeDepositInformation.ReceiverBranchCode = Branch.NIFTBr
 INNER JOIN Cycle ON ChequeDepositInformation.CycleCode = Cycle.Code
 LEFT JOIN Bank ON ChequeDepositInformation.SenderBankCode = Bank.Code
 WHERE
-    (@FromDate IS NULL OR @FromDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@FromDate AS DATE))
-    AND (@ToDate IS NULL OR @ToDate = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@ToDate AS DATE))
+    (@FromDate IS NULL OR @FromDate = '' OR CAST(ChequeDepositInformation.Date AS DATE) &gt;= TRY_CAST(@FromDate AS DATE))
+    AND (@ToDate IS NULL OR @ToDate = '' OR CAST(ChequeDepositInformation.Date AS DATE) &lt;= TRY_CAST(@ToDate AS DATE))
     AND (@ChequeNumber IS NULL OR @ChequeNumber = '' OR ChequeDepositInformation.ChequeNumber = @ChequeNumber)
     AND (@BranchCode IS NULL OR @BranchCode = '' OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode)
     AND (@AccountNumber IS NULL OR @AccountNumber = '' OR ChequeDepositInformation.AccountNumber = @AccountNumber)
