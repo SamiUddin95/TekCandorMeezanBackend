@@ -8,19 +8,19 @@ namespace TekCandor.Service.Interfaces
     public interface IReportService
     {
       
-        Task<PagedResult<BranchWiseReportDTO>> GetBranchWiseReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch);
+        Task<PagedResult<BranchWiseReportDTO>> GetBranchWiseReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode);
 
-        Task<PagedResult<CBCReportDTO>> GetCBCReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch, string? accountNumber, string? status, string? hub);
+        Task<PagedResult<CBCReportDTO>> GetCBCReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? accountNumber, string? status, string? hub);
 
-        Task<PagedResult<FinalReportDTO>> GetFinalReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch, string? cycleCode);
+        Task<PagedResult<FinalReportDTO>> GetFinalReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? cycleCode);
 
-        Task<PagedResult<ReturnMemoReportDTO>> GetReturnMemoReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch,string? chequenumber,string? accountnumber);
+        Task<PagedResult<ReturnMemoReportDTO>> GetReturnMemoReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? chequenumber,string? accountnumber);
 
-        Task<PagedResult<ReturnRegisterDTO>> GetReturnRegisterReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch, string? status, string? cycleCode);
+        Task<PagedResult<ReturnRegisterDTO>> GetReturnRegisterReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? status, string? cycleCode);
 
         Task<PagedResult<ClearingLogReportDTO>> GetClearingLogReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? clearingCycle, string? hub);
 
-        Task<PagedResult<InwardClearingReportDTO>> GetInwardClearingReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? status, string? branch, string? hub);
+        Task<PagedResult<InwardClearingReportDTO>> GetInwardClearingReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? status, string? branchCode, string? hub);
 
     }
 }

@@ -4,70 +4,47 @@
     <Query>
       <DataSourceReference>MBL</DataSourceReference>
       <DataSetParameters>
-        <DataSetParameter Name="@FromDate">
+        <DataSetParameter Name="@DateFrom">
           <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
+          <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
-          <rd:DbType>Object</rd:DbType>
+          <rd:UserDefined>true</rd:UserDefined>
         </DataSetParameter>
-        <DataSetParameter Name="@ToDate">
+        <DataSetParameter Name="@DateTo">
           <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
+          <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
-          <rd:DbType>Object</rd:DbType>
+          <rd:UserDefined>true</rd:UserDefined>
         </DataSetParameter>
-        <DataSetParameter Name="@AccountNumber">
+        <DataSetParameter Name="@ChequeNumber">
           <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
+          <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
-          <rd:DbType>Object</rd:DbType>
+          <rd:UserDefined>true</rd:UserDefined>
         </DataSetParameter>
         <DataSetParameter Name="@BranchCode">
           <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
+          <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
-          <rd:DbType>Object</rd:DbType>
+          <rd:UserDefined>true</rd:UserDefined>
         </DataSetParameter>
-        <DataSetParameter Name="@Status">
+        <DataSetParameter Name="@AccountNumber">
           <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
+          <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
-          <rd:DbType>Object</rd:DbType>
-        </DataSetParameter>
-        <DataSetParameter Name="@CycleCode">
-          <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
-          <OmitFromQuery>false</OmitFromQuery>
-          <rd:DbType>Object</rd:DbType>
+          <rd:UserDefined>true</rd:UserDefined>
         </DataSetParameter>
       </DataSetParameters>
-      <CommandText>SELECT 
-    FORMAT(CDI.Amount,'N') AS Amount,
-    CDI.AccountNumber,
-    CDI.ApproverId,
-    CDI.CoreFTId,
-    CDI.ChequeNumber,
-    CDI.AccountTitle,
-    CDI.TrProcORRecTime,
-    B.Name AS SenderBankCode,
-    BR.Name AS OldAccount,
-    C.Name AS CycleCode,
-    RR.Name AS ReturnReason,
-    CDI.Status
-FROM ChequeDepositInformation CDI
-INNER JOIN Branch BR ON CDI.ReceiverBranchCode = BR.NIFTBranchCode
-INNER JOIN Cycle C ON CDI.CycleCode = C.Code
-INNER JOIN Bank B ON CDI.SenderBankCode = B.Code
-INNER JOIN ReturnReason RR ON CDI.Returnreasone = RR.Code
-WHERE
-   (@FromDate IS NULL OR @FromDate = '' 
-         OR ChequeDepositInformation.Date &gt;= @FromDate)
-    AND (@ToDate IS NULL OR @ToDate = '' 
-         OR ChequeDepositInformation.Date &lt;= @ToDate)
-    AND (@AccountNumber IS NULL OR @AccountNumber = '' OR CDI.AccountNumber = @AccountNumber)
-    AND (@BranchCode IS NULL OR @BranchCode = '' OR CDI.ReceiverBranchCode = @BranchCode)
-    AND (@Status IS NULL OR @Status = '' OR CDI.Status = @Status)
-    AND (@CycleCode IS NULL OR @CycleCode = '' OR CDI.CycleCode = @CycleCode)</CommandText>
+      <CommandText>select FORMAT(ChequeDepositInformation.Amount,'N') AS "Amount", ChequeDepositInformation.AccountNumber,
+ChequeDepositInformation.ApproverId,ChequeDepositInformation.CoreFTId,ChequeDepositInformation.ChequeNumber,
+ChequeDepositInformation.AccountTitle,ChequeDepositInformation.TrProcORRecTime,Bank.Name as "SenderBankCode",
+Branch.Name as "OldAccount", Cycle.Name as "CycleCode", ReturnReason.Name 'Returnreasone' from ChequeDepositInformation
+inner join Branch on ChequeDepositInformation.ReceiverBranchCode = Branch.NIFTBranchCode
+inner join Cycle on ChequeDepositInformation.CycleCode = Cycle.Code
+inner join Bank on ChequeDepositInformation.SenderBankCode = Bank.Code
+inner join ReturnReason on ChequeDepositInformation.Returnreasone = ReturnReason.code
+/**where**/
+and status = 'R'</CommandText>
     </Query>
     <Fields>
       <Field Name="Amount">
@@ -82,12 +59,12 @@ WHERE
         <DataField>ApproverId</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
-      <Field Name="CoreFTId">
-        <DataField>CoreFTId</DataField>
-        <rd:TypeName>System.String</rd:TypeName>
-      </Field>
       <Field Name="ChequeNumber">
         <DataField>ChequeNumber</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="CoreFTId">
+        <DataField>CoreFTId</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
       <Field Name="AccountTitle">
@@ -110,12 +87,8 @@ WHERE
         <DataField>CycleCode</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
-      <Field Name="ReturnReason">
-        <DataField>ReturnReason</DataField>
-        <rd:TypeName>System.String</rd:TypeName>
-      </Field>
-      <Field Name="Status">
-        <DataField>Status</DataField>
+      <Field Name="Returnreasone">
+        <DataField>Returnreasone</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
     </Fields>

@@ -17,7 +17,7 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
      
-        public async Task<PagedResult<BranchWiseReportDTO>> GetBranchWiseReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch)
+        public async Task<PagedResult<BranchWiseReportDTO>> GetBranchWiseReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -49,9 +49,9 @@ namespace TekCandor.Service.Implementations
                 query = query.Where(x => x.c.Date < toDateEnd);
             }
 
-            if (!string.IsNullOrWhiteSpace(branch))
+            if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.ReturnReasonName.Contains(branch));
+                query = query.Where(x => x.ReturnReasonName.Contains(branchCode));
             }
 
             var totalCount = await query.CountAsync();
@@ -85,7 +85,7 @@ namespace TekCandor.Service.Implementations
             };
         }
       
-        public async Task<PagedResult<CBCReportDTO>> GetCBCReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch, string? accountNumber, string? status, string? hub)
+        public async Task<PagedResult<CBCReportDTO>> GetCBCReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? accountNumber, string? status, string? hub)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -127,9 +127,9 @@ namespace TekCandor.Service.Implementations
                 query = query.Where(x => x.c.Date < toDateEnd);
             }
 
-            if (!string.IsNullOrWhiteSpace(branch))
+            if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.ReturnReasonName.Contains(branch));
+                query = query.Where(x => x.ReturnReasonName.Contains(branchCode));
             }
             if (!string.IsNullOrWhiteSpace(accountNumber))
             {
@@ -178,7 +178,7 @@ namespace TekCandor.Service.Implementations
             };
         }
         
-        public async Task<PagedResult<FinalReportDTO>> GetFinalReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch, string? cycleCode)
+        public async Task<PagedResult<FinalReportDTO>> GetFinalReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? cycleCode)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -210,9 +210,9 @@ namespace TekCandor.Service.Implementations
                 query = query.Where(x => x.c.Date < toDateEnd);
             }
 
-            if (!string.IsNullOrWhiteSpace(branch))
+            if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.ReturnReasonName.Contains(branch));
+                query = query.Where(x => x.ReturnReasonName.Contains(branchCode));
             }
 
             if (!string.IsNullOrWhiteSpace(cycleCode))
@@ -245,7 +245,7 @@ namespace TekCandor.Service.Implementations
             };
         }
        
-        public async Task<PagedResult<ReturnMemoReportDTO>> GetReturnMemoReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch,string? chequenumber,string? accountnumber)
+        public async Task<PagedResult<ReturnMemoReportDTO>> GetReturnMemoReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? chequenumber,string? accountnumber)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -279,9 +279,9 @@ namespace TekCandor.Service.Implementations
             }
 
            
-            if (!string.IsNullOrWhiteSpace(branch))
+            if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.ReturnReasonName.Contains(branch));
+                query = query.Where(x => x.ReturnReasonName.Contains(branchCode));
             }
             if (!string.IsNullOrWhiteSpace(chequenumber))
             {
@@ -322,7 +322,7 @@ namespace TekCandor.Service.Implementations
             };
         }
       
-        public async Task<PagedResult<ReturnRegisterDTO>> GetReturnRegisterReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branch, string? status, string? cycleCode)
+        public async Task<PagedResult<ReturnRegisterDTO>> GetReturnRegisterReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? status, string? cycleCode)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -362,9 +362,9 @@ namespace TekCandor.Service.Implementations
             }
 
            
-            if (!string.IsNullOrWhiteSpace(branch))
+            if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.BranchName.Contains(branch));
+                query = query.Where(x => x.BranchName.Contains(branchCode));
             }
 
            
@@ -501,7 +501,7 @@ namespace TekCandor.Service.Implementations
                 PageSize = pageSize
             };
         }
-        public async Task<PagedResult<InwardClearingReportDTO>> GetInwardClearingReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? status, string? branch, string? hub)
+        public async Task<PagedResult<InwardClearingReportDTO>> GetInwardClearingReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? status, string? branchCode, string? hub)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -549,9 +549,9 @@ namespace TekCandor.Service.Implementations
             }
 
            
-            if (!string.IsNullOrWhiteSpace(branch))
+            if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.BranchName.Contains(branch));
+                query = query.Where(x => x.BranchName.Contains(branchCode));
             }
 
            

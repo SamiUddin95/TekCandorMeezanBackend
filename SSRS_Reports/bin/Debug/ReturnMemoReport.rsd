@@ -5,42 +5,37 @@
       <DataSourceReference>MBL</DataSourceReference>
       <DataSetParameters>
         <DataSetParameter Name="@DateFrom">
-          <DefaultValue>Value: =Parameters!DateFrom.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
           <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@DateTo">
-          <DefaultValue>Value: =Parameters!DateTo.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
           <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@ChequeNumber">
-          <DefaultValue>Value: =Parameters!ChequeNumber.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
+          <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@BranchCode">
-          <DefaultValue>Value: =Parameters!BranchCode.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
+          <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@AccountNumber">
-          <DefaultValue>Value: =Parameters!AccountNumber.Value</DefaultValue>
           <ReadOnly>false</ReadOnly>
-          <Nullable>true</Nullable>
+          <Nullable>false</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
       </DataSetParameters>
-      <CommandText>SELECT 
+      <CommandText>	SELECT 
     ChequeNumber, AccountNumber, AccountTitle, Amount,
     ReturnReason.Name AS "ReceiverBranchCode",
     ChequeDepositInformation.ApproverId AS "TransactionCode",
