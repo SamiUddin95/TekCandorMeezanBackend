@@ -8,6 +8,8 @@ namespace TekCandor.Repository.Interfaces
     public interface IReportRepository
     {
         Task<IQueryable<ChequedepositInfo>> GetChequeQueryableAsync();
+        //Task<IQueryable<Cycle>> GetCycleQueryableAsync();
+
         Task<IQueryable<ReturnReason>> GetReturnReasonQueryableAsync();
         Task<string?> GetSettingValueAsync(string name);
         Task<IQueryable<Branch>> GetBranchQueryableAsync();

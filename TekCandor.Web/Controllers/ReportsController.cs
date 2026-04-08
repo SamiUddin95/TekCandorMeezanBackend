@@ -48,7 +48,7 @@ namespace TekCandor.Web.Controllers
             try
             {
                 var result = await _service.GetCBCReportAsync(
-                    pageNumber, pageSize, fromDate, toDate, branchCode,accountNumber,status,hub);
+                    pageNumber, pageSize, fromDate, toDate, branchCode, accountNumber,status,hub);
 
                 return Ok(ApiResponse<object>.Success(new
                 {
@@ -96,7 +96,7 @@ namespace TekCandor.Web.Controllers
             try
             {
                 var result = await _service.GetReturnMemoReportAsync(
-                    pageNumber, pageSize, fromDate, toDate, branchCode,chequeNumber,accountnumber);
+                    pageNumber, pageSize, fromDate, toDate, branchCode, chequeNumber,accountnumber);
 
                 return Ok(ApiResponse<object>.Success(new
                 {

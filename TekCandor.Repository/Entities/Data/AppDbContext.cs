@@ -86,7 +86,7 @@ namespace TekCandor.Repository.Entities.Data
                       .HasColumnName("ModifiedDateTime")
                       .IsRequired(false);
                 entity.Property(h => h.Version).HasDefaultValue(1);
-                entity.Property(h => h.IsNew).HasDefaultValue(false);
+                entity.Property(h => h.IsNew).HasDefaultValue(1);
                 entity.Property(h => h.IsDeleted)
                       .HasDefaultValue(false);
 

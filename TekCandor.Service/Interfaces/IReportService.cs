@@ -20,7 +20,7 @@ namespace TekCandor.Service.Interfaces
 
         Task<PagedResult<ClearingLogReportDTO>> GetClearingLogReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? clearingCycle, string? hub);
 
-        Task<PagedResult<InwardClearingReportDTO>> GetInwardClearingReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? status, string? branchCode, string? hub);
+        Task<PagedResult<InwardClearingReportDTO>> GetInwardClearingReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? status, string? ReceiverbranchCodeBranchCode, string? hub);
 
     }
 }

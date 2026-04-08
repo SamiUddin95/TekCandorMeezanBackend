@@ -72,10 +72,10 @@ namespace TekCandor.Service.Implementations
                 Name = cycle.Name,
                 Description = cycle.Description,
                 IsDeleted = false,
-                
+                Version = 1,
                 CreatedBy = cycle.CreatedBy,
                 CreatedOn = DateTime.Now,
-
+                IsNew = true,
                 UpdatedBy = null,      
                 UpdatedOn = null       
             };
@@ -88,10 +88,10 @@ namespace TekCandor.Service.Implementations
                 Code = created.Code,
                 Name = created.Name,
                 IsDeleted = created.IsDeleted,
-
+                Version = 1,
                 CreatedBy = created.CreatedBy,
                 CreatedOn = created.CreatedOn,
-
+                IsNew = false,
                 UpdatedBy = created.UpdatedBy,   
                 UpdatedOn = created.UpdatedOn    
             };

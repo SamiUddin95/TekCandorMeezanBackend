@@ -7,6 +7,11 @@ namespace TekCandor.Service.Models
         public required string Name { get; set; }
         public string? Description { get; set; }
         public bool IsDeleted { get; set; }
+
+        public bool IsNew { get; set; }
+
+        public int Version { get; set; }
+
         public  string? CreatedBy { get; set; }
         public  string? UpdatedBy { get; set; }
         public DateTime? CreatedOn { get; set; }

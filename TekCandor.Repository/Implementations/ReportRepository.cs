@@ -24,6 +24,9 @@ namespace TekCandor.Repository.Implementations
         {
             return _context.ReturnReason.AsNoTracking();
         }
+       
+
+
         public async Task<string?> GetSettingValueAsync(string name)
         {
             return await _context.Setting

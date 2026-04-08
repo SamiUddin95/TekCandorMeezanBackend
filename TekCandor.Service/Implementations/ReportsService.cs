@@ -51,7 +51,7 @@ namespace TekCandor.Service.Implementations
 
             if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.ReturnReasonName.Contains(branchCode));
+                query = query.Where(x => x.c.ReceiverBranchCode.Contains(branchCode));
             }
 
             var totalCount = await query.CountAsync();
@@ -107,11 +107,14 @@ namespace TekCandor.Service.Implementations
                         join r in returnReasonQuery
                         on c.Returnreasone equals r.Code into rr
                         from r in rr.DefaultIfEmpty()
+
+
                         where !c.IsDeleted
                         select new
                         {
                             c,
-                            ReturnReasonName = r != null ? r.Name : null
+                            ReturnReasonName = r != null ? r.Name : null,
+
                         };
 
             query = query.Where(x => x.c.Amount >= callbackAmount);
@@ -129,7 +132,7 @@ namespace TekCandor.Service.Implementations
 
             if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.ReturnReasonName.Contains(branchCode));
+                query = query.Where(x => x.c.ReceiverBranchCode.Contains(branchCode));
             }
             if (!string.IsNullOrWhiteSpace(accountNumber))
             {
@@ -143,6 +146,8 @@ namespace TekCandor.Service.Implementations
             {
                 query = query.Where(x => x.c.AuthorizerId == hub);
             }
+         
+
 
             var totalCount = await query.CountAsync();
 
@@ -212,7 +217,7 @@ namespace TekCandor.Service.Implementations
 
             if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.ReturnReasonName.Contains(branchCode));
+                query = query.Where(x => x.c.ReceiverBranchCode.Contains(branchCode));
             }
 
             if (!string.IsNullOrWhiteSpace(cycleCode))
@@ -278,10 +283,10 @@ namespace TekCandor.Service.Implementations
                 query = query.Where(x => x.c.Date < toDateEnd);
             }
 
-           
+
             if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.ReturnReasonName.Contains(branchCode));
+                query = query.Where(x => x.c.ReceiverBranchCode.Contains(branchCode));
             }
             if (!string.IsNullOrWhiteSpace(chequenumber))
             {
@@ -361,13 +366,13 @@ namespace TekCandor.Service.Implementations
                 query = query.Where(x => x.c.Date < toDateEnd);
             }
 
-           
+
             if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.BranchName.Contains(branchCode));
+                query = query.Where(x => x.c.ReceiverBranchCode.Contains(branchCode));
             }
 
-           
+
             if (!string.IsNullOrWhiteSpace(status))
             {
                 query = query.Where(x => x.c.status == status);
@@ -548,13 +553,12 @@ namespace TekCandor.Service.Implementations
                 query = query.Where(x => x.c.Date < toDateEnd);
             }
 
-           
+
             if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.BranchName.Contains(branchCode));
+                query = query.Where(x => x.c.ReceiverBranchCode.Contains(branchCode));
             }
 
-           
             if (!string.IsNullOrWhiteSpace(hub))
             {
                 query = query.Where(x => x.c.CityCode.Contains(hub));
