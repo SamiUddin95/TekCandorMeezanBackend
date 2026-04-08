@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using TekCandor.Repository.Entities;
 using TekCandor.Repository.Entities.Data;
 using TekCandor.Repository.Interfaces;
+using TekCandor.Repository.Models;
 
 namespace TekCandor.Repository.Implementations
 {
@@ -54,6 +55,77 @@ namespace TekCandor.Repository.Implementations
 
             await _context.SecurityGroup_PermissionRecord.AddRangeAsync(newRecords);
             await _context.SaveChangesAsync();
+        }
+
+        public async Task<List<long>> GetGroupPermissionsAsync(long groupId)
+        {
+            var permissions = await _context.SecurityGroup_PermissionRecord
+                .AsNoTracking()
+                .Where(x => x.GroupId == groupId)
+                .Select(x => x.PermissionId)
+                .ToListAsync();
+            
+            return permissions ?? new List<long>();
+        }
+
+        public async Task<List<PermissionDetailDTO>> GetGroupPermissionsWithDetailsAsync(long groupId)
+        {
+            var permissions = await (from sgp in _context.SecurityGroup_PermissionRecord
+                                     join p in _context.Permission on sgp.PermissionId equals p.Id
+                                     where sgp.GroupId == groupId && p.IsDeleted == false
+                                     select new PermissionDetailDTO
+                                     {
+                                         Id = p.Id,
+                                         Name = p.Name,
+                                         Description = p.Description,
+                                         IsDeleted = p.IsDeleted,
+                                         CreatedOn = p.CreatedOn,
+                                         UpdatedOn = p.UpdatedOn
+                                     })
+                                     .AsNoTracking()
+                                     .ToListAsync();
+
+            return permissions ?? new List<PermissionDetailDTO>();
+        }
+
+        public async Task<List<UserDetailDTO>> GetGroupUsersAsync(long groupId)
+        {
+            var users = await (from sgu in _context.SecurityGroup_User
+                               join u in _context.Users on sgu.UserId equals u.Id
+                               where sgu.SecurityGroupId == groupId && u.IsDeleted != true
+                               select new UserDetailDTO
+                               {
+                                   Id = u.Id,
+                                   LoginName = u.LoginName,
+                                   Name = u.Name,
+                                   Email = u.Email
+                               })
+                               .AsNoTracking()
+                               .ToListAsync();
+
+            return users ?? new List<UserDetailDTO>();
+        }
+
+        public async Task AddUsersToGroupAsync(long securityGroupId, List<long> userIds)
+        {
+            var existingUserIds = await _context.SecurityGroup_User
+                .Where(x => x.SecurityGroupId == securityGroupId)
+                .Select(x => x.UserId)
+                .ToListAsync();
+
+            var newUserIds = userIds.Where(id => !existingUserIds.Contains(id)).ToList();
+
+            if (newUserIds.Any())
+            {
+                var newRecords = newUserIds.Select(userId => new SecurityGroup_User
+                {
+                    SecurityGroupId = securityGroupId,
+                    UserId = userId
+                });
+
+                await _context.SecurityGroup_User.AddRangeAsync(newRecords);
+                await _context.SaveChangesAsync();
+            }
         }
 
     }

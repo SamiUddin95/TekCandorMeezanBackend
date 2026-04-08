@@ -157,5 +157,49 @@ namespace TekCandor.Service.Implementations
             await _repository.AssignPermissionsAsync(dto.GroupId, dto.PermissionIds);
         }
 
+        public async Task<GroupDTO?> GetGroupForEditAsync(long id)
+        {
+            var group = await _repository.GetByIdAsync(id);
+            if (group == null || group.IsDeleted == true)
+                return null;
+
+            // Log the group data before editing (similar to groupBeforeEditBtnLog)
+            // This captures the current state before any modifications
+            var ctcode = group.Name;
+            var ctname = group.Description;
+            
+            // TODO: Implement actual logging mechanism here if needed
+            // For example: await _activityLogService.LogGroupBeforeEdit(id, ctcode, ctname);
+
+            // Get permissions for this group with full details (ID, Name, Description)
+            var permissions = await _repository.GetGroupPermissionsWithDetailsAsync(id);
+
+            // Get users for this group with details (LoginName, Name, Email)
+            var users = await _repository.GetGroupUsersAsync(id);
+
+            return new GroupDTO
+            {
+                Id = group.Id,
+                Name = group.Name,
+                Description = group.Description,
+                LowerLimit = group.LowerLimit,
+                UpperLimit = group.UpperLimit,
+                IsDeleted = group.IsDeleted,
+                CreatedBy = group.CreatedBy,
+                UpdatedBy = group.UpdatedBy,
+                CreatedOn = group.CreatedOn,
+                UpdatedOn = group.UpdatedOn,
+                Version = group.Version,
+                IsNew = group.IsNew,
+                Permissions = permissions,
+                Users = users
+            };
+        }
+
+        public async Task AddUsersToGroupAsync(AddUsersToGroupDTO dto)
+        {
+            await _repository.AddUsersToGroupAsync(dto.SecurityGroupId, dto.SelectedIds);
+        }
+
     }
 }

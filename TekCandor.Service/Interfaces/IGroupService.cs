@@ -13,6 +13,7 @@ namespace TekCandor.Service.Interfaces
         Task<GroupDTO?> UpdateAsync(GroupDTO group);
         Task<bool> SoftDeleteAsync(long id);
         Task AssignPermissionsAsync(AssignPermissionsDTO dto);
-
+        Task<GroupDTO?> GetGroupForEditAsync(long id);
+        Task AddUsersToGroupAsync(AddUsersToGroupDTO dto);
     }
 }
