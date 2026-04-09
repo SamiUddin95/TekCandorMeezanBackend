@@ -43,11 +43,23 @@ namespace TekCandor.Web.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(long id)
         {
+            //try
+            //{
+            //    var dto = await _service.GetByIdAsync(id);
+            //    if (dto == null) return NotFound(ApiResponse<string>.Error("Group not found"));
+
+            //    return Ok(ApiResponse<GroupDTO>.Success(dto));
+            //}
+            //catch (Exception ex)
+            //{
+            //    return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            //}
             try
             {
-                var dto = await _service.GetByIdAsync(id);
+                var dto = await _service.GetGroupForEditAsync(id);
                 if (dto == null) return NotFound(ApiResponse<string>.Error("Group not found"));
 
+                // The service method logs the group data before returning it for editing
                 return Ok(ApiResponse<GroupDTO>.Success(dto));
             }
             catch (Exception ex)
@@ -55,6 +67,7 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] GroupDTO dto)
@@ -111,6 +124,20 @@ namespace TekCandor.Web.Controllers
             await _service.AssignPermissionsAsync(dto);
 
             return Ok("Permissions assigned successfully.");
+        }
+
+        [HttpPost("add-users")]
+        public async Task<IActionResult> AddUsers([FromBody] AddUsersToGroupDTO dto)
+        {
+            try
+            {
+                await _service.AddUsersToGroupAsync(dto);
+                return Ok(ApiResponse<string>.Success("Users added successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
         }
 
     }
