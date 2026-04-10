@@ -69,6 +69,9 @@ builder.Services.AddScoped<IReportRepository, ReportRepository>();
 builder.Services.AddScoped<IDashboardService,DashboardService>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
+builder.Services.AddScoped<ILiveMonitoringService,LiveMonitoringService>();
+builder.Services.AddScoped<ILiveMonitoringRepository, LiveMonitoringRepository>();
+
 builder.Services.Configure<SsrsOptions>(builder.Configuration.GetSection("Ssrs"));
 builder.Services.AddHttpClient<ISsrsRenderService, SsrsRenderService>("Ssrs")
     .ConfigurePrimaryHttpMessageHandler(sp =>

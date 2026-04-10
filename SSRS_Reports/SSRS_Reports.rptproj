@@ -55,6 +55,7 @@
     <DataSet Include="FinalReport.rsd" />
     <DataSet Include="InwardClearingReport.rsd" />
     <DataSet Include="ReturnMemoReport.rsd" />
+    <DataSet Include="ReturnRegisterReport.rsd" />
   </ItemGroup>
   <ItemGroup>
     <DataSource Include="MBL.rds" />
@@ -66,6 +67,7 @@
     <Report Include="FinalReport.rdl" />
     <Report Include="InwardClearingReport.rdl" />
     <Report Include="RetrunMemoReport.rdl" />
+    <Report Include="ReturnRegisterReport.rdl" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Reporting Services\Microsoft.ReportingServices.MSBuilder.targets" />
 </Project>
