@@ -17,7 +17,7 @@ namespace TekCandor.Service.Implementations
             _repository = repository;
         }
      
-        public async Task<PagedResult<BranchWiseReportDTO>> GetBranchWiseReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode)
+        public async Task<PagedResult<BranchWiseReportDTO>> GetBranchWiseReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? chequeNumber, string? accountNumber, string? hubCode, string? status)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -37,7 +37,6 @@ namespace TekCandor.Service.Implementations
                             ReturnReasonName = r != null ? r.Name : null
                         };
 
-           
             if (fromDate.HasValue)
             {
                 query = query.Where(x => x.c.Date >= fromDate.Value);
@@ -51,7 +50,27 @@ namespace TekCandor.Service.Implementations
 
             if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.c.ReceiverBranchCode.Contains(branchCode));
+                query = query.Where(x => x.c.ReceiverBranchCode == branchCode);
+            }
+
+            if (!string.IsNullOrWhiteSpace(chequeNumber))
+            {
+                query = query.Where(x => x.c.ChequeNumber.Contains(chequeNumber));
+            }
+
+            if (!string.IsNullOrWhiteSpace(accountNumber))
+            {
+                query = query.Where(x => x.c.AccountNumber.Contains(accountNumber));
+            }
+
+            if (!string.IsNullOrWhiteSpace(hubCode))
+            {
+                query = query.Where(x => x.c.AuthorizerId == hubCode);
+            }
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(x => x.c.status == status);
             }
 
             var totalCount = await query.CountAsync();
@@ -68,12 +87,8 @@ namespace TekCandor.Service.Implementations
                 AccountNumber = x.c.AccountNumber,
                 AccountTitle = x.c.AccountTitle,
                 Amount = x.c.Amount,
-
-                //ReceiverBranchCode = x.ReturnReasonName,
-
-                //TransactionCode = x.c.ApproverId,
+                ReturnReason = x.ReturnReasonName,
                 HubCode = x.c.AuthorizerId,
-                //Date = x.c.TrProcORRecTime
             });
 
             return new PagedResult<BranchWiseReportDTO>
@@ -313,7 +328,7 @@ namespace TekCandor.Service.Implementations
                 Amount = x.c.Amount,
                 AccountTitle = x.c.AccountTitle,
                 CycleCode = x.c.CycleCode,
-                Returnreasone = x.c.Returnreasone,
+                Returnreasone = x.ReturnReasonName,
                 Date = x.c.Date,
                 SenderBranchCode = x.c.SenderBranchCode
             });
@@ -327,7 +342,7 @@ namespace TekCandor.Service.Implementations
             };
         }
       
-        public async Task<PagedResult<ReturnRegisterDTO>> GetReturnRegisterReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? status, string? cycleCode)
+        public async Task<PagedResult<ReturnRegisterDTO>> GetReturnRegisterReportAsync(int pageNumber, int pageSize, DateTime? fromDate, DateTime? toDate, string? branchCode, string? chequeNumber, string? accountNumber, string? hubCode, string? status)
 
         {
             if (pageNumber < 1) pageNumber = 1;
@@ -366,22 +381,24 @@ namespace TekCandor.Service.Implementations
                 query = query.Where(x => x.c.Date < toDateEnd);
             }
 
-
             if (!string.IsNullOrWhiteSpace(branchCode))
             {
-                query = query.Where(x => x.c.ReceiverBranchCode.Contains(branchCode));
+                query = query.Where(x => x.c.ReceiverBranchCode == branchCode);
             }
 
-
-            if (!string.IsNullOrWhiteSpace(status))
+            if (!string.IsNullOrWhiteSpace(chequeNumber))
             {
-                query = query.Where(x => x.c.status == status);
+                query = query.Where(x => x.c.ChequeNumber.Contains(chequeNumber));
             }
 
-            
-            if (!string.IsNullOrWhiteSpace(cycleCode))
+            if (!string.IsNullOrWhiteSpace(accountNumber))
             {
-                query = query.Where(x => x.c.CycleCode == cycleCode);
+                query = query.Where(x => x.c.AccountNumber.Contains(accountNumber));
+            }
+
+            if (!string.IsNullOrWhiteSpace(hubCode))
+            {
+                query = query.Where(x => x.c.AuthorizerId == hubCode);
             }
 
             var totalCount = await query.CountAsync();

@@ -18,13 +18,13 @@ namespace TekCandor.Web.Controllers
 
 
         [HttpGet("BranchWiseReport")]
-        public async Task<IActionResult> BranchWiseReport(int pageNumber = 1, int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? branchCode = null)
+        public async Task<IActionResult> BranchWiseReport(int pageNumber = 1, int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? branchCode = null, string? chequeNumber = null, string? accountNumber = null, string? hubCode = null, string? status = null)
 
         {
             try
             {
                 var result = await _service.GetBranchWiseReportAsync(
-                    pageNumber, pageSize, fromDate, toDate, branchCode);
+                    pageNumber, pageSize, fromDate, toDate, branchCode, chequeNumber, accountNumber, hubCode, status);
 
                 return Ok(ApiResponse<object>.Success(new
                 {
@@ -114,13 +114,13 @@ namespace TekCandor.Web.Controllers
         }
         
         [HttpGet("ReturnRegisterReport")]
-        public async Task<IActionResult> ReturnRegisterReport(int pageNumber = 1, int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? branchCode = null, string? status = null, string? cycleCode = null)
+        public async Task<IActionResult> ReturnRegisterReport(int pageNumber = 1, int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? branchCode = null, string? chequeNumber = null, string? accountNumber = null, string? hubCode = null, string? status = null)
 
         {
             try
             {
                 var result = await _service.GetReturnRegisterReportAsync(
-                    pageNumber, pageSize, fromDate, toDate, branchCode, status, cycleCode);
+                    pageNumber, pageSize, fromDate, toDate, branchCode, chequeNumber, accountNumber, hubCode, status);
 
                 return Ok(ApiResponse<object>.Success(new
                 {

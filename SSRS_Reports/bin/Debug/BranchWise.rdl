@@ -25,11 +25,29 @@
       <Query>
         <DataSourceName>MBL</DataSourceName>
         <QueryParameters>
+          <QueryParameter Name="@DateFrom">
+            <Value>=Parameters!DateFrom.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@DateTo">
+            <Value>=Parameters!DateTo.Value</Value>
+          </QueryParameter>
           <QueryParameter Name="@BranchCode">
             <Value>=Parameters!BranchCode.Value</Value>
           </QueryParameter>
+          <QueryParameter Name="@ChequeNumber">
+            <Value>=Parameters!ChequeNumber.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@AccountNumber">
+            <Value>=Parameters!AccountNumber.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@HubCode">
+            <Value>=Parameters!HubCode.Value</Value>
+          </QueryParameter>
+          <QueryParameter Name="@Status">
+            <Value>=Parameters!Status.Value</Value>
+          </QueryParameter>
         </QueryParameters>
-        <CommandText>select ChequeNumber,AccountNumber,AccountTitle,Amount,ReturnReason.Name as "ReceiverBranchCode",ChequeDepositInformation.ApproverId as "TransactionCode",ChequeDepositInformation.AuthorizerId as "HubCode",ChequeDepositInformation.TrProcORRecTime as "Date" from ChequeDepositInformation  left join ReturnReason on ChequeDepositInformation.Returnreasone=ReturnReason.code  WHERE (@BranchCode IS NULL OR @BranchCode = '' OR ChequeDepositInformation.AuthorizerId = @BranchCode)</CommandText>
+        <CommandText>SELECT ChequeNumber, AccountNumber, AccountTitle, Amount, ReturnReason.Name AS "ReceiverBranchCode", ChequeDepositInformation.ApproverId AS "TransactionCode", ChequeDepositInformation.AuthorizerId AS "HubCode", ChequeDepositInformation.TrProcORRecTime AS "Date" FROM ChequeDepositInformation LEFT JOIN ReturnReason ON ChequeDepositInformation.Returnreasone = ReturnReason.code WHERE (@DateFrom IS NULL OR @DateFrom = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@DateFrom AS DATE)) AND (@DateTo IS NULL OR @DateTo = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@DateTo AS DATE)) AND (@BranchCode IS NULL OR @BranchCode = '' OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode) AND (@ChequeNumber IS NULL OR @ChequeNumber = '' OR ChequeDepositInformation.ChequeNumber = @ChequeNumber) AND (@AccountNumber IS NULL OR @AccountNumber = '' OR ChequeDepositInformation.AccountNumber = @AccountNumber) AND (@HubCode IS NULL OR @HubCode = '' OR ChequeDepositInformation.AuthorizerId = @HubCode) AND (@Status IS NULL OR @Status = '' OR ChequeDepositInformation.Status = @Status)</CommandText>
       </Query>
       <Fields>
         <Field Name="ChequeNumber">
@@ -979,6 +997,28 @@
     </ReportSection>
   </ReportSections>
   <ReportParameters>
+    <ReportParameter Name="DateFrom">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>From Date</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="DateTo">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>To Date</Prompt>
+    </ReportParameter>
     <ReportParameter Name="BranchCode">
       <DataType>String</DataType>
       <Nullable>true</Nullable>
@@ -990,6 +1030,50 @@
       <AllowBlank>true</AllowBlank>
       <Prompt>Branch Code (Leave blank for All)</Prompt>
     </ReportParameter>
+    <ReportParameter Name="ChequeNumber">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Cheque Number</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="AccountNumber">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Account Number</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="HubCode">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Hub Code</Prompt>
+    </ReportParameter>
+    <ReportParameter Name="Status">
+      <DataType>String</DataType>
+      <Nullable>true</Nullable>
+      <DefaultValue>
+        <Values>
+          <Value />
+        </Values>
+      </DefaultValue>
+      <AllowBlank>true</AllowBlank>
+      <Prompt>Status</Prompt>
+    </ReportParameter>
   </ReportParameters>
   <ReportParametersLayout>
     <GridLayoutDefinition>
@@ -999,7 +1083,37 @@
         <CellDefinition>
           <ColumnIndex>0</ColumnIndex>
           <RowIndex>0</RowIndex>
+          <ParameterName>DateFrom</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>DateTo</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>0</RowIndex>
           <ParameterName>BranchCode</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>3</ColumnIndex>
+          <RowIndex>0</RowIndex>
+          <ParameterName>ChequeNumber</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>0</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>AccountNumber</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>1</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>HubCode</ParameterName>
+        </CellDefinition>
+        <CellDefinition>
+          <ColumnIndex>2</ColumnIndex>
+          <RowIndex>1</RowIndex>
+          <ParameterName>Status</ParameterName>
         </CellDefinition>
       </CellDefinitions>
     </GridLayoutDefinition>
