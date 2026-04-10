@@ -19,7 +19,6 @@ namespace TekCandor.Web.Controllers
 
         [HttpGet("BranchWiseReport")]
         public async Task<IActionResult> BranchWiseReport(int pageNumber = 1, int pageSize = 10, DateTime? fromDate = null, DateTime? toDate = null, string? branchCode = null)
-
         {
             try
             {

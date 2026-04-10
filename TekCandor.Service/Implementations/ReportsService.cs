@@ -64,16 +64,13 @@ namespace TekCandor.Service.Implementations
 
             var dtos = data.Select(x => new BranchWiseReportDTO
             {
+                Date = x.c.TrProcORRecTime,
                 ChequeNumber = x.c.ChequeNumber,
                 AccountNumber = x.c.AccountNumber,
                 AccountTitle = x.c.AccountTitle,
                 Amount = x.c.Amount,
-
-                //ReceiverBranchCode = x.ReturnReasonName,
-
-                //TransactionCode = x.c.ApproverId,
+                TransactionCode = x.c.ApproverId,
                 HubCode = x.c.AuthorizerId,
-                //Date = x.c.TrProcORRecTime
             });
 
             return new PagedResult<BranchWiseReportDTO>
