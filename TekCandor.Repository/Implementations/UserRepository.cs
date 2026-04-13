@@ -22,6 +22,11 @@ namespace TekCandor.Repository.Implementations
             return _context.Users
                    .AsNoTracking();
         }
+        public IQueryable<Hub> GetHub()
+        {
+            return _context.Hub
+                   .AsNoTracking();
+        }
 
         public User? GetById(long id)
         {
@@ -86,7 +91,7 @@ namespace TekCandor.Repository.Implementations
             return (data.Id, data.LoginPassword!, data.Active);
         }
 
-        public async Task<User?> GetByIdAsync(long id)
+        public async Task<User?>    GetByIdAsync(long id)
         {
             return await _context.Users.AsNoTracking()
                 .Where(u => u.Id == id)

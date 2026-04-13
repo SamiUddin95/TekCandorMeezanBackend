@@ -245,6 +245,21 @@ namespace TekCandor.Service.Implementations
             var user = await _repository.GetByIdAsync(auth.Value.Id);
             if (user == null) return null;
 
+            List<string> hubNames = new();
+
+            if (!string.IsNullOrWhiteSpace(user.HubIds))
+            {
+                var hubIdList = user.HubIds
+                    .Split(',', StringSplitOptions.RemoveEmptyEntries)
+                    .Select(long.Parse)
+                    .ToList();
+
+                hubNames = await _repository.GetHub()
+                    .Where(h => hubIdList.Contains(h.Id))
+                    .Select(h => h.Name)
+                    .ToListAsync();
+            }
+
             var permissions = await _repository.GetUserPermissionsAsync(user.Id);
 
             return new UserDTO
@@ -257,6 +272,7 @@ namespace TekCandor.Service.Implementations
                 BranchorHub = user.BranchorHub,
                
                 HubIds = user.HubIds,
+                HubNames = hubNames,
                 BranchIds = user.BranchIds,
                 GroupId=user.GroupId,
                 PhoneNo = user.PhoneNo,

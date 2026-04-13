@@ -8,5 +8,9 @@ namespace TekCandor.Repository.Interfaces
     public interface IDashboardRepository
     {
         Task<IQueryable<ChequedepositInfo>> GetAllQueryableAsync();
+
+        Task<IQueryable<Cycle>> GetAllQueryableCycleAsync();
+
+
     }
 }

@@ -13,7 +13,8 @@ namespace TekCandor.Service.Models
         public string? PasswordHash { get; set; }
         public string? Email { get; set; }
         public string? BranchorHub { get; set; }
-  
+        public List<string> HubNames { get; set; } = new();
+
         public string? HubIds { get; set; }
         public string? BranchIds { get; set; }
         public long? GroupId { get; set; }

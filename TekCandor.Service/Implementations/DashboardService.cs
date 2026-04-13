@@ -24,15 +24,15 @@ namespace TekCandor.Service.Implementations
             _context = context;
         }
 
-        public async Task<List<DashboardDTO>> GetDashboardAsync(string hubIds, string branchOrHub)
+        public async Task<DashboardResponseDTO> GetDashboardAsync(string hubIds, string branchOrHub)
         {
             var query = await _repository.GetAllQueryableAsync();
 
             query = query.Where(x => x.Date.Date == DateTime.Today && !x.IsDeleted);
 
             var hubIdList = hubIds.Split(',')
-    .Select(long.Parse)
-    .ToList();
+                .Select(long.Parse)
+                .ToList();
 
             var branchCodes = await _context.Branch
                 .Where(b => hubIdList.Contains(b.HubId))
@@ -41,7 +41,9 @@ namespace TekCandor.Service.Implementations
 
             query = query.Where(x => branchCodes.Contains(x.ReceiverBranchCode));
 
-            var result = await query
+            
+            var normal = await query
+                .Where(x => x.CycleCode == "02")
                 .GroupBy(x => x.status)
                 .Select(g => new DashboardDTO
                 {
@@ -63,7 +65,34 @@ namespace TekCandor.Service.Implementations
                 })
                 .ToListAsync();
 
-                return result;
+            var sameDay = await query
+                .Where(x => x.CycleCode == "05")
+                .GroupBy(x => x.status)
+                .Select(g => new DashboardDTO
+                {
+                    Status =
+                        g.Key == "A" ? "Approved" :
+                        g.Key == "R" ? "Return" :
+                        g.Key == "AR" ? "Approved Reversed" :
+                        g.Key == "RR" ? "Return Reversed" :
+                        g.Key == "U" ? "Un Authorized" :
+                        g.Key == "RE" ? "System Rejected" :
+                        g.Key == "P" ? "Pending" :
+                        g.Key == "MA" ? "Manual Approved" :
+                        g.Key == "IP" ? "In Process" :
+                        g.Key == "MAR" ? "Manual Approved Reversed" :
+                        g.Key,
+
+                    Cheques = g.Count(),
+                    Amount = g.Sum(x => x.Amount) ?? 0
+                })
+                .ToListAsync();
+
+            return new DashboardResponseDTO
+            {
+                Normal = normal,
+                SameDay = sameDay
+            };
         }
     }
 }

@@ -7,6 +7,6 @@ namespace TekCandor.Service.Interfaces
 {
     public interface IDashboardService
     {
-        Task<List<DashboardDTO>> GetDashboardAsync(string hubIds, string branchOrHub);
+        Task<DashboardResponseDTO> GetDashboardAsync(string hubIds, string branchOrHub);
     }
 }

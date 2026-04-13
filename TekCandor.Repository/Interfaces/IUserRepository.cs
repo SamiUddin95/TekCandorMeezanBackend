@@ -13,6 +13,7 @@ namespace TekCandor.Repository.Interfaces
         bool SoftDelete(long id);
         Task<(long Id, string PasswordHash, bool IsActive)?> GetAuthByLoginAsync(string loginName);
         Task<User?> GetByIdAsync(long id);
+        IQueryable<Hub> GetHub();
 
         Task<User> AddAsync(User user, string passwordHash);
 

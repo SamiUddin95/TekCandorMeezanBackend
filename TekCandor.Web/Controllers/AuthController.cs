@@ -129,6 +129,7 @@ namespace TekCandor.Web.Controllers
                 new Claim("name", user.Name ?? string.Empty),
                 new Claim(JwtRegisteredClaimNames.Jti, jti),
                 new Claim("HubIds", user.HubIds ?? string.Empty),
+                new Claim("HubNames", string.Join(",", user.HubNames ?? new List<string>())),
                 new Claim("BranchorHub", user.BranchorHub ?? string.Empty),
             };
 

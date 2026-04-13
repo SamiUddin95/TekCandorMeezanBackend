@@ -21,5 +21,11 @@ namespace TekCandor.Repository.Implementations
         {
             return _context.chequedepositInformation.AsNoTracking();
         }
+        public async Task<IQueryable<Cycle>> GetAllQueryableCycleAsync()
+        {
+            return _context.Cycles.AsNoTracking();
+        }
+
+
     }
 }
