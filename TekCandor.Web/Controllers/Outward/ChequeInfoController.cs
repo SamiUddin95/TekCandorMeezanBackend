@@ -126,6 +126,67 @@ namespace TekCandor.Web.Controllers.Outward
         }
 
 
+        [HttpGet("supervisorList")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SupervisorList()
+        {
+            try
+            {
+                var result = await _service.GetByStatusAsync("P");
+                return Ok(ApiResponse<object>.Success(new
+                {
+                    items = result,
+                    totalCount = result.Count
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpPut("approve/{id:long}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Approve(long id)
+        {
+            try
+            {
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+                var result = await _service.ApproveAsync(id, userId);
+                
+                if (!result)
+                    return NotFound(ApiResponse<string>.Error("Cheque not found", 404));
+
+                return Ok(ApiResponse<string>.Success("Cheque approved successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpPut("reject/{id:long}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Reject(long id)
+        {
+            try
+            {
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+                var result = await _service.RejectAsync(id, userId);
+                
+                if (!result)
+                    return NotFound(ApiResponse<string>.Error("Cheque not found", 404));
+
+                return Ok(ApiResponse<string>.Success("Cheque rejected successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpGet("generate-file")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

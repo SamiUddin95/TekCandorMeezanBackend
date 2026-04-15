@@ -153,6 +153,22 @@ namespace TekCandor.Service.Outward.Implementations
             return sb.ToString();
         }
 
+        public async Task<List<ChequeInfoDTO>> GetByStatusAsync(string status)
+        {
+            var entities = await _repository.GetByStatusAsync(status);
+            return entities.Select(MapToDTO).ToList();
+        }
+
+        public async Task<bool> ApproveAsync(long id, string userId)
+        {
+            return await _repository.UpdateStatusAsync(id, "A", userId);
+        }
+
+        public async Task<bool> RejectAsync(long id, string userId)
+        {
+            return await _repository.UpdateStatusAsync(id, "RE", userId);
+        }
+
         private ChequeInfoDTO MapToDTO(ChequeInfo entity)
         {
             return new ChequeInfoDTO

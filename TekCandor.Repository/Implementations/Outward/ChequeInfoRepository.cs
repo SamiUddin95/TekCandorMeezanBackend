@@ -66,5 +66,27 @@ namespace TekCandor.Repository.Implementations.Outward
                 .OrderBy(c => c.Id)
                 .ToListAsync();
         }
+
+        public async Task<List<ChequeInfo>> GetByStatusAsync(string status)
+        {
+            return await _context.ChequeInfo
+                .Where(c => c.Status == status)
+                .OrderByDescending(c => c.CreatedOn)
+                .ToListAsync();
+        }
+
+        public async Task<bool> UpdateStatusAsync(long id, string status, string userId)
+        {
+            var cheque = await GetByIdAsync(id);
+            if (cheque == null) return false;
+
+            cheque.Status = status;
+            cheque.UpdatedBy = userId;
+            cheque.UpdatedOn = DateTime.Now;
+
+            _context.ChequeInfo.Update(cheque);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
