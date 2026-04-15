@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using TekCandor.Repository.Entities.Outward;
 using TekCandor.Repository.Interfaces.Outward;
@@ -46,7 +47,7 @@ namespace TekCandor.Service.Outward.Implementations
                 ImageU = dto.ImageU,
                 Currency = dto.Currency,
                 Remarks = dto.Remarks,
-                BranchId = dto.BranchId,
+                ReceiverBranchCode = dto.ReceiverBranchCode,
                 DrawerBank = dto.DrawerBank,
                 AmountInWords = dto.AmountInWords,
                 ReferenceNo = dto.ReferenceNo,
@@ -103,7 +104,7 @@ namespace TekCandor.Service.Outward.Implementations
             entity.ImageU = dto.ImageU;
             entity.Currency = dto.Currency;
             entity.Remarks = dto.Remarks;
-            entity.BranchId = dto.BranchId;
+            entity.ReceiverBranchCode = dto.ReceiverBranchCode;
             entity.DrawerBank = dto.DrawerBank;
             entity.AmountInWords = dto.AmountInWords;
             entity.ReferenceNo = dto.ReferenceNo;
@@ -123,16 +124,33 @@ namespace TekCandor.Service.Outward.Implementations
             return await _repository.DeleteAsync(id);
         }
 
-        public async Task<List<ChequeInfoDTO>> GetByBranchIdAsync(long branchId)
+        public async Task<string> GenerateFileContentAsync(string receiverBranchCode, DateTime date)
         {
-            var entities = await _repository.GetByBranchIdAsync(branchId);
-            return entities.Select(MapToDTO).ToList();
-        }
+            var cheques = await _repository.GetByBranchIdAndDateAsync(receiverBranchCode, date);
+            
+            if (cheques == null || cheques.Count == 0)
+                return string.Empty;
 
-        public async Task<List<ChequeInfoDTO>> GetByStatusAsync(string status)
-        {
-            var entities = await _repository.GetByStatusAsync(status);
-            return entities.Select(MapToDTO).ToList();
+            var sb = new StringBuilder();
+            
+            var count = cheques.Count;
+            var totalAmount = cheques.Sum(c => c.Amount ?? 0);
+            var dateStr = date.ToString("dd-MM-yyyy");
+            
+            sb.AppendLine($"{dateStr}|{count}|{totalAmount:0}");
+            
+            foreach (var cheque in cheques)
+            {
+                var chequeDate = cheque.Date.HasValue ? cheque.Date.Value.ToString("dd-MM-yyyy") : dateStr;
+                var chequeNo = cheque.ChequeNo ?? "";
+                var amount = cheque.Amount ?? 0;
+                
+                sb.AppendLine($"{chequeDate}|{chequeNo}|{amount:0}");
+            }
+            
+            sb.AppendLine("EOF");
+            
+            return sb.ToString();
         }
 
         private ChequeInfoDTO MapToDTO(ChequeInfo entity)
@@ -164,8 +182,8 @@ namespace TekCandor.Service.Outward.Implementations
                 ImageU = entity.ImageU,
                 Currency = entity.Currency,
                 Remarks = entity.Remarks,
-                BranchId = entity.BranchId,
-                BranchName = entity.Branch?.Name,
+                ReceiverBranchCode = entity.ReceiverBranchCode,
+                BranchName = entity.BranchName,
                 DrawerBank = entity.DrawerBank,
                 AmountInWords = entity.AmountInWords,
                 ReferenceNo = entity.ReferenceNo,

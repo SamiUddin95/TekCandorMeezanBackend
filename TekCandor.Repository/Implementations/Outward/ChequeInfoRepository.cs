@@ -29,14 +29,12 @@ namespace TekCandor.Repository.Implementations.Outward
         public async Task<ChequeInfo?> GetByIdAsync(long id)
         {
             return await _context.ChequeInfo
-                .Include(c => c.Branch)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<List<ChequeInfo>> GetAllAsync()
         {
             return await _context.ChequeInfo
-                .Include(c => c.Branch)
                 .OrderByDescending(c => c.CreatedOn)
                 .ToListAsync();
         }
@@ -59,21 +57,13 @@ namespace TekCandor.Repository.Implementations.Outward
             return true;
         }
 
-        public async Task<List<ChequeInfo>> GetByBranchIdAsync(long branchId)
-        {
-            return await _context.ChequeInfo
-                .Include(c => c.Branch)
-                .Where(c => c.BranchId == branchId)
-                .OrderByDescending(c => c.CreatedOn)
-                .ToListAsync();
-        }
 
-        public async Task<List<ChequeInfo>> GetByStatusAsync(string status)
+        public async Task<List<ChequeInfo>> GetByBranchIdAndDateAsync(string receiverBranchCode, DateTime date)
         {
+            var dateOnly = date.Date;
             return await _context.ChequeInfo
-                .Include(c => c.Branch)
-                .Where(c => c.Status == status)
-                .OrderByDescending(c => c.CreatedOn)
+                .Where(c => c.ReceiverBranchCode == receiverBranchCode && c.Date.HasValue && c.Date.Value.Date == dateOnly)
+                .OrderBy(c => c.Id)
                 .ToListAsync();
         }
     }

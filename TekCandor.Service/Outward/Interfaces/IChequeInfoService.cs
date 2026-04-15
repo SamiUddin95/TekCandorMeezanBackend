@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TekCandor.Service.Outward.Models;
@@ -11,7 +12,6 @@ namespace TekCandor.Service.Outward.Interfaces
         Task<List<ChequeInfoDTO>> GetAllAsync();
         Task<ChequeInfoDTO?> UpdateAsync(long id, ChequeInfoDTO dto, string userId);
         Task<bool> DeleteAsync(long id);
-        Task<List<ChequeInfoDTO>> GetByBranchIdAsync(long branchId);
-        Task<List<ChequeInfoDTO>> GetByStatusAsync(string status);
+        Task<string> GenerateFileContentAsync(string receiverBranchCode, DateTime date);
     }
 }

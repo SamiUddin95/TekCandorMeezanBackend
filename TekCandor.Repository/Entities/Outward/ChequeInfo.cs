@@ -29,7 +29,7 @@ namespace TekCandor.Repository.Entities.Outward
         public string? ImageU { get; set; }
         public string? Currency { get; set; }
         public string? Remarks { get; set; }
-        public long? BranchId { get; set; }
+        public string? ReceiverBranchCode { get; set; }
         public string? DrawerBank { get; set; }
         public string? AmountInWords { get; set; }
         public string? ReferenceNo { get; set; }
@@ -42,7 +42,7 @@ namespace TekCandor.Repository.Entities.Outward
         public string? CreatedBy { get; set; }
         public DateTime? UpdatedOn { get; set; }
         public string? UpdatedBy { get; set; }
+        public string? BranchName { get; set; }
 
-        public Branch? Branch { get; set; }
     }
 }

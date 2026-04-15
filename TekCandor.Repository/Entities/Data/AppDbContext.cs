@@ -875,11 +875,6 @@ namespace TekCandor.Repository.Entities.Data
                 entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
                 entity.Property(e => e.UpdatedBy).HasMaxLength(20);
                 
-                entity.HasOne(e => e.Branch)
-                    .WithMany()
-                    .HasForeignKey(e => e.BranchId)
-                    .HasConstraintName("FK_ChequeInfo_Branch")
-                    .OnDelete(DeleteBehavior.Restrict);
             });
 
         }

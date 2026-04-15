@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.IdentityModel.Tokens.Jwt;
+using System.Text;
 using System.Threading.Tasks;
 using TekCandor.Service.Outward.Interfaces;
 using TekCandor.Service.Outward.Models;
@@ -124,37 +125,26 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
-        [HttpGet("branch/{branchId:long}")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetByBranchId(long branchId)
-        {
-            try
-            {
-                var result = await _service.GetByBranchIdAsync(branchId);
-                return Ok(ApiResponse<object>.Success(new
-                {
-                    items = result,
-                    totalCount = result.Count
-                }));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
-            }
-        }
 
-        [HttpGet("status/{status}")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetByStatus(string status)
+        [HttpGet("generate-file")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GenerateFile([FromQuery] string receiverBranchCode, [FromQuery] DateTime date)
         {
             try
             {
-                var result = await _service.GetByStatusAsync(status);
-                return Ok(ApiResponse<object>.Success(new
-                {
-                    items = result,
-                    totalCount = result.Count
-                }));
+                if (receiverBranchCode == null)
+                    return BadRequest(ApiResponse<string>.Error("Invalid branch ID", 400));
+
+                var fileContent = await _service.GenerateFileContentAsync(receiverBranchCode, date);
+                
+                if (string.IsNullOrEmpty(fileContent))
+                    return Ok(ApiResponse<string>.Success("No data found for the specified branch and date"));
+
+                var bytes = Encoding.UTF8.GetBytes(fileContent);
+                var fileName = $"ChequeInfo_{receiverBranchCode}_{date:dd-MM-yyyy}.txt";
+                
+                return File(bytes, "text/plain", fileName);
             }
             catch (Exception ex)
             {

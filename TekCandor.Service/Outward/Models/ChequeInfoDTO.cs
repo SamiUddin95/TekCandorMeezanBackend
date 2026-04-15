@@ -29,7 +29,7 @@ namespace TekCandor.Service.Outward.Models
         public string? ImageU { get; set; }
         public string? Currency { get; set; }
         public string? Remarks { get; set; }
-        public long? BranchId { get; set; }
+        public string? ReceiverBranchCode { get; set; }
         public string? BranchName { get; set; }
         public string? DrawerBank { get; set; }
         public string? AmountInWords { get; set; }
