@@ -212,7 +212,7 @@ namespace TekCandor.Web.Controllers.Outward
         {
             try
             {
-                if (request.NiftStagingId <= 0 || request.ChequeInfoId <= 0)
+                if (request.NiftStagingId <= 0 || request.ChequeNo == null)
                     return BadRequest(ApiResponse<string>.Error("Invalid request data", 400));
 
                 var result = await _service.ForceMatchAsync(request);

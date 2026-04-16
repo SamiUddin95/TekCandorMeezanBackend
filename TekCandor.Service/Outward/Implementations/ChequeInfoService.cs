@@ -1,8 +1,10 @@
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TekCandor.Repository.Entities.Data;
 using TekCandor.Repository.Entities.Outward;
 using TekCandor.Repository.Interfaces.Outward;
 using TekCandor.Service.Outward.Interfaces;
@@ -14,11 +16,12 @@ namespace TekCandor.Service.Outward.Implementations
     {
         private readonly IChequeInfoRepository _repository;
         private readonly INiftUploadStagingRepository _niftRepository;
-
-        public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository)
+        private readonly AppDbContext _context;
+        public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository, AppDbContext context)
         {
             _repository = repository;
             _niftRepository = niftRepository;
+            _context = context;
         }
 
         public async Task<ChequeInfoDTO> CreateAsync(ChequeInfoDTO dto, string userId)
@@ -343,7 +346,13 @@ namespace TekCandor.Service.Outward.Implementations
             if (niftRecord == null)
                 return false;
 
-            var chequeInfo = await _repository.GetByIdAsync(request.ChequeInfoId);
+            var getchequeInfoId = await _context.ChequeInfo
+                .Where(c => c.ChequeNo == request.ChequeNo)
+                .Select(c => c.Id)
+                .FirstOrDefaultAsync(
+            );
+
+            var chequeInfo = await _repository.GetByIdAsync(getchequeInfoId);
             if (chequeInfo == null)
                 return false;
 
