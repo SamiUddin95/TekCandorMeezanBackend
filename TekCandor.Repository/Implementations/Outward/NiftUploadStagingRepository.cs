@@ -40,5 +40,14 @@ namespace TekCandor.Repository.Implementations.Outward
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<NiftUploadStaging>> GetByUploadDateAsync(DateTime date)
+        {
+            var dateOnly = date.Date;
+            return await _context.NiftUploadStaging
+                .Where(n => n.UploadDate.HasValue && n.UploadDate.Value.Date == dateOnly)
+                .OrderByDescending(n => n.Id)
+                .ToListAsync();
+        }
     }
 }
