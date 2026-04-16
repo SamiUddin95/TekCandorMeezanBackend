@@ -275,6 +275,64 @@ namespace TekCandor.Service.Outward.Implementations
             return result;
         }
 
+        public async Task<NiftUploadResultDTO> GetNiftUploadDataAsync(DateTime date)
+        {
+            var result = new NiftUploadResultDTO();
+            var stagingRecords = await _niftRepository.GetByUploadDateAsync(date);
+
+            if (stagingRecords == null || stagingRecords.Count == 0)
+            {
+                return result;
+            }
+
+            var matchedList = new List<NiftRecordDTO>();
+            var unmatchedList = new List<NiftRecordDTO>();
+            decimal totalAmount = 0;
+
+            foreach (var record in stagingRecords)
+            {
+                var chequeInfo = await _repository.FindByChequeDetailsAsync(
+                    record.ChequeNo ?? "",
+                    record.Amount ?? 0,
+                    record.MICR ?? ""
+                );
+
+                bool isPaid = record.Status?.ToUpper() == "PAID";
+
+                var niftRecord = new NiftRecordDTO
+                {
+                    ChequeNo = record.ChequeNo,
+                    Amount = record.Amount,
+                    Date = record.UploadDate?.ToString("dd-MM-yyyy"),
+                    Discrepancy = isPaid ? "" : record.ReturnReason,
+                    BranchName = chequeInfo?.BranchName ?? ""
+                };
+
+                if (record.IsProcessed == true && chequeInfo != null)
+                {
+                    matchedList.Add(niftRecord);
+                }
+                else
+                {
+                    unmatchedList.Add(niftRecord);
+                }
+
+                totalAmount += record.Amount ?? 0;
+            }
+
+            result.MatchedRecords = matchedList;
+            result.UnmatchedRecords = unmatchedList;
+            result.Summary = new NiftSummaryDTO
+            {
+                TotalLodgement = stagingRecords.Count,
+                Matched = matchedList.Count,
+                Unmatched = unmatchedList.Count,
+                TotalAmount = totalAmount
+            };
+
+            return result;
+        }
+
         private ChequeInfoDTO MapToDTO(ChequeInfo entity)
         {
             return new ChequeInfoDTO

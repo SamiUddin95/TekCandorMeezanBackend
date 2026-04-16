@@ -187,6 +187,23 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
+        [HttpGet("reconcile-list")]
+        [ProducesResponseType(typeof(ApiResponse<NiftUploadResultDTO>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetReconcileData([FromQuery] DateTime? date)
+        {
+            try
+            {
+                var searchDate = date ?? DateTime.Now.Date;
+                var result = await _service.GetNiftUploadDataAsync(searchDate);
+
+                return Ok(ApiResponse<NiftUploadResultDTO>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpPost("upload-nift")]
         [ProducesResponseType(typeof(ApiResponse<NiftUploadResultDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

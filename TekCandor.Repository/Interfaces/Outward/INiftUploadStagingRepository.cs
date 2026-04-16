@@ -9,5 +9,6 @@ namespace TekCandor.Repository.Interfaces.Outward
         Task<NiftUploadStaging> CreateAsync(NiftUploadStaging niftUpload);
         Task<List<NiftUploadStaging>> CreateBulkAsync(List<NiftUploadStaging> niftUploads);
         Task<bool> UpdateIsProcessedAsync(long id, bool isProcessed);
+        Task<List<NiftUploadStaging>> GetByUploadDateAsync(DateTime date);
     }
 }
