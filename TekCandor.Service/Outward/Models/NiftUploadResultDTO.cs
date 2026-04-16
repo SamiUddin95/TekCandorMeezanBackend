@@ -11,6 +11,8 @@ namespace TekCandor.Service.Outward.Models
 
     public class NiftRecordDTO
     {
+        public long? ChequeInfoId { get; set; }
+        public long NiftStagingId { get; set; }
         public string? ChequeNo { get; set; }
         public string? BranchName { get; set; }
         public decimal? Amount { get; set; }

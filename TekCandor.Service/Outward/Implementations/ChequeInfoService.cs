@@ -235,6 +235,8 @@ namespace TekCandor.Service.Outward.Implementations
 
                 var niftRecord = new NiftRecordDTO
                 {
+                    ChequeInfoId = chequeInfo?.Id,
+                    NiftStagingId = record.Id,
                     ChequeNo = record.ChequeNo,
                     Amount = record.Amount,
                     Date = record.UploadDate?.ToString("dd-MM-yyyy"),
@@ -301,6 +303,8 @@ namespace TekCandor.Service.Outward.Implementations
 
                 var niftRecord = new NiftRecordDTO
                 {
+                    ChequeInfoId = chequeInfo?.Id,
+                    NiftStagingId = record.Id,
                     ChequeNo = record.ChequeNo,
                     Amount = record.Amount,
                     Date = record.UploadDate?.ToString("dd-MM-yyyy"),
