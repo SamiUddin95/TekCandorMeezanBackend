@@ -187,6 +187,38 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
+        [HttpPost("upload-nift")]
+        [ProducesResponseType(typeof(ApiResponse<NiftUploadResultDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> UploadNiftFile([FromForm] IFormFile file, [FromForm] string fileType)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest(ApiResponse<string>.Error("File is required", 400));
+
+                if (string.IsNullOrEmpty(fileType) || (fileType.ToUpper() != "PAID" && fileType.ToUpper() != "RETURN"))
+                    return BadRequest(ApiResponse<string>.Error("File type must be 'PAID' or 'RETURN'", 400));
+
+                if (!file.FileName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
+                    return BadRequest(ApiResponse<string>.Error("Only .txt files are allowed", 400));
+
+                string fileContent;
+                using (var reader = new StreamReader(file.OpenReadStream()))
+                {
+                    fileContent = await reader.ReadToEndAsync();
+                }
+
+                var result = await _service.ProcessNiftFileAsync(file.FileName, fileContent, fileType);
+
+                return Ok(ApiResponse<NiftUploadResultDTO>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpGet("generate-file")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

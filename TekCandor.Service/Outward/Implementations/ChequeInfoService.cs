@@ -13,10 +13,12 @@ namespace TekCandor.Service.Outward.Implementations
     public class ChequeInfoService : IChequeInfoService
     {
         private readonly IChequeInfoRepository _repository;
+        private readonly INiftUploadStagingRepository _niftRepository;
 
-        public ChequeInfoService(IChequeInfoRepository repository)
+        public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository)
         {
             _repository = repository;
+            _niftRepository = niftRepository;
         }
 
         public async Task<ChequeInfoDTO> CreateAsync(ChequeInfoDTO dto, string userId)
@@ -167,6 +169,110 @@ namespace TekCandor.Service.Outward.Implementations
         public async Task<bool> RejectAsync(long id, string userId, string remarks)
         {
             return await _repository.UpdateRejectStatusAsync(id, "RE", userId, remarks);
+        }
+
+        public async Task<NiftUploadResultDTO> ProcessNiftFileAsync(string fileName, string fileContent, string fileType)
+        {
+            var result = new NiftUploadResultDTO();
+            var lines = fileContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+            var stagingRecords = new List<NiftUploadStaging>();
+            
+            bool isPaid = fileType.ToUpper() == "PAID";
+            string status = isPaid ? "PAID" : "RETURN";
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i].Trim();
+                
+                if (i == 0 || line == "EOF")
+                    continue;
+
+                var parts = line.Split('|');
+                
+                if (isPaid && parts.Length >= 4)
+                {
+                    stagingRecords.Add(new NiftUploadStaging
+                    {
+                        FileName = fileName,
+                        UploadDate = DateTime.Now,
+                        ChequeNo = parts[1],
+                        Amount = decimal.TryParse(parts[2], out var amt) ? amt : 0,
+                        MICR = parts[3],
+                        Status = status,
+                        IsProcessed = false
+                    });
+                }
+                else if (!isPaid && parts.Length >= 6)
+                {
+                    stagingRecords.Add(new NiftUploadStaging
+                    {
+                        FileName = fileName,
+                        UploadDate = DateTime.Now,
+                        ChequeNo = parts[1],
+                        Amount = decimal.TryParse(parts[2], out var amt) ? amt : 0,
+                        MICR = parts[3],
+                        Status = status,
+                        ReturnCode = parts[4],
+                        ReturnReason = parts[5],
+                        IsProcessed = false
+                    });
+                }
+            }
+
+            await _niftRepository.CreateBulkAsync(stagingRecords);
+
+            var matchedList = new List<NiftRecordDTO>();
+            var unmatchedList = new List<NiftRecordDTO>();
+            decimal totalAmount = 0;
+
+            foreach (var record in stagingRecords)
+            {
+                var chequeInfo = await _repository.FindByChequeDetailsAsync(
+                    record.ChequeNo ?? "", 
+                    record.Amount ?? 0, 
+                    record.MICR ?? ""
+                );
+
+                var niftRecord = new NiftRecordDTO
+                {
+                    ChequeNo = record.ChequeNo,
+                    Amount = record.Amount,
+                    Date = record.UploadDate?.ToString("dd-MM-yyyy"),
+                    Discrepancy = isPaid ? "" : record.ReturnReason,
+                    BranchName = chequeInfo?.BranchName ?? ""
+                };
+
+                if (chequeInfo != null)
+                {
+                    await _repository.UpdateMatchStatusAndStatusAsync(
+                        chequeInfo.Id, 
+                        "Matched", 
+                        isPaid ? "Cleared" : "Returned"
+                    );
+                    
+                    await _niftRepository.UpdateIsProcessedAsync(record.Id, true);
+                    
+                    matchedList.Add(niftRecord);
+                }
+                else
+                {
+                    unmatchedList.Add(niftRecord);
+                }
+
+                totalAmount += record.Amount ?? 0;
+            }
+
+            result.MatchedRecords = matchedList;
+            result.UnmatchedRecords = unmatchedList;
+            result.Summary = new NiftSummaryDTO
+            {
+                TotalLodgement = stagingRecords.Count,
+                Matched = matchedList.Count,
+                Unmatched = unmatchedList.Count,
+                TotalAmount = totalAmount
+            };
+
+            return result;
         }
 
         private ChequeInfoDTO MapToDTO(ChequeInfo entity)

@@ -35,6 +35,7 @@ namespace TekCandor.Repository.Entities.Outward
         public string? ReferenceNo { get; set; }
         public long? DepositSlipId { get; set; }
         public string? Status { get; set; }
+        public string? MatchStatus { get; set; }
         public bool? IsReconciled { get; set; }
         public bool? IsReturned { get; set; }
         public bool? IsRealized { get; set; }

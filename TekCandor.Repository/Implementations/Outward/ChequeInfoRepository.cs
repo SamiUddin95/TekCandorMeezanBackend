@@ -89,6 +89,26 @@ namespace TekCandor.Repository.Implementations.Outward
             return true;
         }
 
+        public async Task<ChequeInfo?> FindByChequeDetailsAsync(string chequeNo, decimal amount, string micr)
+        {
+            return await _context.ChequeInfo
+                .FirstOrDefaultAsync(c => c.ChequeNo == chequeNo && c.Amount == amount && c.MICR == micr);
+        }
+
+        public async Task<bool> UpdateMatchStatusAndStatusAsync(long id, string matchStatus, string status)
+        {
+            var cheque = await GetByIdAsync(id);
+            if (cheque == null) return false;
+
+            cheque.MatchStatus = matchStatus;
+            cheque.Status = status;
+            cheque.UpdatedOn = DateTime.Now;
+
+            _context.ChequeInfo.Update(cheque);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> UpdateRejectStatusAsync(long id, string status, string userId, string remarks)
         {
             var cheque = await GetByIdAsync(id);
