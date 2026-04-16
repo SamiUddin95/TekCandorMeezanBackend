@@ -197,12 +197,20 @@ namespace TekCandor.Web.Controllers.Outward
                 if (file == null || file.Length == 0)
                     return BadRequest(ApiResponse<string>.Error("File is required", 400));
 
-                if (string.IsNullOrEmpty(fileType) || (fileType.ToUpper() != "PAID" && fileType.ToUpper() != "RETURN"))
-                    return BadRequest(ApiResponse<string>.Error("File type must be 'PAID' or 'RETURN'", 400));
+                //if (string.IsNullOrEmpty(fileType) || (fileType.ToUpper() != "PAID" && fileType.ToUpper() != "RETURN"))
+                    //return BadRequest(ApiResponse<string>.Error("File type must be 'PAID' or 'RETURN'", 400));
 
                 if (!file.FileName.EndsWith(".txt", StringComparison.OrdinalIgnoreCase))
                     return BadRequest(ApiResponse<string>.Error("Only .txt files are allowed", 400));
 
+                if (file.FileName.StartsWith("Paid", StringComparison.OrdinalIgnoreCase))
+                {
+                    fileType = "PAID";
+                }
+                else
+                {
+                    fileType = "RETURN";
+                }
                 string fileContent;
                 using (var reader = new StreamReader(file.OpenReadStream()))
                 {
