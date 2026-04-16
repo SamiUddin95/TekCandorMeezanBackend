@@ -15,5 +15,6 @@ namespace TekCandor.Repository.Interfaces.Outward
         Task<List<ChequeInfo>> GetByBranchIdAndDateAsync(string receiverBranchCode, DateTime date);
         Task<List<ChequeInfo>> GetByStatusAsync(string status);
         Task<bool> UpdateStatusAsync(long id, string status, string userId);
+        Task<bool> UpdateRejectStatusAsync(long id, string status, string userId, string remarks);
     }
 }

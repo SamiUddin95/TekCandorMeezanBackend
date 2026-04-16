@@ -88,5 +88,20 @@ namespace TekCandor.Repository.Implementations.Outward
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> UpdateRejectStatusAsync(long id, string status, string userId, string remarks)
+        {
+            var cheque = await GetByIdAsync(id);
+            if (cheque == null) return false;
+
+            cheque.Remarks = remarks;
+            cheque.Status = status;
+            cheque.UpdatedBy = userId;
+            cheque.UpdatedOn = DateTime.Now;
+
+            _context.ChequeInfo.Update(cheque);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

@@ -169,12 +169,12 @@ namespace TekCandor.Web.Controllers.Outward
         [HttpPut("reject/{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Reject(long id)
+        public async Task<IActionResult> Reject(long id, string remarks)
         {
             try
             {
                 var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
-                var result = await _service.RejectAsync(id, userId);
+                var result = await _service.RejectAsync(id, userId, remarks);
                 
                 if (!result)
                     return NotFound(ApiResponse<string>.Error("Cheque not found", 404));
