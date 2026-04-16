@@ -333,6 +333,33 @@ namespace TekCandor.Service.Outward.Implementations
             return result;
         }
 
+        public async Task<bool> ForceMatchAsync(ForceMatchRequestDTO request)
+        {
+            var niftRecord = await _niftRepository.GetByIdAsync(request.NiftStagingId);
+            if (niftRecord == null)
+                return false;
+
+            var chequeInfo = await _repository.GetByIdAsync(request.ChequeInfoId);
+            if (chequeInfo == null)
+                return false;
+
+            bool isPaid = niftRecord.Status?.ToUpper() == "PAID";
+            string newStatus = isPaid ? "Cleared" : "Returned";
+
+            var updated = await _repository.UpdateMatchStatusAndStatusAsync(
+                chequeInfo.Id,
+                "Force Matched",
+                newStatus
+            );
+
+            if (updated)
+            {
+                await _niftRepository.UpdateIsProcessedAsync(niftRecord.Id, true);
+            }
+
+            return updated;
+        }
+
         private ChequeInfoDTO MapToDTO(ChequeInfo entity)
         {
             return new ChequeInfoDTO

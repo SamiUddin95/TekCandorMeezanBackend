@@ -204,6 +204,30 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
+        [HttpPost("force-match")]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> ForceMatch([FromBody] ForceMatchRequestDTO request)
+        {
+            try
+            {
+                if (request.NiftStagingId <= 0 || request.ChequeInfoId <= 0)
+                    return BadRequest(ApiResponse<string>.Error("Invalid request data", 400));
+
+                var result = await _service.ForceMatchAsync(request);
+
+                if (!result)
+                    return NotFound(ApiResponse<string>.Error("Record not found or update failed", 404));
+
+                return Ok(ApiResponse<string>.Success("Force match completed successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpPost("upload-nift")]
         [ProducesResponseType(typeof(ApiResponse<NiftUploadResultDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]

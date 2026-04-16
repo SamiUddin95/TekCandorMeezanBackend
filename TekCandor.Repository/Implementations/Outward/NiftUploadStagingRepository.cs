@@ -49,5 +49,10 @@ namespace TekCandor.Repository.Implementations.Outward
                 .OrderByDescending(n => n.Id)
                 .ToListAsync();
         }
+
+        public async Task<NiftUploadStaging?> GetByIdAsync(long id)
+        {
+            return await _context.NiftUploadStaging.FindAsync(id);
+        }
     }
 }

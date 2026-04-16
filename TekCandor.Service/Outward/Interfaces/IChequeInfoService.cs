@@ -18,5 +18,6 @@ namespace TekCandor.Service.Outward.Interfaces
         Task<bool> RejectAsync(long id, string userId, string remarks);
         Task<NiftUploadResultDTO> ProcessNiftFileAsync(string fileName, string fileContent, string fileType);
         Task<NiftUploadResultDTO> GetNiftUploadDataAsync(DateTime date);
+        Task<bool> ForceMatchAsync(ForceMatchRequestDTO request);
     }
 }
