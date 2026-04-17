@@ -17,6 +17,7 @@ namespace TekCandor.Service.Outward.Implementations
         private readonly IChequeInfoRepository _repository;
         private readonly INiftUploadStagingRepository _niftRepository;
         private readonly AppDbContext _context;
+        private static readonly Random _random = new Random();
         public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository, AppDbContext context)
         {
             _repository = repository;
@@ -24,6 +25,27 @@ namespace TekCandor.Service.Outward.Implementations
             _context = context;
         }
 
+        public int Generate7DigitNumber()
+        {
+            Random random = new Random();
+            return random.Next(1000000, 10000000); // 7-digit range
+        }
+
+        public decimal GenerateRandomAmount(decimal min, decimal max)
+        {
+            Random random = new Random();
+            double value = random.NextDouble() * (double)(max - min) + (double)min;
+            return Math.Round((decimal)value, 2);
+        }
+
+        public string GenerateFormattedNumber()
+        {
+            int part1 = _random.Next(100000000, 1000000000); // 9 digits
+            int part2 = _random.Next(10000000, 100000000);   // 8 digits
+            int part3 = _random.Next(0, 100);                // 2 digits (00–99)
+
+            return $"{part1}: {part2:D8}: {part3:D2}";
+        }
         public async Task<ChequeInfoDTO> CreateAsync(ChequeInfoDTO dto, string userId)
         {
             var entity = new ChequeInfo
@@ -37,13 +59,13 @@ namespace TekCandor.Service.Outward.Implementations
                 BeneficiaryTitle = dto.BeneficiaryTitle,
                 AccountStatus = dto.AccountStatus,
                 BeneficiaryBranchCode = dto.BeneficiaryBranchCode,
-                ChequeNo = dto.ChequeNo,
+                ChequeNo = Convert.ToString(Generate7DigitNumber()),//dto.ChequeNo,
                 PayingBankCode = dto.PayingBankCode,
                 PayingBranchCode = dto.PayingBranchCode,
-                Amount = dto.Amount,
+                Amount = GenerateRandomAmount(1000, 100000),//dto.Amount,
                 ChequeDate = dto.ChequeDate,
                 InstrumentType = dto.InstrumentType,
-                MICR = dto.MICR,
+                MICR = GenerateFormattedNumber(),//dto.MICR,
                 OCREngine = dto.OCREngine,
                 ProcessingTime = dto.ProcessingTime,
                 Accuracy = dto.Accuracy,
