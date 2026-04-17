@@ -378,28 +378,29 @@ namespace TekCandor.Service.Outward.Implementations
             var data = await _repository.GetReturnListAsync();
             
             var result = new List<ReturnListDTO>();
-            foreach (dynamic item in data)
+            foreach (var item in data)
             {
+                var itemType = item.GetType();
                 result.Add(new ReturnListDTO
                 {
-                    ChequeInfoId = item.ChequeInfoId,
-                    Date = item.Date,
-                    DepositorType = item.DepositorType,
-                    AccountNo = item.AccountNo,
-                    CNIC = item.CNIC,
-                    DepositorTitle = item.DepositorTitle,
-                    BranchName = item.BranchName,
-                    ChequeNo = item.ChequeNo,
-                    Amount = item.Amount,
-                    MICR = item.MICR,
-                    Status = item.Status,
-                    MatchStatus = item.MatchStatus,
-                    NiftStagingId = item.NiftStagingId,
-                    FileName = item.FileName,
-                    UploadDate = item.UploadDate,
-                    ReturnCode = item.ReturnCode,
-                    ReturnReason = item.ReturnReason,
-                    IsProcessed = item.IsProcessed
+                    ChequeInfoId = (long)itemType.GetProperty("ChequeInfoId")?.GetValue(item)!,
+                    Date = (DateTime?)itemType.GetProperty("Date")?.GetValue(item),
+                    DepositorType = (string?)itemType.GetProperty("DepositorType")?.GetValue(item),
+                    AccountNo = (string?)itemType.GetProperty("AccountNo")?.GetValue(item),
+                    CNIC = (string?)itemType.GetProperty("CNIC")?.GetValue(item),
+                    DepositorTitle = (string?)itemType.GetProperty("DepositorTitle")?.GetValue(item),
+                    BranchName = (string?)itemType.GetProperty("BranchName")?.GetValue(item),
+                    ChequeNo = (string?)itemType.GetProperty("ChequeNo")?.GetValue(item),
+                    Amount = (decimal?)itemType.GetProperty("Amount")?.GetValue(item),
+                    MICR = (string?)itemType.GetProperty("MICR")?.GetValue(item),
+                    Status = (string?)itemType.GetProperty("Status")?.GetValue(item),
+                    MatchStatus = (string?)itemType.GetProperty("MatchStatus")?.GetValue(item),
+                    NiftStagingId = (long)itemType.GetProperty("NiftStagingId")?.GetValue(item)!,
+                    FileName = (string?)itemType.GetProperty("FileName")?.GetValue(item),
+                    UploadDate = (DateTime?)itemType.GetProperty("UploadDate")?.GetValue(item),
+                    ReturnCode = (string?)itemType.GetProperty("ReturnCode")?.GetValue(item),
+                    ReturnReason = (string?)itemType.GetProperty("ReturnReason")?.GetValue(item),
+                    IsProcessed = (bool?)itemType.GetProperty("IsProcessed")?.GetValue(item)
                 });
             }
 
@@ -413,20 +414,40 @@ namespace TekCandor.Service.Outward.Implementations
             if (data == null)
                 return null;
 
-            dynamic item = data;
+            var itemType = data.GetType();
             return new ReturnDetailDTO
             {
-                BeneficiaryTitle = item.BeneficiaryTitle,
-                AccountNo = item.AccountNo,
-                ChequeDate = item.ChequeDate,
-                BranchName = item.BranchName,
-                ReturnReason = item.ReturnReason,
-                ChequeNo = item.ChequeNo,
-                Amount = item.Amount,
-                ImageF = item.ImageF,
-                ImageB = item.ImageB,
-                ImageU = item.ImageU
+                BeneficiaryTitle = (string?)itemType.GetProperty("BeneficiaryTitle")?.GetValue(data),
+                AccountNo = (string?)itemType.GetProperty("AccountNo")?.GetValue(data),
+                ChequeDate = (DateTime?)itemType.GetProperty("ChequeDate")?.GetValue(data),
+                BranchName = (string?)itemType.GetProperty("BranchName")?.GetValue(data),
+                ReturnReason = (string?)itemType.GetProperty("ReturnReason")?.GetValue(data),
+                ChequeNo = (string?)itemType.GetProperty("ChequeNo")?.GetValue(data),
+                Amount = (decimal?)itemType.GetProperty("Amount")?.GetValue(data),
+                ImageF = (string?)itemType.GetProperty("ImageF")?.GetValue(data),
+                ImageB = (string?)itemType.GetProperty("ImageB")?.GetValue(data),
+                ImageU = (string?)itemType.GetProperty("ImageU")?.GetValue(data)
             };
+        }
+
+        public async Task<List<FundRealizationDTO>> GetFundRealizationListAsync()
+        {
+            var data = await _repository.GetFundRealizationListAsync();
+            
+            var result = new List<FundRealizationDTO>();
+            foreach (var item in data)
+            {
+                var itemType = item.GetType();
+                result.Add(new FundRealizationDTO
+                {
+                    ReceiverBranchCode = (string?)itemType.GetProperty("ReceiverBranchCode")?.GetValue(item),
+                    BranchName = (string?)itemType.GetProperty("BranchName")?.GetValue(item),
+                    TotalAmount = (decimal)itemType.GetProperty("TotalAmount")?.GetValue(item)!,
+                    ChequeCount = (int)itemType.GetProperty("ChequeCount")?.GetValue(item)!
+                });
+            }
+
+            return result;
         }
 
         private ChequeInfoDTO MapToDTO(ChequeInfo entity)

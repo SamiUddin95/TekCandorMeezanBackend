@@ -176,5 +176,23 @@ namespace TekCandor.Repository.Implementations.Outward
 
             return await query.FirstOrDefaultAsync();
         }
+
+        public async Task<List<object>> GetFundRealizationListAsync()
+        {
+            var query = from c in _context.ChequeInfo
+                        join n in _context.NiftUploadStaging on c.ChequeNo equals n.ChequeNo
+                        where n.Status == "PAID"
+                        group c by new { c.ReceiverBranchCode, c.BranchName } into g
+                        select new
+                        {
+                            ReceiverBranchCode = g.Key.ReceiverBranchCode,
+                            BranchName = g.Key.BranchName,
+                            TotalAmount = g.Sum(x => x.Amount ?? 0),
+                            ChequeCount = g.Count()
+                        };
+
+            var result = await query.ToListAsync();
+            return result.Cast<object>().ToList();
+        }
     }
 }

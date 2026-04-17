@@ -225,6 +225,25 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
+        [HttpGet("fund-realization-list")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetFundRealizationList()
+        {
+            try
+            {
+                var result = await _service.GetFundRealizationListAsync();
+                return Ok(ApiResponse<object>.Success(new
+                {
+                    items = result,
+                    totalCount = result.Count
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpGet("reconcile-list")]
         [ProducesResponseType(typeof(ApiResponse<NiftUploadResultDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetReconcileData([FromQuery] DateTime? date)
