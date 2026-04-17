@@ -21,5 +21,6 @@ namespace TekCandor.Repository.Interfaces.Outward
         Task<List<object>> GetReturnListAsync();
         Task<object?> GetReturnDetailByIdAsync(long id);
         Task<List<object>> GetFundRealizationListAsync();
+        Task<bool> MarkAsReturnAsync(long id, string userId);
     }
 }

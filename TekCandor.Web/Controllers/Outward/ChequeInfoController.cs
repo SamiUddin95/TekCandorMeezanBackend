@@ -187,6 +187,27 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
+        [HttpPut("mark-return/{id:long}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> MarkAsReturn(long id)
+        {
+            try
+            {
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+                var result = await _service.MarkAsReturnAsync(id, userId);
+                
+                if (!result)
+                    return NotFound(ApiResponse<string>.Error("Cheque not found", 404));
+
+                return Ok(ApiResponse<string>.Success("Cheque marked as return successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpGet("return-list")]
         [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetReturnList()

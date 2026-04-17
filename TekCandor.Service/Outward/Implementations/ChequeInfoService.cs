@@ -450,6 +450,11 @@ namespace TekCandor.Service.Outward.Implementations
             return result;
         }
 
+        public async Task<bool> MarkAsReturnAsync(long id, string userId)
+        {
+            return await _repository.MarkAsReturnAsync(id, userId);
+        }
+
         private ChequeInfoDTO MapToDTO(ChequeInfo entity)
         {
             return new ChequeInfoDTO

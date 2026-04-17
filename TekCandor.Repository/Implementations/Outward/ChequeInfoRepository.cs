@@ -194,5 +194,19 @@ namespace TekCandor.Repository.Implementations.Outward
             var result = await query.ToListAsync();
             return result.Cast<object>().ToList();
         }
+
+        public async Task<bool> MarkAsReturnAsync(long id, string userId)
+        {
+            var cheque = await GetByIdAsync(id);
+            if (cheque == null) return false;
+
+            cheque.Status = "R";
+            cheque.UpdatedBy = userId;
+            cheque.UpdatedOn = DateTime.Now;
+
+            _context.ChequeInfo.Update(cheque);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
