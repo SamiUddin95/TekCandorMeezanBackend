@@ -187,6 +187,44 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
+        [HttpGet("return-list")]
+        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetReturnList()
+        {
+            try
+            {
+                var result = await _service.GetReturnListAsync();
+                return Ok(ApiResponse<object>.Success(new
+                {
+                    items = result,
+                    totalCount = result.Count
+                }));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpGet("return-detail/{id:long}")]
+        [ProducesResponseType(typeof(ApiResponse<ReturnDetailDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetReturnDetail(long id)
+        {
+            try
+            {
+                var result = await _service.GetReturnDetailByIdAsync(id);
+                if (result == null)
+                    return NotFound(ApiResponse<string>.Error("Return detail not found", 404));
+
+                return Ok(ApiResponse<ReturnDetailDTO>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpGet("reconcile-list")]
         [ProducesResponseType(typeof(ApiResponse<NiftUploadResultDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetReconcileData([FromQuery] DateTime? date)

@@ -373,6 +373,62 @@ namespace TekCandor.Service.Outward.Implementations
             return updated;
         }
 
+        public async Task<List<ReturnListDTO>> GetReturnListAsync()
+        {
+            var data = await _repository.GetReturnListAsync();
+            
+            var result = new List<ReturnListDTO>();
+            foreach (dynamic item in data)
+            {
+                result.Add(new ReturnListDTO
+                {
+                    ChequeInfoId = item.ChequeInfoId,
+                    Date = item.Date,
+                    DepositorType = item.DepositorType,
+                    AccountNo = item.AccountNo,
+                    CNIC = item.CNIC,
+                    DepositorTitle = item.DepositorTitle,
+                    BranchName = item.BranchName,
+                    ChequeNo = item.ChequeNo,
+                    Amount = item.Amount,
+                    MICR = item.MICR,
+                    Status = item.Status,
+                    MatchStatus = item.MatchStatus,
+                    NiftStagingId = item.NiftStagingId,
+                    FileName = item.FileName,
+                    UploadDate = item.UploadDate,
+                    ReturnCode = item.ReturnCode,
+                    ReturnReason = item.ReturnReason,
+                    IsProcessed = item.IsProcessed
+                });
+            }
+
+            return result;
+        }
+
+        public async Task<ReturnDetailDTO?> GetReturnDetailByIdAsync(long id)
+        {
+            var data = await _repository.GetReturnDetailByIdAsync(id);
+            
+            if (data == null)
+                return null;
+
+            dynamic item = data;
+            return new ReturnDetailDTO
+            {
+                BeneficiaryTitle = item.BeneficiaryTitle,
+                AccountNo = item.AccountNo,
+                ChequeDate = item.ChequeDate,
+                BranchName = item.BranchName,
+                ReturnReason = item.ReturnReason,
+                ChequeNo = item.ChequeNo,
+                Amount = item.Amount,
+                ImageF = item.ImageF,
+                ImageB = item.ImageB,
+                ImageU = item.ImageU
+            };
+        }
+
         private ChequeInfoDTO MapToDTO(ChequeInfo entity)
         {
             return new ChequeInfoDTO

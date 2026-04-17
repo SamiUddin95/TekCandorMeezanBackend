@@ -123,5 +123,58 @@ namespace TekCandor.Repository.Implementations.Outward
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<object>> GetReturnListAsync()
+        {
+            var query = from c in _context.ChequeInfo
+                        join n in _context.NiftUploadStaging on c.ChequeNo equals n.ChequeNo
+                        where n.Status == "RETURN"
+                        select new
+                        {
+                            ChequeInfoId = c.Id,
+                            Date = c.Date,
+                            DepositorType = c.DepositorType,
+                            AccountNo = c.AccountNo,
+                            CNIC = c.CNIC,
+                            DepositorTitle = c.DepositorTitle,
+                            BranchName = c.BranchName,
+                            ChequeNo = c.ChequeNo,
+                            Amount = c.Amount,
+                            MICR = c.MICR,
+                            Status = c.Status,
+                            MatchStatus = c.MatchStatus,
+                            NiftStagingId = n.Id,
+                            FileName = n.FileName,
+                            UploadDate = n.UploadDate,
+                            ReturnCode = n.ReturnCode,
+                            ReturnReason = n.ReturnReason,
+                            IsProcessed = n.IsProcessed
+                        };
+
+            var result = await query.ToListAsync();
+            return result.Cast<object>().ToList();
+        }
+
+        public async Task<object?> GetReturnDetailByIdAsync(long id)
+        {
+            var query = from c in _context.ChequeInfo
+                        join n in _context.NiftUploadStaging on c.ChequeNo equals n.ChequeNo
+                        where c.Id == id
+                        select new
+                        {
+                            BeneficiaryTitle = c.BeneficiaryTitle,
+                            AccountNo = c.AccountNo,
+                            ChequeDate = c.Date,
+                            BranchName = c.BranchName,
+                            ReturnReason = n.ReturnReason,
+                            ChequeNo = n.ChequeNo,
+                            Amount = c.Amount,
+                            ImageF = c.ImageF,
+                            ImageB = c.ImageB,
+                            ImageU = c.ImageU
+                        };
+
+            return await query.FirstOrDefaultAsync();
+        }
     }
 }

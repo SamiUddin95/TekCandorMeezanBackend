@@ -18,5 +18,7 @@ namespace TekCandor.Repository.Interfaces.Outward
         Task<bool> UpdateRejectStatusAsync(long id, string status, string userId, string remarks);
         Task<ChequeInfo?> FindByChequeDetailsAsync(string chequeNo, decimal amount, string micr);
         Task<bool> UpdateMatchStatusAndStatusAsync(long id, string matchStatus, string status);
+        Task<List<object>> GetReturnListAsync();
+        Task<object?> GetReturnDetailByIdAsync(long id);
     }
 }
