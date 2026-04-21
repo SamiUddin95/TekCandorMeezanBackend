@@ -87,11 +87,50 @@ namespace TekCandor.Service.Implementations
                     Amount = g.Sum(x => x.Amount) ?? 0
                 })
                 .ToListAsync();
+            
+            var normalTotal = await query
+                .Where(x => x.CycleCode == "02")
+                .GroupBy(x => 1)
+                .Select(g => new
+                {
+                    TotalCount = g.Count(),
+                    TotalAmount = g.Sum(x => x.Amount) ?? 0
+                })
+                .FirstOrDefaultAsync();
+
+            
+            var sameDayTotal = await query
+                .Where(x => x.CycleCode == "05")
+                .GroupBy(x => 1)
+                .Select(g => new
+                {
+                    TotalCount = g.Count(),
+                    TotalAmount = g.Sum(x => x.Amount) ?? 0
+                })
+                .FirstOrDefaultAsync();
+
+           
+            var combinedTotal = await query
+                .GroupBy(x => 1)
+                .Select(g => new
+                {
+                    TotalCount = g.Count(),
+                    TotalAmount = g.Sum(x => x.Amount) ?? 0
+                })
+                .FirstOrDefaultAsync();
 
             return new DashboardResponseDTO
             {
                 Normal = normal,
-                SameDay = sameDay
+                SameDay = sameDay,
+                NormalTotalCount = normalTotal?.TotalCount ?? 0,
+                NomalTotalAmount = normalTotal?.TotalAmount ?? 0,
+
+                SameDayTotalCount = sameDayTotal?.TotalCount ?? 0,
+                SameDayTotalAmount = sameDayTotal?.TotalAmount ?? 0,
+
+                BothTotalCount = combinedTotal?.TotalCount ?? 0,
+                BothTotalAmount = combinedTotal?.TotalAmount ?? 0
             };
         }
     }
