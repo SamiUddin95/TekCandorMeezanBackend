@@ -45,6 +45,12 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Currency> Currency { get; set; }
         public DbSet<Instruments> Instruments { get; set; }
         public DbSet<PostingRestriction> PostingRestriction { get; set; }
+        
+        public DbSet<Outward.BusinessDate> BusinessDate { get; set; }
+        public DbSet<Outward.DepositorType> DepositorType { get; set; }
+        public DbSet<Outward.ChequeInfo> ChequeInfo { get; set; }
+        public DbSet<Outward.NiftUploadStaging> NiftUploadStaging { get; set; }
+        
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Cycle>(entity =>
@@ -796,6 +802,80 @@ namespace TekCandor.Repository.Entities.Data
                 entity.HasKey(s => s.Id);
                 entity.Property(s => s.AccountNumber).HasMaxLength(50);
                 entity.Property(s => s.IsDeleted).HasDefaultValue(false);
+            });
+
+            modelBuilder.Entity<Outward.BusinessDate>(entity =>
+            {
+                entity.ToTable("BusinessDate");
+                entity.HasKey(e => e.Id);
+                
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
+                
+                entity.Property(e => e.BusinessDate1)
+                    .HasColumnName("BusinessDate")
+                    .HasColumnType("date");
+                
+                entity.Property(e => e.IsActive)
+                    .HasColumnType("bit");
+                
+                entity.Property(e => e.StartedBy);
+                
+                entity.Property(e => e.StartedAt)
+                    .HasDefaultValueSql("GETDATE()");
+            });
+
+            modelBuilder.Entity<Outward.DepositorType>(entity =>
+            {
+                entity.ToTable("DepositorType");
+                entity.HasKey(e => e.Id);
+                
+                entity.Property(e => e.Id)
+                    .ValueGeneratedOnAdd();
+                
+                entity.Property(e => e.Name)
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<Outward.ChequeInfo>(entity =>
+            {
+                entity.ToTable("ChequeInfo");
+                entity.HasKey(e => e.Id);
+                
+                entity.Property(e => e.Id).ValueGeneratedOnAdd();
+                entity.Property(e => e.Date).HasColumnType("datetime");
+                entity.Property(e => e.DepositorType).HasMaxLength(20);
+                entity.Property(e => e.AccountNo).HasMaxLength(50);
+                entity.Property(e => e.CNIC).HasMaxLength(20);
+                entity.Property(e => e.DepositorTitle).HasMaxLength(50);
+                entity.Property(e => e.BeneficiaryAccountNumber).HasMaxLength(50);
+                entity.Property(e => e.BeneficiaryTitle).HasMaxLength(50);
+                entity.Property(e => e.AccountStatus).HasMaxLength(50);
+                entity.Property(e => e.BeneficiaryBranchCode).HasMaxLength(20);
+                entity.Property(e => e.ChequeNo).HasMaxLength(20);
+                entity.Property(e => e.PayingBankCode).HasMaxLength(20);
+                entity.Property(e => e.PayingBranchCode).HasMaxLength(20);
+                entity.Property(e => e.Amount).HasColumnType("decimal(18, 2)");
+                entity.Property(e => e.ChequeDate).HasMaxLength(20);
+                entity.Property(e => e.InstrumentType).HasMaxLength(10);
+                entity.Property(e => e.MICR).HasMaxLength(50);
+                entity.Property(e => e.OCREngine).HasMaxLength(20);
+                entity.Property(e => e.ProcessingTime).HasMaxLength(20);
+                entity.Property(e => e.Accuracy).HasMaxLength(20);
+                entity.Property(e => e.ImageF).HasMaxLength(20);
+                entity.Property(e => e.ImageB).HasMaxLength(20);
+                entity.Property(e => e.ImageU).HasMaxLength(20);
+                entity.Property(e => e.Currency).HasMaxLength(10);
+                entity.Property(e => e.Remarks).HasMaxLength(100);
+                entity.Property(e => e.DrawerBank).HasMaxLength(50);
+                entity.Property(e => e.AmountInWords).HasMaxLength(100);
+                entity.Property(e => e.ReferenceNo).HasMaxLength(40);
+                entity.Property(e => e.Status).HasMaxLength(20);
+                entity.Property(e => e.CreatedOn).HasColumnType("datetime");
+                entity.Property(e => e.CreatedBy).HasMaxLength(20);
+                entity.Property(e => e.UpdatedOn).HasColumnType("datetime");
+                entity.Property(e => e.UpdatedBy).HasMaxLength(20);
+                
             });
 
         }

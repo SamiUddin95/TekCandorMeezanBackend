@@ -63,7 +63,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ApplicationConfig");
+                    b.ToTable("ApplicationConfig", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.AuditLog", b =>
@@ -98,7 +98,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("AuditLogs");
+                    b.ToTable("AuditLogs", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Bank", b =>
@@ -152,7 +152,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Bank");
+                    b.ToTable("Bank", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Branch", b =>
@@ -219,7 +219,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasIndex("HubId");
 
-                    b.ToTable("Branch");
+                    b.ToTable("Branch", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.ChequedepositInfo", b =>
@@ -475,7 +475,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("chequedepositInformation");
+                    b.ToTable("chequedepositInformation", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.ClearingStatuses", b =>
@@ -512,7 +512,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ClearingStatuses");
+                    b.ToTable("ClearingStatuses", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Currency", b =>
@@ -592,7 +592,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Currency");
+                    b.ToTable("Currency", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Cycle", b =>
@@ -632,7 +632,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Cycles");
+                    b.ToTable("Cycles", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Group", b =>
@@ -672,7 +672,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Group");
+                    b.ToTable("Group", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.HostCall", b =>
@@ -734,7 +734,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HostCall");
+                    b.ToTable("HostCall", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.HostCallConfig", b =>
@@ -782,7 +782,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("HostCallConfig");
+                    b.ToTable("HostCallConfig", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Hub", b =>
@@ -844,7 +844,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Hub");
+                    b.ToTable("Hub", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.ImportData", b =>
@@ -896,7 +896,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ImportData");
+                    b.ToTable("ImportData", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.ImportDataDetail", b =>
@@ -951,7 +951,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasIndex("ImportDataId");
 
-                    b.ToTable("ImportDataDetail");
+                    b.ToTable("ImportDataDetail", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Instruments", b =>
@@ -1005,7 +1005,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Instruments");
+                    b.ToTable("Instruments", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Manual_ImportData", b =>
@@ -1057,7 +1057,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Manual_ImportData");
+                    b.ToTable("Manual_ImportData", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Manual_ImportDataDetails", b =>
@@ -1108,7 +1108,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasIndex("Manual_ImportDataId");
 
-                    b.ToTable("Manual_ImportDataDetails");
+                    b.ToTable("Manual_ImportDataDetails", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Permission", b =>
@@ -1148,7 +1148,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Permission");
+                    b.ToTable("Permission", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.PostingRestriction", b =>
@@ -1212,7 +1212,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("PostingRestriction");
+                    b.ToTable("PostingRestriction", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.ReturnReason", b =>
@@ -1279,7 +1279,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ReturnReason");
+                    b.ToTable("ReturnReason", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.RevokedToken", b =>
@@ -1302,7 +1302,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("RevokedTokens");
+                    b.ToTable("RevokedTokens", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.SecurityGroup_PermissionRecord", b =>
@@ -1317,7 +1317,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasIndex("PermissionId");
 
-                    b.ToTable("SecurityGroup_PermissionRecord");
+                    b.ToTable("SecurityGroup_PermissionRecord", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Setting", b =>
@@ -1363,7 +1363,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Setting");
+                    b.ToTable("Setting", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.User", b =>
@@ -1456,7 +1456,7 @@ namespace TekCandor.Repository.Migrations
 
                     b.HasIndex("GroupId");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
                 });
 
             modelBuilder.Entity("TekCandor.Repository.Entities.Branch", b =>

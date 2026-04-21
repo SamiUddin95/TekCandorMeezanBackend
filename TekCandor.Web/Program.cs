@@ -15,12 +15,15 @@ using TekCandor.Repository.Implementations;
 using TekCandor.Repository.Interfaces;
 using TekCandor.Service.Implementations;
 using TekCandor.Service.Interfaces;
+using TekCandor.Service.Outward.Implementations;
+using TekCandor.Service.Outward.Interfaces;
 using TekCandor.Service.Services;
 using TekCandor.Web.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
-
+builder.Services.AddMemoryCache();
+builder.Services.AddScoped<IBusinessDateService, BusinessDateService>();
 // Add DbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
@@ -71,6 +74,20 @@ builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 
 builder.Services.AddScoped<ILiveMonitoringService,LiveMonitoringService>();
 builder.Services.AddScoped<ILiveMonitoringRepository, LiveMonitoringRepository>();
+
+builder.Services.AddScoped<TekCandor.Repository.Interfaces.Outward.IBusinessDateRepository, TekCandor.Repository.Implementations.Outward.BusinessDateRepository>();
+builder.Services.AddScoped<TekCandor.Service.Outward.Interfaces.IBusinessDateService, TekCandor.Service.Outward.Implementations.BusinessDateService>();
+
+builder.Services.AddScoped<TekCandor.Repository.Interfaces.Outward.ICurrencyRepository, TekCandor.Repository.Implementations.Outward.CurrencyRepository>();
+builder.Services.AddScoped<TekCandor.Service.Outward.Interfaces.ICurrencyService, TekCandor.Service.Outward.Implementations.CurrencyService>();
+
+builder.Services.AddScoped<TekCandor.Repository.Interfaces.Outward.IDepositorTypeRepository, TekCandor.Repository.Implementations.Outward.DepositorTypeRepository>();
+builder.Services.AddScoped<TekCandor.Service.Outward.Interfaces.IDepositorTypeService, TekCandor.Service.Outward.Implementations.DepositorTypeService>();
+
+builder.Services.AddScoped<TekCandor.Repository.Interfaces.Outward.IChequeInfoRepository, TekCandor.Repository.Implementations.Outward.ChequeInfoRepository>();
+builder.Services.AddScoped<TekCandor.Service.Outward.Interfaces.IChequeInfoService, TekCandor.Service.Outward.Implementations.ChequeInfoService>();
+
+builder.Services.AddScoped<TekCandor.Repository.Interfaces.Outward.INiftUploadStagingRepository, TekCandor.Repository.Implementations.Outward.NiftUploadStagingRepository>();
 
 builder.Services.Configure<SsrsOptions>(builder.Configuration.GetSection("Ssrs"));
 builder.Services.AddHttpClient<ISsrsRenderService, SsrsRenderService>("Ssrs")
