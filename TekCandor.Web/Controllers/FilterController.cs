@@ -150,5 +150,19 @@ namespace TekCandor.Web.Controllers
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
+        [HttpGet("bank")]
+        public async Task<IActionResult> GetBankFilter()
+        {
+            try
+            {
+                var result = await _filterService.GetBankFilterAsync();
+                return Ok(ApiResponse<BankFilterResponse>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
     }
 }

@@ -228,5 +228,23 @@ namespace TekCandor.Service.Implementations
 
             return response;
         }
+
+        public async Task<BankFilterResponse> GetBankFilterAsync()
+        {
+            var response = new BankFilterResponse();
+
+            response.Banks = await _context.Bank
+                .AsNoTracking()
+                .Where(b => !b.IsDeleted)
+                .OrderBy(b => b.Name)
+                .Select(b => new FilterOptionDTO
+                {
+                    Text = b.Name ?? string.Empty,
+                    Value = b.Code ?? string.Empty
+                })
+                .ToListAsync();
+
+            return response;
+        }
     }
 }
