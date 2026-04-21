@@ -20,9 +20,9 @@ namespace TekCandor.Service.Outward.Interfaces
         Task<NiftUploadResultDTO> ProcessNiftFileAsync(string fileName, string fileContent, string fileType);
         Task<NiftUploadResultDTO> GetNiftUploadDataAsync(DateTime date);
         Task<bool> ForceMatchAsync(ForceMatchRequestDTO request);
-        Task<List<ReturnListDTO>> GetReturnListAsync();
+        Task<PagedResult<ReturnListDTO>> GetReturnListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
         Task<ReturnDetailDTO?> GetReturnDetailByIdAsync(long id);
-        Task<List<FundRealizationDTO>> GetFundRealizationListAsync();
+        Task<PagedResult<FundRealizationDTO>> GetFundRealizationListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
         Task<bool> MarkAsReturnAsync(long id, string userId);
         Task<BulkApproveResponseDTO> BulkSupervisorApproveAsync(BulkApproveRequestDTO request, string userId);
     }

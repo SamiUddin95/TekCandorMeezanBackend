@@ -19,9 +19,9 @@ namespace TekCandor.Repository.Interfaces.Outward
         Task<bool> UpdateRejectStatusAsync(long id, string status, string userId, string remarks);
         Task<ChequeInfo?> FindByChequeDetailsAsync(string chequeNo, decimal amount, string micr);
         Task<bool> UpdateMatchStatusAndStatusAsync(long id, string matchStatus, string status);
-        Task<List<object>> GetReturnListAsync();
+        Task<(List<object> items, int totalCount)> GetReturnListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
         Task<object?> GetReturnDetailByIdAsync(long id);
-        Task<List<object>> GetFundRealizationListAsync();
+        Task<(List<object> items, int totalCount)> GetFundRealizationListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
         Task<bool> MarkAsReturnAsync(long id, string userId);
         Task<int> BulkUpdateStatusAsync(List<long> ids, string status, string userId);
     }

@@ -395,12 +395,12 @@ namespace TekCandor.Service.Outward.Implementations
             return updated;
         }
 
-        public async Task<List<ReturnListDTO>> GetReturnListAsync()
+        public async Task<PagedResult<ReturnListDTO>> GetReturnListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var data = await _repository.GetReturnListAsync();
-            
+            var (items, totalCount) = await _repository.GetReturnListPagedAsync(pageNumber, pageSize, fromDate, toDate);
+
             var result = new List<ReturnListDTO>();
-            foreach (var item in data)
+            foreach (var item in items)
             {
                 var itemType = item.GetType();
                 result.Add(new ReturnListDTO
@@ -426,8 +426,15 @@ namespace TekCandor.Service.Outward.Implementations
                 });
             }
 
-            return result;
+            return new PagedResult<ReturnListDTO>
+            {
+                Items = result,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
+
 
         public async Task<ReturnDetailDTO?> GetReturnDetailByIdAsync(long id)
         {
@@ -452,12 +459,12 @@ namespace TekCandor.Service.Outward.Implementations
             };
         }
 
-        public async Task<List<FundRealizationDTO>> GetFundRealizationListAsync()
+        public async Task<PagedResult<FundRealizationDTO>> GetFundRealizationListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var data = await _repository.GetFundRealizationListAsync();
-            
+            var (items, totalCount) = await _repository.GetFundRealizationListPagedAsync(pageNumber, pageSize, fromDate, toDate);
+
             var result = new List<FundRealizationDTO>();
-            foreach (var item in data)
+            foreach (var item in items)
             {
                 var itemType = item.GetType();
                 result.Add(new FundRealizationDTO
@@ -469,7 +476,13 @@ namespace TekCandor.Service.Outward.Implementations
                 });
             }
 
-            return result;
+            return new PagedResult<FundRealizationDTO>
+            {
+                Items = result,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
         public async Task<bool> MarkAsReturnAsync(long id, string userId)

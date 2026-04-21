@@ -238,17 +238,28 @@ namespace TekCandor.Web.Controllers.Outward
         }
 
         [HttpGet("return-list")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetReturnList()
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<ReturnListDTO>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetReturnList(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? fromDate = null,
+            [FromQuery] string? toDate = null)
         {
             try
             {
-                var result = await _service.GetReturnListAsync();
-                return Ok(ApiResponse<object>.Success(new
+                DateTime? parsedFromDate = null;
+                DateTime? parsedToDate = null;
+                if (!string.IsNullOrEmpty(fromDate))
                 {
-                    items = result,
-                    totalCount = result.Count
-                }));
+                    parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                if (!string.IsNullOrEmpty(toDate))
+                {
+                    parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+                var result = await _service.GetReturnListPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<PagedResult<ReturnListDTO>>.Success(result));
             }
             catch (Exception ex)
             {
@@ -276,17 +287,28 @@ namespace TekCandor.Web.Controllers.Outward
         }
 
         [HttpGet("fund-realization-list")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetFundRealizationList()
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<FundRealizationDTO>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetFundRealizationList(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? fromDate = null,
+            [FromQuery] string? toDate = null)
         {
             try
             {
-                var result = await _service.GetFundRealizationListAsync();
-                return Ok(ApiResponse<object>.Success(new
+                DateTime? parsedFromDate = null;
+                DateTime? parsedToDate = null;
+                if (!string.IsNullOrEmpty(fromDate))
                 {
-                    items = result,
-                    totalCount = result.Count
-                }));
+                    parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                if (!string.IsNullOrEmpty(toDate))
+                {
+                    parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+                var result = await _service.GetFundRealizationListPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<PagedResult<FundRealizationDTO>>.Success(result));
             }
             catch (Exception ex)
             {
