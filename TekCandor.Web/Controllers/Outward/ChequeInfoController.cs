@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.Tasks;
@@ -131,12 +132,23 @@ namespace TekCandor.Web.Controllers.Outward
         public async Task<IActionResult> SupervisorList(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
-            [FromQuery] DateTime? fromDate = null,
-            [FromQuery] DateTime? toDate = null)
+            [FromQuery] string? fromDate = null,
+            [FromQuery] string? toDate = null)
         {
             try
             {
-                var result = await _service.GetSupervisorListPagedAsync(pageNumber, pageSize, fromDate, toDate);
+                DateTime? parsedFromDate = null;
+                DateTime? parsedToDate = null;
+                if (!string.IsNullOrEmpty(fromDate))
+                {
+                    parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                if (!string.IsNullOrEmpty(toDate))
+                {
+                    parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+                var result = await _service.GetSupervisorListPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
                 return Ok(ApiResponse<PagedResult<ChequeInfoDTO>>.Success(result));
             }
             catch (Exception ex)
