@@ -23,5 +23,6 @@ namespace TekCandor.Service.Outward.Interfaces
         Task<ReturnDetailDTO?> GetReturnDetailByIdAsync(long id);
         Task<List<FundRealizationDTO>> GetFundRealizationListAsync();
         Task<bool> MarkAsReturnAsync(long id, string userId);
+        Task<BulkApproveResponseDTO> BulkSupervisorApproveAsync(BulkApproveRequestDTO request, string userId);
     }
 }

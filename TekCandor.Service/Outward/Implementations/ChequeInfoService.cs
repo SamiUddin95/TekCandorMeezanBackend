@@ -522,5 +522,47 @@ namespace TekCandor.Service.Outward.Implementations
                 UpdatedBy = entity.UpdatedBy
             };
         }
+
+        public async Task<BulkApproveResponseDTO> BulkSupervisorApproveAsync(BulkApproveRequestDTO request, string userId)
+        {
+            var response = new BulkApproveResponseDTO
+            {
+                TotalRequested = request.ChequeIds.Count
+            };
+
+            if (request.ChequeIds.Count == 0)
+            {
+                return response;
+            }
+
+            try
+            {
+                var updatedCount = await _repository.BulkUpdateStatusAsync(request.ChequeIds, "A", userId);
+
+                response.SuccessCount = updatedCount;
+                response.FailedCount = request.ChequeIds.Count - updatedCount;
+
+                if (response.FailedCount > 0)
+                {
+                    var existingCheques = await _repository.GetByStatusAsync("A");
+                    var approvedIds = existingCheques
+                        .Where(c => request.ChequeIds.Contains(c.Id))
+                        .Select(c => c.Id)
+                        .ToList();
+
+                    response.FailedIds = request.ChequeIds
+                        .Where(id => !approvedIds.Contains(id))
+                        .ToList();
+                }
+            }
+            catch (Exception)
+            {
+                response.FailedCount = request.ChequeIds.Count;
+                response.FailedIds = request.ChequeIds;
+            }
+
+            return response;
+        }
+
     }
 }

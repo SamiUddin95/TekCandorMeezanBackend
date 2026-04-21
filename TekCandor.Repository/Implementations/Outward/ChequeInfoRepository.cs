@@ -208,5 +208,26 @@ namespace TekCandor.Repository.Implementations.Outward
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<int> BulkUpdateStatusAsync(List<long> ids, string status, string userId)
+        {
+            var cheques = await _context.ChequeInfo
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (cheques.Count == 0) return 0;
+
+            foreach (var cheque in cheques)
+            {
+                cheque.Status = status;
+                cheque.UpdatedBy = userId;
+                cheque.UpdatedOn = DateTime.Now;
+            }
+
+            _context.ChequeInfo.UpdateRange(cheques);
+            await _context.SaveChangesAsync();
+            
+            return cheques.Count;
+        }
     }
 }

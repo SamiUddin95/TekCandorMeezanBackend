@@ -166,6 +166,23 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
+        [HttpPost("bulk-supervisor-approve")]
+        [ProducesResponseType(typeof(ApiResponse<BulkApproveResponseDTO>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> BulkSupervisorApprove([FromBody] BulkApproveRequestDTO request)
+        {
+            try
+            {
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+                var result = await _service.BulkSupervisorApproveAsync(request, userId);
+
+                return Ok(ApiResponse<BulkApproveResponseDTO>.Success(result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpPut("reject/{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
