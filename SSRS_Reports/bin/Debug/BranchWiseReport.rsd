@@ -47,28 +47,45 @@
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
       </DataSetParameters>
-      <CommandText>SELECT
-    ChequeNumber,
-    AccountNumber,
-    AccountTitle,
-    Amount,
-    ReturnReason.Name AS "ReceiverBranchCode",
-    ChequeDepositInformation.ApproverId AS "TransactionCode",
-    ChequeDepositInformation.AuthorizerId AS "HubCode",
-    ChequeDepositInformation.TrProcORRecTime AS "Date"
-FROM
-    ChequeDepositInformation
-LEFT JOIN
-    ReturnReason
-    ON ChequeDepositInformation.Returnreasone = ReturnReason.code
+      <CommandText>WITH NormalizedData AS (
+    SELECT 
+        ChequeNumber,
+        AccountNumber,
+        AccountTitle,
+        Amount,
+        Returnreasone,
+        ReceiverBranchCode,
+        ApproverId,
+        AuthorizerId,
+        Status,
+        CASE 
+            WHEN LEN(TrProcORRecTime) = 17
+            THEN TRY_CAST('20' + LEFT(TrProcORRecTime, 8) AS DATE)
+            WHEN LEN(TrProcORRecTime) = 19
+            THEN TRY_CAST(LEFT(TrProcORRecTime, 10) AS DATE)
+            ELSE NULL
+        END AS NormalizedDate
+    FROM ChequeDepositInformation
+)
+SELECT 
+    ND.ChequeNumber,
+    ND.AccountNumber,
+    ND.AccountTitle,
+    ND.Amount,
+    RR.Name          AS "ReceiverBranchCode",
+    ND.ApproverId    AS "TransactionCode",
+    ND.AuthorizerId  AS "HubCode",
+    ND.NormalizedDate AS "Date"
+FROM NormalizedData ND
+LEFT JOIN ReturnReason RR ON ND.Returnreasone = RR.code
 WHERE
-    (@DateFrom IS NULL OR @DateFrom = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@DateFrom AS DATE))
-    AND (@DateTo IS NULL OR @DateTo = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@DateTo AS DATE))
-    AND (@BranchCode IS NULL OR @BranchCode = '' OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode)
-    AND (@ChequeNumber IS NULL OR @ChequeNumber = '' OR ChequeDepositInformation.ChequeNumber = @ChequeNumber)
-    AND (@AccountNumber IS NULL OR @AccountNumber = '' OR ChequeDepositInformation.AccountNumber = @AccountNumber)
-    AND (@HubCode IS NULL OR @HubCode = '' OR ChequeDepositInformation.AuthorizerId = @HubCode)
-    AND (@Status IS NULL OR @Status = '' OR ChequeDepositInformation.Status = @Status)</CommandText>
+    (@DateFrom IS NULL OR @DateFrom = '' OR ND.NormalizedDate &gt;= TRY_CAST(@DateFrom AS DATE))
+    AND (@DateTo IS NULL OR @DateTo = '' OR ND.NormalizedDate &lt;= TRY_CAST(@DateTo AS DATE))
+    AND (@BranchCode IS NULL OR @BranchCode = '' OR ND.ReceiverBranchCode = @BranchCode)
+    AND (@ChequeNumber IS NULL OR @ChequeNumber = '' OR ND.ChequeNumber = @ChequeNumber)
+    AND (@AccountNumber IS NULL OR @AccountNumber = '' OR ND.AccountNumber = @AccountNumber)
+    AND (@HubCode IS NULL OR @HubCode = '' OR ND.AuthorizerId = @HubCode)
+    AND (@Status IS NULL OR @Status = '' OR ND.Status = @Status)</CommandText>
     </Query>
     <Fields>
       <Field Name="ChequeNumber">
@@ -101,7 +118,7 @@ WHERE
       </Field>
       <Field Name="Date">
         <DataField>Date</DataField>
-        <rd:TypeName>System.String</rd:TypeName>
+        <rd:TypeName>System.DateTime</rd:TypeName>
       </Field>
     </Fields>
   </DataSet>
