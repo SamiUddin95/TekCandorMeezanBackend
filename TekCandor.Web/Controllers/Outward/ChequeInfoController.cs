@@ -127,17 +127,17 @@ namespace TekCandor.Web.Controllers.Outward
 
 
         [HttpGet("supervisorList")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SupervisorList()
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<ChequeInfoDTO>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SupervisorList(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] DateTime? fromDate = null,
+            [FromQuery] DateTime? toDate = null)
         {
             try
             {
-                var result = await _service.GetByStatusAsync("P");
-                return Ok(ApiResponse<object>.Success(new
-                {
-                    items = result,
-                    totalCount = result.Count
-                }));
+                var result = await _service.GetSupervisorListPagedAsync(pageNumber, pageSize, fromDate, toDate);
+                return Ok(ApiResponse<PagedResult<ChequeInfoDTO>>.Success(result));
             }
             catch (Exception ex)
             {

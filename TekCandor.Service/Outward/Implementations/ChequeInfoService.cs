@@ -180,9 +180,9 @@ namespace TekCandor.Service.Outward.Implementations
             return sb.ToString();
         }
 
-        public async Task<List<ChequeInfoDTO>> GetByStatusAsync(string status)
+        public async Task<List<ChequeInfoDTO>> GetByStatusAsync(string status, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var entities = await _repository.GetByStatusAsync(status);
+            var entities = await _repository.GetByStatusAsync(status, fromDate, toDate);
             return entities.Select(MapToDTO).ToList();
         }
 
@@ -562,6 +562,21 @@ namespace TekCandor.Service.Outward.Implementations
             }
 
             return response;
+        }
+
+        public async Task<PagedResult<ChequeInfoDTO>> GetSupervisorListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var (items, totalCount) = await _repository.GetByStatusPagedAsync("P", pageNumber, pageSize, fromDate, toDate);
+
+            var dtos = items.Select(MapToDTO).ToList();
+
+            return new PagedResult<ChequeInfoDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
     }
