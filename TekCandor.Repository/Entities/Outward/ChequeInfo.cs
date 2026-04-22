@@ -44,6 +44,7 @@ namespace TekCandor.Repository.Entities.Outward
         public DateTime? UpdatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public string? BranchName { get; set; }
+        public string? Hubcode { get; set; }
 
     }
 }

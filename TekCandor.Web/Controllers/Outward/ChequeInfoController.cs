@@ -434,6 +434,32 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
+        [HttpGet("generate-file-hubwise")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GenerateFileHubwise([FromQuery] string hubcode, [FromQuery] DateTime date)
+        {
+            try
+            {
+                if (hubcode == null)
+                    return BadRequest(ApiResponse<string>.Error("Invalid hub code", 400));
+
+                var fileContent = await _service.GenerateFileContentHubwiseAsync(hubcode, date);
+                
+                if (string.IsNullOrEmpty(fileContent))
+                    return Ok(ApiResponse<string>.Success("No data found for the specified hub and date"));
+
+                var bytes = Encoding.UTF8.GetBytes(fileContent);
+                var fileName = $"ChequeInfo_Hub_{hubcode}_{date:dd-MM-yyyy}.txt";
+                
+                return File(bytes, "text/plain", fileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpGet("transaction-history")]
         [ProducesResponseType(typeof(ApiResponse<PagedResult<ChequeInfoDTO>>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetTransactionHistory(

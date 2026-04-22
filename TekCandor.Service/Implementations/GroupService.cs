@@ -34,6 +34,7 @@ namespace TekCandor.Service.Implementations
                 {
                     Id = g.Id,
                     Name = g.Name,
+                    UpperLimit = g.UpperLimit,
                     Description = g.Description,
                     IsDeleted = g.IsDeleted,
                     CreatedBy = g.CreatedBy,
@@ -60,6 +61,7 @@ namespace TekCandor.Service.Implementations
             {
                 Id = g.Id,
                 Name = g.Name,
+                UpperLimit = g.UpperLimit,
                 Description = g.Description,
                 IsDeleted = g.IsDeleted,
                 CreatedBy = g.CreatedBy,
@@ -77,6 +79,7 @@ namespace TekCandor.Service.Implementations
                 {
                     Name = group.Name,
                     Description = group.Description,
+                    UpperLimit = group.UpperLimit,
                     IsDeleted = false,
                     CreatedBy = group.CreatedBy,
                     UpdatedBy = null,
@@ -93,6 +96,7 @@ namespace TekCandor.Service.Implementations
                 {
                     Id = entity.Id,
                     Name = entity.Name,
+                    UpperLimit = entity.UpperLimit,
                     Description = entity.Description,
                     IsDeleted = entity.IsDeleted,
                     CreatedBy = entity.CreatedBy,
@@ -118,6 +122,7 @@ namespace TekCandor.Service.Implementations
                 return null;
 
             existing.Name = group.Name;
+            existing.UpperLimit = group.UpperLimit;
             existing.Description = group.Description;
             existing.UpdatedBy = group.UpdatedBy;
             existing.UpdatedOn = DateTime.Now;
@@ -128,6 +133,7 @@ namespace TekCandor.Service.Implementations
             {
                 Id = existing.Id,
                 Name = existing.Name,
+                UpperLimit = existing.UpperLimit,
                 Description = existing.Description,
                 IsDeleted = existing.IsDeleted,
                 CreatedBy = existing.CreatedBy,

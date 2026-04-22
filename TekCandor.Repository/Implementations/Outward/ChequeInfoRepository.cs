@@ -87,6 +87,15 @@ namespace TekCandor.Repository.Implementations.Outward
                 .ToListAsync();
         }
 
+        public async Task<List<ChequeInfo>> GetByHubcodeAndDateAsync(string hubcode, DateTime date)
+        {
+            var dateOnly = date.Date;
+            return await _context.ChequeInfo
+                .Where(c => c.Hubcode == hubcode && c.Date.HasValue && c.Date.Value.Date == dateOnly)
+                .OrderBy(c => c.Id)
+                .ToListAsync();
+        }
+
         public async Task<List<ChequeInfo>> GetByStatusAsync(string status, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var query = _context.ChequeInfo

@@ -56,6 +56,17 @@ namespace TekCandor.Service.Outward.Implementations
             .Where(x => x.LoginName == userId)
             .FirstOrDefaultAsync();
 
+            var getHubCode = string.Empty;
+
+            var getHubId = await _context.Branch.Where(x => x.Code == dto.ReceiverBranchCode).Select(b => b.HubId).FirstOrDefaultAsync();
+            if (getHubId != null)
+            {
+                 getHubCode= await _context.Hub.Where(x => x.Id == getHubId).Select(h => h.Code).FirstOrDefaultAsync();
+            }
+            else
+            {
+                getHubCode = "10";
+            }
             long userIdLong = getUser.Id;
             var upperLimit = await _userRepository.GetUserUpperLimitAsync(userIdLong);
             var entity = new ChequeInfo
@@ -91,6 +102,7 @@ namespace TekCandor.Service.Outward.Implementations
                 DepositSlipId = dto.DepositSlipId,
                 Status = (upperLimit.HasValue && dto.Amount > upperLimit.Value) ? "U" : "A",
                 //Status = dto.Status ?? "Pending",
+                Hubcode = getHubCode,
                 IsReconciled = dto.IsReconciled,
                 IsReturned = dto.IsReturned,
                 IsRealized = dto.IsRealized,
@@ -626,6 +638,21 @@ namespace TekCandor.Service.Outward.Implementations
                 PageSize = pageSize
             };
         }
+        public async Task<string> GenerateFileContentHubwiseAsync(string hubcode, DateTime date)
+        {
+            var cheques = await _repository.GetByHubcodeAndDateAsync(hubcode, date);
 
+            if (!cheques.Any())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+
+            foreach (var cheque in cheques)
+            {
+                sb.AppendLine($"{cheque.ChequeNo}|{cheque.Amount}|{cheque.MICR}|{cheque.ReceiverBranchCode}|{cheque.Date:yyyy-MM-dd}");
+            }
+
+            return sb.ToString();
+        }
     }
 }
