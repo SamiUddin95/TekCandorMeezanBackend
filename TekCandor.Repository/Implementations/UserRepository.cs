@@ -146,5 +146,18 @@ namespace TekCandor.Repository.Implementations
             .ToListAsync();
         }
 
+        public async Task<int?> GetUserUpperLimitAsync(long userId)
+        {
+            var upperLimit = await (
+                from sgu in _context.SecurityGroup_User
+                join g in _context.Group
+                    on sgu.SecurityGroupId equals g.Id
+                where sgu.UserId == userId
+                select (int?)g.UpperLimit
+            ).FirstOrDefaultAsync();
+
+            return upperLimit;
+        }
+
     }
 }

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TekCandor.Repository.Entities.Data;
 using TekCandor.Repository.Entities.Outward;
+using TekCandor.Repository.Implementations;
+using TekCandor.Repository.Interfaces;
 using TekCandor.Repository.Interfaces.Outward;
 using TekCandor.Service.Outward.Interfaces;
 using TekCandor.Service.Outward.Models;
@@ -17,12 +19,14 @@ namespace TekCandor.Service.Outward.Implementations
         private readonly IChequeInfoRepository _repository;
         private readonly INiftUploadStagingRepository _niftRepository;
         private readonly AppDbContext _context;
+        private readonly IUserRepository _userRepository;
         private static readonly Random _random = new Random();
-        public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository, AppDbContext context)
+        public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository, AppDbContext context, IUserRepository userRepository)
         {
             _repository = repository;
             _niftRepository = niftRepository;
             _context = context;
+            _userRepository = userRepository;
         }
 
         public int Generate7DigitNumber()
@@ -48,6 +52,12 @@ namespace TekCandor.Service.Outward.Implementations
         }
         public async Task<ChequeInfoDTO> CreateAsync(ChequeInfoDTO dto, string userId)
         {
+            var getUser = await _context.Users
+            .Where(x => x.LoginName == userId)
+            .FirstOrDefaultAsync();
+
+            long userIdLong = getUser.Id;
+            var upperLimit = await _userRepository.GetUserUpperLimitAsync(userIdLong);
             var entity = new ChequeInfo
             {
                 Date = dto.Date,
@@ -79,7 +89,8 @@ namespace TekCandor.Service.Outward.Implementations
                 AmountInWords = dto.AmountInWords,
                 ReferenceNo = dto.ReferenceNo,
                 DepositSlipId = dto.DepositSlipId,
-                Status = dto.Status ?? "Pending",
+                Status = (upperLimit.HasValue && dto.Amount > upperLimit.Value) ? "U" : "A",
+                //Status = dto.Status ?? "Pending",
                 IsReconciled = dto.IsReconciled,
                 IsReturned = dto.IsReturned,
                 IsRealized = dto.IsRealized,
@@ -588,7 +599,7 @@ namespace TekCandor.Service.Outward.Implementations
 
         public async Task<PagedResult<ChequeInfoDTO>> GetSupervisorListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var (items, totalCount) = await _repository.GetByStatusPagedAsync("P", pageNumber, pageSize, fromDate, toDate);
+            var (items, totalCount) = await _repository.GetByStatusPagedAsync("U", pageNumber, pageSize, fromDate, toDate);
 
             var dtos = items.Select(MapToDTO).ToList();
 
