@@ -24,5 +24,6 @@ namespace TekCandor.Repository.Interfaces.Outward
         Task<(List<object> items, int totalCount)> GetFundRealizationListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
         Task<bool> MarkAsReturnAsync(long id, string userId);
         Task<int> BulkUpdateStatusAsync(List<long> ids, string status, string userId);
+        Task<(List<ChequeInfo> items, int totalCount)> GetTransactionHistoryPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
     }
 }

@@ -328,5 +328,30 @@ namespace TekCandor.Repository.Implementations.Outward
             
             return cheques.Count;
         }
+
+        public async Task<(List<ChequeInfo> items, int totalCount)> GetTransactionHistoryPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var query = _context.ChequeInfo.AsQueryable();
+
+            if (fromDate.HasValue)
+            {
+                query = query.Where(c => c.Date >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(c => c.Date <= toDate.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(c => c.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
     }
 }

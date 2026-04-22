@@ -25,5 +25,6 @@ namespace TekCandor.Service.Outward.Interfaces
         Task<PagedResult<FundRealizationDTO>> GetFundRealizationListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
         Task<bool> MarkAsReturnAsync(long id, string userId);
         Task<BulkApproveResponseDTO> BulkSupervisorApproveAsync(BulkApproveRequestDTO request, string userId);
+        Task<PagedResult<ChequeInfoDTO>> GetTransactionHistoryPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
     }
 }

@@ -72,7 +72,7 @@ namespace TekCandor.Service.Outward.Implementations
                 ChequeNo = Convert.ToString(Generate7DigitNumber()),//dto.ChequeNo,
                 PayingBankCode = dto.PayingBankCode,
                 PayingBranchCode = dto.PayingBranchCode,
-                Amount = GenerateRandomAmount(1000, 100000),//dto.Amount,
+                Amount = dto.Amount,//GenerateRandomAmount(1000, 100000),//dto.Amount,
                 ChequeDate = dto.ChequeDate,
                 InstrumentType = dto.InstrumentType,
                 MICR = GenerateFormattedNumber(),//dto.MICR,
@@ -600,6 +600,21 @@ namespace TekCandor.Service.Outward.Implementations
         public async Task<PagedResult<ChequeInfoDTO>> GetSupervisorListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var (items, totalCount) = await _repository.GetByStatusPagedAsync("U", pageNumber, pageSize, fromDate, toDate);
+
+            var dtos = items.Select(MapToDTO).ToList();
+
+            return new PagedResult<ChequeInfoDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
+        public async Task<PagedResult<ChequeInfoDTO>> GetTransactionHistoryPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var (items, totalCount) = await _repository.GetTransactionHistoryPagedAsync(pageNumber, pageSize, fromDate, toDate);
 
             var dtos = items.Select(MapToDTO).ToList();
 
