@@ -36,7 +36,9 @@ namespace TekCandor.Repository.Implementations.Outward
 
         public async Task<(List<ChequeInfo> items, int totalCount)> GetAllPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var query = _context.ChequeInfo.AsQueryable();
+            var allowedStatuses = new[] { "P", "C", "RE", "A" };
+            var query = _context.ChequeInfo
+                .Where(c => allowedStatuses.Contains(c.Status));
 
             if (fromDate.HasValue)
             {
