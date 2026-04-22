@@ -96,12 +96,21 @@ namespace TekCandor.Service.Outward.Implementations
             return entity == null ? null : MapToDTO(entity);
         }
 
-        public async Task<List<ChequeInfoDTO>> GetAllAsync()
-        {
-            var entities = await _repository.GetAllAsync();
-            return entities.Select(MapToDTO).ToList();
-        }
 
+        public async Task<PagedResult<ChequeInfoDTO>> GetAllPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var (items, totalCount) = await _repository.GetAllPagedAsync(pageNumber, pageSize, fromDate, toDate);
+
+            var dtos = items.Select(MapToDTO).ToList();
+
+            return new PagedResult<ChequeInfoDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
         public async Task<ChequeInfoDTO?> UpdateAsync(long id, ChequeInfoDTO dto, string userId)
         {
             var entity = await _repository.GetByIdAsync(id);

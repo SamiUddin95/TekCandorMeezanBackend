@@ -9,7 +9,7 @@ namespace TekCandor.Service.Outward.Interfaces
     {
         Task<ChequeInfoDTO> CreateAsync(ChequeInfoDTO dto, string userId);
         Task<ChequeInfoDTO?> GetByIdAsync(long id);
-        Task<List<ChequeInfoDTO>> GetAllAsync();
+        Task<PagedResult<ChequeInfoDTO>> GetAllPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
         Task<ChequeInfoDTO?> UpdateAsync(long id, ChequeInfoDTO dto, string userId);
         Task<bool> DeleteAsync(long id);
         Task<string> GenerateFileContentAsync(string receiverBranchCode, DateTime date);

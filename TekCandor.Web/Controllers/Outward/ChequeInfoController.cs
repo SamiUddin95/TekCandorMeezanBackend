@@ -46,17 +46,28 @@ namespace TekCandor.Web.Controllers.Outward
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<ChequeInfoDTO>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? fromDate = null,
+            [FromQuery] string? toDate = null)
         {
             try
             {
-                var result = await _service.GetAllAsync();
-                return Ok(ApiResponse<object>.Success(new
+                DateTime? parsedFromDate = null;
+                DateTime? parsedToDate = null;
+                if (!string.IsNullOrEmpty(fromDate))
                 {
-                    items = result,
-                    totalCount = result.Count
-                }));
+                    parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                if (!string.IsNullOrEmpty(toDate))
+                {
+                    parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+                var result = await _service.GetAllPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<PagedResult<ChequeInfoDTO>>.Success(result));
             }
             catch (Exception ex)
             {

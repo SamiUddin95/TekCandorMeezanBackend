@@ -9,7 +9,7 @@ namespace TekCandor.Repository.Interfaces.Outward
     {
         Task<ChequeInfo> CreateAsync(ChequeInfo chequeInfo);
         Task<ChequeInfo?> GetByIdAsync(long id);
-        Task<List<ChequeInfo>> GetAllAsync();
+        Task<(List<ChequeInfo> items, int totalCount)> GetAllPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
         Task<ChequeInfo> UpdateAsync(ChequeInfo chequeInfo);
         Task<bool> DeleteAsync(long id);
         Task<List<ChequeInfo>> GetByBranchIdAndDateAsync(string receiverBranchCode, DateTime date);
