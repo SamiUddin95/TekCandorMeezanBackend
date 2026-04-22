@@ -246,5 +246,82 @@ namespace TekCandor.Service.Implementations
 
             return response;
         }
+
+        public async Task<BranchStatisticsDTO> GetBranchStatisticsAsync(string branchCode)
+        {
+            // Get branch information
+            var branchQuery = await _branchRepository.GetAllQueryableAsync();
+            var branch = await branchQuery
+                .Where(b => b.Code == branchCode && !b.IsDeleted)
+                .Select(b => new
+                {
+                    b.Name,
+                    b.Code
+                })
+                .FirstOrDefaultAsync();
+
+            if (branch == null)
+            {
+                throw new ArgumentException("Branch not found");
+            }
+
+            // Get cheque statistics for this branch
+            var chequeData = await _context.ChequeInfo
+                .Where(c => c.ReceiverBranchCode == branchCode)
+                .GroupBy(c => c.ReceiverBranchCode)
+                .Select(g => new
+                {
+                    TotalCount = g.Count(),
+                    TotalAmount = g.Sum(c => c.Amount ?? 0)
+                })
+                .FirstOrDefaultAsync();
+
+            return new BranchStatisticsDTO
+            {
+                BranchCode = branch.Code ?? string.Empty,
+                BranchName = branch.Name ?? string.Empty,
+                TotalInstrumentCount = chequeData?.TotalCount ?? 0,
+                TotalAmount = chequeData?.TotalAmount ?? 0
+            };
+        }
+
+        public async Task<HubStatisticsDTO> GetHubStatisticsAsync(string hubCode)
+        {
+            // Get hub information
+            var hubQuery = await _hubRepository.GetAllQueryableAsync();
+            var hub = await hubQuery
+                .Where(h => h.Code == hubCode && !h.IsDeleted)
+                .Select(h => new
+                {
+                    h.Name,
+                    h.Code
+                })
+                .FirstOrDefaultAsync();
+
+            if (hub == null)
+            {
+                throw new ArgumentException("Hub not found");
+            }
+
+            // Get cheque statistics for this hub
+            var chequeData = await _context.ChequeInfo
+                .Where(c => c.Hubcode == hubCode)
+                .GroupBy(c => c.Hubcode)
+                .Select(g => new
+                {
+                    TotalCount = g.Count(),
+                    TotalAmount = g.Sum(c => c.Amount ?? 0)
+                })
+                .FirstOrDefaultAsync();
+
+            return new HubStatisticsDTO
+            {
+                HubCode = hub.Code ?? string.Empty,
+                HubName = hub.Name ?? string.Empty,
+                TotalInstrumentCount = chequeData?.TotalCount ?? 0,
+                TotalAmount = chequeData?.TotalAmount ?? 0
+            };
+        }
+
     }
 }

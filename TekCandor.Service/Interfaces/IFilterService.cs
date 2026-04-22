@@ -6,7 +6,9 @@ namespace TekCandor.Service.Interfaces
     public interface IFilterService
     {
         Task<BranchFilterResponse> GetBranchFilterForUserAsync(long userId);
+        Task<BranchStatisticsDTO> GetBranchStatisticsAsync(string branchCode);
         Task<HubFilterResponse> GetHubFilterForUserAsync(long userId);
+        Task<HubStatisticsDTO> GetHubStatisticsAsync(string hubCode);
         Task<StatusFilterResponse> GetStatusFilterAsync();
         Task<CbcStatusFilterResponse> GetCbcStatusFilterAsync();
         Task<InstrumentFilterResponse> GetInstrumentFilterAsync();

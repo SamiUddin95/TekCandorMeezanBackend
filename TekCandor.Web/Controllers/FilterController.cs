@@ -43,6 +43,52 @@ namespace TekCandor.Web.Controllers
             }
         }
 
+        [HttpGet("branch-Instrument-Amount")]
+        public async Task<IActionResult> GetBranchStatistics([FromQuery] string branchCode)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(branchCode))
+                {
+                    return BadRequest(ApiResponse<string>.Error("Branch code is required"));
+                }
+
+                var result = await _filterService.GetBranchStatisticsAsync(branchCode);
+                return Ok(ApiResponse<BranchStatisticsDTO>.Success(result));
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ApiResponse<string>.Error(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpGet("hub-Instrument-Amount")]
+        public async Task<IActionResult> GetHubStatistics([FromQuery] string hubCode)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(hubCode))
+                {
+                    return BadRequest(ApiResponse<string>.Error("Hub code is required"));
+                }
+
+                var result = await _filterService.GetHubStatisticsAsync(hubCode);
+                return Ok(ApiResponse<HubStatisticsDTO>.Success(result));
+            }
+            catch (ArgumentException ex)
+            {
+                return NotFound(ApiResponse<string>.Error(ex.Message));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpGet("hub")]
         public async Task<IActionResult> GetHubFilter()
         {
