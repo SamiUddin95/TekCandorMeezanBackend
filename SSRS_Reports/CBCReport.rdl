@@ -9,7 +9,7 @@
       <am:Name>SSDTRS</am:Name>
       <am:Version>18.1.11312.151</am:Version>
     </am:UpdatedBy>
-    <am:LastModifiedTimestamp>2026-04-14T13:37:04.5454280Z</am:LastModifiedTimestamp>
+    <am:LastModifiedTimestamp>2026-04-21T07:49:48.3793844Z</am:LastModifiedTimestamp>
   </am:AuthoringMetadata>
   <df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
   <AutoRefresh>0</AutoRefresh>
@@ -1094,7 +1094,7 @@
         <Height>2.04056in</Height>
         <Style />
       </Body>
-      <Width>17.58038in</Width>
+      <Width>34cm</Width>
       <Page>
         <PageHeader>
           <Height>3.9cm</Height>
@@ -1384,7 +1384,7 @@
               <Value>Meezan_Bank_Logo</Value>
               <Sizing>Fit</Sizing>
               <Top>0.41911cm</Top>
-              <Left>11.54352cm</Left>
+              <Left>15.03602cm</Left>
               <Height>1.9445cm</Height>
               <Width>6.98216cm</Width>
               <ZIndex>7</ZIndex>
@@ -1402,9 +1402,10 @@
           </Style>
         </PageHeader>
         <PageHeight>21cm</PageHeight>
-        <PageWidth>29.7cm</PageWidth>
-        <LeftMargin>2cm</LeftMargin>
-        <RightMargin>2cm</RightMargin>
+        <PageWidth>36cm</PageWidth>
+        <InteractiveWidth>36cm</InteractiveWidth>
+        <LeftMargin>1cm</LeftMargin>
+        <RightMargin>1cm</RightMargin>
         <TopMargin>2cm</TopMargin>
         <BottomMargin>2cm</BottomMargin>
         <ColumnSpacing>0.13cm</ColumnSpacing>
