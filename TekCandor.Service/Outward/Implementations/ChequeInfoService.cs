@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using TekCandor.Repository.Entities.Data;
 using TekCandor.Repository.Entities.Outward;
+using TekCandor.Repository.Implementations;
+using TekCandor.Repository.Interfaces;
 using TekCandor.Repository.Interfaces.Outward;
 using TekCandor.Service.Outward.Interfaces;
 using TekCandor.Service.Outward.Models;
@@ -17,12 +19,14 @@ namespace TekCandor.Service.Outward.Implementations
         private readonly IChequeInfoRepository _repository;
         private readonly INiftUploadStagingRepository _niftRepository;
         private readonly AppDbContext _context;
+        private readonly IUserRepository _userRepository;
         private static readonly Random _random = new Random();
-        public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository, AppDbContext context)
+        public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository, AppDbContext context, IUserRepository userRepository)
         {
             _repository = repository;
             _niftRepository = niftRepository;
             _context = context;
+            _userRepository = userRepository;
         }
 
         public int Generate7DigitNumber()
@@ -48,6 +52,12 @@ namespace TekCandor.Service.Outward.Implementations
         }
         public async Task<ChequeInfoDTO> CreateAsync(ChequeInfoDTO dto, string userId)
         {
+            var getUser = await _context.Users
+            .Where(x => x.LoginName == userId)
+            .FirstOrDefaultAsync();
+
+            long userIdLong = getUser.Id;
+            var upperLimit = await _userRepository.GetUserUpperLimitAsync(userIdLong);
             var entity = new ChequeInfo
             {
                 Date = dto.Date,
@@ -62,7 +72,7 @@ namespace TekCandor.Service.Outward.Implementations
                 ChequeNo = Convert.ToString(Generate7DigitNumber()),//dto.ChequeNo,
                 PayingBankCode = dto.PayingBankCode,
                 PayingBranchCode = dto.PayingBranchCode,
-                Amount = GenerateRandomAmount(1000, 100000),//dto.Amount,
+                Amount = dto.Amount,//GenerateRandomAmount(1000, 100000),//dto.Amount,
                 ChequeDate = dto.ChequeDate,
                 InstrumentType = dto.InstrumentType,
                 MICR = GenerateFormattedNumber(),//dto.MICR,
@@ -79,7 +89,8 @@ namespace TekCandor.Service.Outward.Implementations
                 AmountInWords = dto.AmountInWords,
                 ReferenceNo = dto.ReferenceNo,
                 DepositSlipId = dto.DepositSlipId,
-                Status = dto.Status ?? "Pending",
+                Status = (upperLimit.HasValue && dto.Amount > upperLimit.Value) ? "U" : "A",
+                //Status = dto.Status ?? "Pending",
                 IsReconciled = dto.IsReconciled,
                 IsReturned = dto.IsReturned,
                 IsRealized = dto.IsRealized,
@@ -96,12 +107,21 @@ namespace TekCandor.Service.Outward.Implementations
             return entity == null ? null : MapToDTO(entity);
         }
 
-        public async Task<List<ChequeInfoDTO>> GetAllAsync()
-        {
-            var entities = await _repository.GetAllAsync();
-            return entities.Select(MapToDTO).ToList();
-        }
 
+        public async Task<PagedResult<ChequeInfoDTO>> GetAllPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var (items, totalCount) = await _repository.GetAllPagedAsync(pageNumber, pageSize, fromDate, toDate);
+
+            var dtos = items.Select(MapToDTO).ToList();
+
+            return new PagedResult<ChequeInfoDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
         public async Task<ChequeInfoDTO?> UpdateAsync(long id, ChequeInfoDTO dto, string userId)
         {
             var entity = await _repository.GetByIdAsync(id);
@@ -180,9 +200,9 @@ namespace TekCandor.Service.Outward.Implementations
             return sb.ToString();
         }
 
-        public async Task<List<ChequeInfoDTO>> GetByStatusAsync(string status)
+        public async Task<List<ChequeInfoDTO>> GetByStatusAsync(string status, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var entities = await _repository.GetByStatusAsync(status);
+            var entities = await _repository.GetByStatusAsync(status, fromDate, toDate);
             return entities.Select(MapToDTO).ToList();
         }
 
@@ -395,12 +415,12 @@ namespace TekCandor.Service.Outward.Implementations
             return updated;
         }
 
-        public async Task<List<ReturnListDTO>> GetReturnListAsync()
+        public async Task<PagedResult<ReturnListDTO>> GetReturnListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var data = await _repository.GetReturnListAsync();
-            
+            var (items, totalCount) = await _repository.GetReturnListPagedAsync(pageNumber, pageSize, fromDate, toDate);
+
             var result = new List<ReturnListDTO>();
-            foreach (var item in data)
+            foreach (var item in items)
             {
                 var itemType = item.GetType();
                 result.Add(new ReturnListDTO
@@ -426,8 +446,15 @@ namespace TekCandor.Service.Outward.Implementations
                 });
             }
 
-            return result;
+            return new PagedResult<ReturnListDTO>
+            {
+                Items = result,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
+
 
         public async Task<ReturnDetailDTO?> GetReturnDetailByIdAsync(long id)
         {
@@ -452,12 +479,12 @@ namespace TekCandor.Service.Outward.Implementations
             };
         }
 
-        public async Task<List<FundRealizationDTO>> GetFundRealizationListAsync()
+        public async Task<PagedResult<FundRealizationDTO>> GetFundRealizationListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var data = await _repository.GetFundRealizationListAsync();
-            
+            var (items, totalCount) = await _repository.GetFundRealizationListPagedAsync(pageNumber, pageSize, fromDate, toDate);
+
             var result = new List<FundRealizationDTO>();
-            foreach (var item in data)
+            foreach (var item in items)
             {
                 var itemType = item.GetType();
                 result.Add(new FundRealizationDTO
@@ -469,7 +496,13 @@ namespace TekCandor.Service.Outward.Implementations
                 });
             }
 
-            return result;
+            return new PagedResult<FundRealizationDTO>
+            {
+                Items = result,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
         }
 
         public async Task<bool> MarkAsReturnAsync(long id, string userId)
@@ -522,5 +555,77 @@ namespace TekCandor.Service.Outward.Implementations
                 UpdatedBy = entity.UpdatedBy
             };
         }
+
+        public async Task<BulkApproveResponseDTO> BulkSupervisorApproveAsync(BulkApproveRequestDTO request, string userId)
+        {
+            var response = new BulkApproveResponseDTO
+            {
+                TotalRequested = request.ChequeIds.Count
+            };
+
+            if (request.ChequeIds.Count == 0)
+            {
+                return response;
+            }
+
+            try
+            {
+                var updatedCount = await _repository.BulkUpdateStatusAsync(request.ChequeIds, "A", userId);
+
+                response.SuccessCount = updatedCount;
+                response.FailedCount = request.ChequeIds.Count - updatedCount;
+
+                if (response.FailedCount > 0)
+                {
+                    var existingCheques = await _repository.GetByStatusAsync("A");
+                    var approvedIds = existingCheques
+                        .Where(c => request.ChequeIds.Contains(c.Id))
+                        .Select(c => c.Id)
+                        .ToList();
+
+                    response.FailedIds = request.ChequeIds
+                        .Where(id => !approvedIds.Contains(id))
+                        .ToList();
+                }
+            }
+            catch (Exception)
+            {
+                response.FailedCount = request.ChequeIds.Count;
+                response.FailedIds = request.ChequeIds;
+            }
+
+            return response;
+        }
+
+        public async Task<PagedResult<ChequeInfoDTO>> GetSupervisorListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var (items, totalCount) = await _repository.GetByStatusPagedAsync("U", pageNumber, pageSize, fromDate, toDate);
+
+            var dtos = items.Select(MapToDTO).ToList();
+
+            return new PagedResult<ChequeInfoDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
+        public async Task<PagedResult<ChequeInfoDTO>> GetTransactionHistoryPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var (items, totalCount) = await _repository.GetTransactionHistoryPagedAsync(pageNumber, pageSize, fromDate, toDate);
+
+            var dtos = items.Select(MapToDTO).ToList();
+
+            return new PagedResult<ChequeInfoDTO>
+            {
+                Items = dtos,
+                TotalCount = totalCount,
+                PageNumber = pageNumber,
+                PageSize = pageSize
+            };
+        }
+
     }
 }

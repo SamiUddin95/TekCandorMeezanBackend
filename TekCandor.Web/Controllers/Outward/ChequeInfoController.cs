@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,7 +34,7 @@ namespace TekCandor.Web.Controllers.Outward
                 if (dto == null)
                     return BadRequest(ApiResponse<string>.Error("Invalid request data", 400));
 
-                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+                var userId = User.Identity?.Name;
 
                 var result = await _service.CreateAsync(dto, userId);
                 return Ok(ApiResponse<ChequeInfoDTO>.Success(result, 201));
@@ -45,17 +46,28 @@ namespace TekCandor.Web.Controllers.Outward
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<ChequeInfoDTO>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetAll(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? fromDate = null,
+            [FromQuery] string? toDate = null)
         {
             try
             {
-                var result = await _service.GetAllAsync();
-                return Ok(ApiResponse<object>.Success(new
+                DateTime? parsedFromDate = null;
+                DateTime? parsedToDate = null;
+                if (!string.IsNullOrEmpty(fromDate))
                 {
-                    items = result,
-                    totalCount = result.Count
-                }));
+                    parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                if (!string.IsNullOrEmpty(toDate))
+                {
+                    parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+                var result = await _service.GetAllPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<PagedResult<ChequeInfoDTO>>.Success(result));
             }
             catch (Exception ex)
             {
@@ -127,17 +139,28 @@ namespace TekCandor.Web.Controllers.Outward
 
 
         [HttpGet("supervisorList")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SupervisorList()
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<ChequeInfoDTO>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SupervisorList(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? fromDate = null,
+            [FromQuery] string? toDate = null)
         {
             try
             {
-                var result = await _service.GetByStatusAsync("P");
-                return Ok(ApiResponse<object>.Success(new
+                DateTime? parsedFromDate = null;
+                DateTime? parsedToDate = null;
+                if (!string.IsNullOrEmpty(fromDate))
                 {
-                    items = result,
-                    totalCount = result.Count
-                }));
+                    parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                if (!string.IsNullOrEmpty(toDate))
+                {
+                    parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+                var result = await _service.GetSupervisorListPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<PagedResult<ChequeInfoDTO>>.Success(result));
             }
             catch (Exception ex)
             {
@@ -159,6 +182,23 @@ namespace TekCandor.Web.Controllers.Outward
                     return NotFound(ApiResponse<string>.Error("Cheque not found", 404));
 
                 return Ok(ApiResponse<string>.Success("Cheque approved successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("bulk-supervisor-approve")]
+        [ProducesResponseType(typeof(ApiResponse<BulkApproveResponseDTO>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> BulkSupervisorApprove([FromBody] BulkApproveRequestDTO request)
+        {
+            try
+            {
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+                var result = await _service.BulkSupervisorApproveAsync(request, userId);
+
+                return Ok(ApiResponse<BulkApproveResponseDTO>.Success(result));
             }
             catch (Exception ex)
             {
@@ -209,17 +249,28 @@ namespace TekCandor.Web.Controllers.Outward
         }
 
         [HttpGet("return-list")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetReturnList()
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<ReturnListDTO>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetReturnList(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? fromDate = null,
+            [FromQuery] string? toDate = null)
         {
             try
             {
-                var result = await _service.GetReturnListAsync();
-                return Ok(ApiResponse<object>.Success(new
+                DateTime? parsedFromDate = null;
+                DateTime? parsedToDate = null;
+                if (!string.IsNullOrEmpty(fromDate))
                 {
-                    items = result,
-                    totalCount = result.Count
-                }));
+                    parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                if (!string.IsNullOrEmpty(toDate))
+                {
+                    parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+                var result = await _service.GetReturnListPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<PagedResult<ReturnListDTO>>.Success(result));
             }
             catch (Exception ex)
             {
@@ -247,17 +298,28 @@ namespace TekCandor.Web.Controllers.Outward
         }
 
         [HttpGet("fund-realization-list")]
-        [ProducesResponseType(typeof(ApiResponse<object>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetFundRealizationList()
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<FundRealizationDTO>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetFundRealizationList(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? fromDate = null,
+            [FromQuery] string? toDate = null)
         {
             try
             {
-                var result = await _service.GetFundRealizationListAsync();
-                return Ok(ApiResponse<object>.Success(new
+                DateTime? parsedFromDate = null;
+                DateTime? parsedToDate = null;
+                if (!string.IsNullOrEmpty(fromDate))
                 {
-                    items = result,
-                    totalCount = result.Count
-                }));
+                    parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                if (!string.IsNullOrEmpty(toDate))
+                {
+                    parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+                var result = await _service.GetFundRealizationListPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<PagedResult<FundRealizationDTO>>.Success(result));
             }
             catch (Exception ex)
             {
@@ -365,6 +427,38 @@ namespace TekCandor.Web.Controllers.Outward
                 var fileName = $"ChequeInfo_{receiverBranchCode}_{date:dd-MM-yyyy}.txt";
                 
                 return File(bytes, "text/plain", fileName);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpGet("transaction-history")]
+        [ProducesResponseType(typeof(ApiResponse<PagedResult<ChequeInfoDTO>>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> GetTransactionHistory(
+            [FromQuery] int pageNumber = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? fromDate = null,
+            [FromQuery] string? toDate = null)
+        {
+            try
+            {
+                DateTime? parsedFromDate = null;
+                DateTime? parsedToDate = null;
+
+                if (!string.IsNullOrEmpty(fromDate))
+                {
+                    parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                if (!string.IsNullOrEmpty(toDate))
+                {
+                    parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+                }
+
+                var result = await _service.GetTransactionHistoryPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<PagedResult<ChequeInfoDTO>>.Success(result));
             }
             catch (Exception ex)
             {

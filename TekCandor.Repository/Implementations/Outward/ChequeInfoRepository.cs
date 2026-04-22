@@ -32,11 +32,31 @@ namespace TekCandor.Repository.Implementations.Outward
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
-        public async Task<List<ChequeInfo>> GetAllAsync()
+     
+
+        public async Task<(List<ChequeInfo> items, int totalCount)> GetAllPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            return await _context.ChequeInfo
+            var query = _context.ChequeInfo.AsQueryable();
+
+            if (fromDate.HasValue)
+            {
+                query = query.Where(c => c.Date >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(c => c.Date <= toDate.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
                 .OrderByDescending(c => c.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
                 .ToListAsync();
+
+            return (items, totalCount);
         }
 
         public async Task<ChequeInfo> UpdateAsync(ChequeInfo chequeInfo)
@@ -67,12 +87,50 @@ namespace TekCandor.Repository.Implementations.Outward
                 .ToListAsync();
         }
 
-        public async Task<List<ChequeInfo>> GetByStatusAsync(string status)
+        public async Task<List<ChequeInfo>> GetByStatusAsync(string status, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            return await _context.ChequeInfo
-                .Where(c => c.Status == status)
+            var query = _context.ChequeInfo
+                .Where(c => c.Status == status);
+
+            if (fromDate.HasValue)
+            {
+                query = query.Where(c => c.Date >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(c => c.Date <= toDate.Value);
+            }
+
+            return await query
                 .OrderByDescending(c => c.CreatedOn)
                 .ToListAsync();
+        }
+
+        public async Task<(List<ChequeInfo> items, int totalCount)> GetByStatusPagedAsync(string status, int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var query = _context.ChequeInfo
+                .Where(c => c.Status == status);
+
+            if (fromDate.HasValue)
+            {
+                query = query.Where(c => c.Date >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(c => c.Date <= toDate.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(c => c.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
         }
 
         public async Task<bool> UpdateStatusAsync(long id, string status, string userId)
@@ -124,7 +182,9 @@ namespace TekCandor.Repository.Implementations.Outward
             return true;
         }
 
-        public async Task<List<object>> GetReturnListAsync()
+       
+
+        public async Task<(List<object> items, int totalCount)> GetReturnListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var query = from c in _context.ChequeInfo
                         join n in _context.NiftUploadStaging on c.ChequeNo equals n.ChequeNo
@@ -151,8 +211,25 @@ namespace TekCandor.Repository.Implementations.Outward
                             IsProcessed = n.IsProcessed
                         };
 
-            var result = await query.ToListAsync();
-            return result.Cast<object>().ToList();
+            if (fromDate.HasValue)
+            {
+                query = query.Where(x => x.Date >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(x => x.Date <= toDate.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(x => x.Date)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items.Cast<object>().ToList(), totalCount);
         }
 
         public async Task<object?> GetReturnDetailByIdAsync(long id)
@@ -177,11 +254,26 @@ namespace TekCandor.Repository.Implementations.Outward
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<object>> GetFundRealizationListAsync()
+
+
+        public async Task<(List<object> items, int totalCount)> GetFundRealizationListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var query = from c in _context.ChequeInfo
-                        join n in _context.NiftUploadStaging on c.ChequeNo equals n.ChequeNo
-                        where n.Status == "PAID"
+            var baseQuery = from c in _context.ChequeInfo
+                            join n in _context.NiftUploadStaging on c.ChequeNo equals n.ChequeNo
+                            where n.Status == "PAID"
+                            select c;
+
+            if (fromDate.HasValue)
+            {
+                baseQuery = baseQuery.Where(c => c.Date >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                baseQuery = baseQuery.Where(c => c.Date <= toDate.Value);
+            }
+
+            var query = from c in baseQuery
                         group c by new { c.ReceiverBranchCode, c.BranchName } into g
                         select new
                         {
@@ -191,8 +283,15 @@ namespace TekCandor.Repository.Implementations.Outward
                             ChequeCount = g.Count()
                         };
 
-            var result = await query.ToListAsync();
-            return result.Cast<object>().ToList();
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderBy(x => x.BranchName)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items.Cast<object>().ToList(), totalCount);
         }
 
         public async Task<bool> MarkAsReturnAsync(long id, string userId)
@@ -207,6 +306,52 @@ namespace TekCandor.Repository.Implementations.Outward
             _context.ChequeInfo.Update(cheque);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<int> BulkUpdateStatusAsync(List<long> ids, string status, string userId)
+        {
+            var cheques = await _context.ChequeInfo
+                .Where(c => ids.Contains(c.Id))
+                .ToListAsync();
+
+            if (cheques.Count == 0) return 0;
+
+            foreach (var cheque in cheques)
+            {
+                cheque.Status = status;
+                cheque.UpdatedBy = userId;
+                cheque.UpdatedOn = DateTime.Now;
+            }
+
+            _context.ChequeInfo.UpdateRange(cheques);
+            await _context.SaveChangesAsync();
+            
+            return cheques.Count;
+        }
+
+        public async Task<(List<ChequeInfo> items, int totalCount)> GetTransactionHistoryPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        {
+            var query = _context.ChequeInfo.AsQueryable();
+
+            if (fromDate.HasValue)
+            {
+                query = query.Where(c => c.Date >= fromDate.Value);
+            }
+
+            if (toDate.HasValue)
+            {
+                query = query.Where(c => c.Date <= toDate.Value);
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .OrderByDescending(c => c.CreatedOn)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
         }
     }
 }

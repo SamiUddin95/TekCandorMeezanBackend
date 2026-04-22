@@ -19,6 +19,6 @@ namespace TekCandor.Repository.Interfaces
 
         Task<List<string>> GetUserPermissionsAsync(long userId);
 
-
+        Task<int?> GetUserUpperLimitAsync(long userId);
     }
 }
