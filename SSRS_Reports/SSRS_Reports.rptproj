@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <DataSource Include="MBL.rds" />
+    <DataSource Include="Outward.rds" />
   </ItemGroup>
   <ItemGroup>
     <Report Include="BranchWise.rdl" />
@@ -66,6 +67,7 @@
     <Report Include="ClearingLogReport.rdl" />
     <Report Include="FinalReport.rdl" />
     <Report Include="InwardClearingReport.rdl" />
+    <Report Include="OutwardApproved.rdl" />
     <Report Include="RetrunMemoReport.rdl" />
     <Report Include="ReturnRegisterReport.rdl" />
   </ItemGroup>
