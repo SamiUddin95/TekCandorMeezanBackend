@@ -247,7 +247,7 @@ namespace TekCandor.Service.Implementations
             return response;
         }
 
-        public async Task<BranchStatisticsDTO> GetBranchStatisticsAsync(string branchCode)
+        public async Task<BranchStatisticsDTO> GetBranchStatisticsAsync(string branchCode, DateTime? date = null)
         {
             // Get branch information
             var branchQuery = await _branchRepository.GetAllQueryableAsync();
@@ -266,8 +266,17 @@ namespace TekCandor.Service.Implementations
             }
 
             // Get cheque statistics for this branch
-            var chequeData = await _context.ChequeInfo
-                .Where(c => c.ReceiverBranchCode == branchCode)
+            var chequeQuery = _context.ChequeInfo
+                .Where(c => c.ReceiverBranchCode == branchCode);
+
+            if (date.HasValue)
+            {
+                var startDate = date.Value.Date;
+                var endDate = startDate.AddDays(1);
+                chequeQuery = chequeQuery.Where(c => c.Date.HasValue && c.Date.Value >= startDate && c.Date.Value < endDate);
+            }
+
+            var chequeData = await chequeQuery
                 .GroupBy(c => c.ReceiverBranchCode)
                 .Select(g => new
                 {
@@ -285,7 +294,7 @@ namespace TekCandor.Service.Implementations
             };
         }
 
-        public async Task<HubStatisticsDTO> GetHubStatisticsAsync(string hubCode)
+        public async Task<HubStatisticsDTO> GetHubStatisticsAsync(string hubCode, DateTime? date = null)
         {
             // Get hub information
             var hubQuery = await _hubRepository.GetAllQueryableAsync();
@@ -304,8 +313,17 @@ namespace TekCandor.Service.Implementations
             }
 
             // Get cheque statistics for this hub
-            var chequeData = await _context.ChequeInfo
-                .Where(c => c.Hubcode == hubCode)
+            var chequeQuery = _context.ChequeInfo
+                .Where(c => c.Hubcode == hubCode);
+
+            if (date.HasValue)
+            {
+                var startDate = date.Value.Date;
+                var endDate = startDate.AddDays(1);
+                chequeQuery = chequeQuery.Where(c => c.Date.HasValue && c.Date.Value >= startDate && c.Date.Value < endDate);
+            }
+
+            var chequeData = await chequeQuery
                 .GroupBy(c => c.Hubcode)
                 .Select(g => new
                 {

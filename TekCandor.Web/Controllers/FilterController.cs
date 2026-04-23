@@ -44,7 +44,7 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet("branch-Instrument-Amount")]
-        public async Task<IActionResult> GetBranchStatistics([FromQuery] string branchCode)
+        public async Task<IActionResult> GetBranchStatistics([FromQuery] string branchCode, [FromQuery] string? date = null)
         {
             try
             {
@@ -53,7 +53,20 @@ namespace TekCandor.Web.Controllers
                     return BadRequest(ApiResponse<string>.Error("Branch code is required"));
                 }
 
-                var result = await _filterService.GetBranchStatisticsAsync(branchCode);
+                DateTime? filterDate = null;
+                if (!string.IsNullOrEmpty(date))
+                {
+                    if (DateTime.TryParse(date, out var parsedDate))
+                    {
+                        filterDate = parsedDate;
+                    }
+                    else
+                    {
+                        return BadRequest(ApiResponse<string>.Error("Invalid date format"));
+                    }
+                }
+
+                var result = await _filterService.GetBranchStatisticsAsync(branchCode, filterDate);
                 return Ok(ApiResponse<BranchStatisticsDTO>.Success(result));
             }
             catch (ArgumentException ex)
@@ -67,7 +80,7 @@ namespace TekCandor.Web.Controllers
         }
 
         [HttpGet("hub-Instrument-Amount")]
-        public async Task<IActionResult> GetHubStatistics([FromQuery] string hubCode)
+        public async Task<IActionResult> GetHubStatistics([FromQuery] string hubCode, [FromQuery] string? date = null)
         {
             try
             {
@@ -76,7 +89,20 @@ namespace TekCandor.Web.Controllers
                     return BadRequest(ApiResponse<string>.Error("Hub code is required"));
                 }
 
-                var result = await _filterService.GetHubStatisticsAsync(hubCode);
+                DateTime? filterDate = null;
+                if (!string.IsNullOrEmpty(date))
+                {
+                    if (DateTime.TryParse(date, out var parsedDate))
+                    {
+                        filterDate = parsedDate;
+                    }
+                    else
+                    {
+                        return BadRequest(ApiResponse<string>.Error("Invalid date format"));
+                    }
+                }
+
+                var result = await _filterService.GetHubStatisticsAsync(hubCode, filterDate);
                 return Ok(ApiResponse<HubStatisticsDTO>.Success(result));
             }
             catch (ArgumentException ex)
