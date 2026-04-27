@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using TekCandor.Repository.Entities.Data;
@@ -136,6 +137,23 @@ namespace TekCandor.Service.Outward.Implementations
         }
         public async Task<ChequeInfoDTO?> UpdateAsync(long id, ChequeInfoDTO dto, string userId)
         {
+            var getUser = await _context.Users
+            .Where(x => x.LoginName == userId)
+            .FirstOrDefaultAsync();
+
+            var getHubCode = string.Empty;
+
+            var getHubId = await _context.Branch.Where(x => x.Code == dto.ReceiverBranchCode).Select(b => b.HubId).FirstOrDefaultAsync();
+            if (getHubId != null)
+            {
+                getHubCode = await _context.Hub.Where(x => x.Id == getHubId).Select(h => h.Code).FirstOrDefaultAsync();
+            }
+            else
+            {
+                getHubCode = "10";
+            }
+            long userIdLong = getUser.Id;
+            var upperLimit = await _userRepository.GetUserUpperLimitAsync(userIdLong);
             var entity = await _repository.GetByIdAsync(id);
             if (entity == null) return null;
 
@@ -168,7 +186,10 @@ namespace TekCandor.Service.Outward.Implementations
             entity.AmountInWords = dto.AmountInWords;
             entity.ReferenceNo = dto.ReferenceNo;
             entity.DepositSlipId = dto.DepositSlipId;
-            entity.Status = dto.Status;
+            //entity.Status = dto.Status;
+            entity.Status = (upperLimit.HasValue && dto.Amount > upperLimit.Value) ? "U" : "A";
+            //Status = dto.Status ?? "Pending",
+            entity.Hubcode = getHubCode;
             entity.IsReconciled = dto.IsReconciled;
             entity.IsReturned = dto.IsReturned;
             entity.IsRealized = dto.IsRealized;
@@ -396,35 +417,69 @@ namespace TekCandor.Service.Outward.Implementations
 
         public async Task<bool> ForceMatchAsync(ForceMatchRequestDTO request)
         {
+            // Get NIFT record
             var niftRecord = await _niftRepository.GetByIdAsync(request.NiftStagingId);
             if (niftRecord == null)
                 return false;
 
+            // Try to find existing cheque info by cheque number
             var getchequeInfoId = await _context.ChequeInfo
                 .Where(c => c.ChequeNo == request.ChequeNo)
                 .Select(c => c.Id)
-                .FirstOrDefaultAsync(
-            );
-
-            var chequeInfo = await _repository.GetByIdAsync(getchequeInfoId);
-            if (chequeInfo == null)
-                return false;
+                .FirstOrDefaultAsync();
 
             bool isPaid = niftRecord.Status?.ToUpper() == "PAID";
-            string newStatus = isPaid ? "Cleared" : "Returned";
+            string newStatus = isPaid ? "C" : "RE";
 
-            var updated = await _repository.UpdateMatchStatusAndStatusAsync(
-                chequeInfo.Id,
-                "Force Matched",
-                newStatus
-            );
-
-            if (updated)
+            // If cheque exists, update it
+            if (getchequeInfoId > 0)
             {
-                await _niftRepository.UpdateIsProcessedAsync(niftRecord.Id, true);
-            }
+                var updated = await _repository.UpdateMatchStatusAndStatusAsync(
+                    getchequeInfoId,
+                    "Force Matched",
+                    newStatus
+                );
 
-            return updated;
+                if (updated)
+                {
+                    await _niftRepository.UpdateIsProcessedAsync(niftRecord.Id, true);
+                }
+
+                return updated;
+            }
+            else
+            {
+                // If cheque doesn't exist, create new record from NIFT data
+                var newChequeInfo = new ChequeInfo
+                {
+                    Date = DateTime.Now,
+                    ChequeNo = niftRecord.ChequeNo,
+                    Amount = niftRecord.Amount,
+                    AccountNo = null,
+                    BeneficiaryAccountNumber = null,
+                    ReceiverBranchCode = null,
+                    PayingBankCode = null,
+                    PayingBranchCode = null,
+                    Status = newStatus,
+                    MICR = niftRecord.MICR,
+                    MatchStatus = "Force Matched",
+                    CreatedOn = DateTime.Now,
+                    CreatedBy = "System",
+                    IsReconciled = false,
+                    IsReturned = !isPaid,
+                    IsRealized = isPaid
+                };
+
+                var created = await _repository.CreateAsync(newChequeInfo);
+
+                if (created != null)
+                {
+                    await _niftRepository.UpdateIsProcessedAsync(niftRecord.Id, true);
+                    return true;
+                }
+
+                return false;
+            }
         }
 
         public async Task<PagedResult<ReturnListDTO>> GetReturnListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
