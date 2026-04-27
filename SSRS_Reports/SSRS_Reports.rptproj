@@ -54,12 +54,13 @@
     <DataSet Include="ClearingLogReport.rsd" />
     <DataSet Include="FinalReport.rsd" />
     <DataSet Include="InwardClearingReport.rsd" />
+    <DataSet Include="OutwardApproved.rsd" />
     <DataSet Include="ReturnMemoReport.rsd" />
     <DataSet Include="ReturnRegisterReport.rsd" />
   </ItemGroup>
   <ItemGroup>
+    <DataSource Include="DataSource1.rds" />
     <DataSource Include="MBL.rds" />
-    <DataSource Include="Outward.rds" />
   </ItemGroup>
   <ItemGroup>
     <Report Include="BranchWise.rdl" />

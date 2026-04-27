@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
+  <DataSet Name="DataSet1">
+    <Query>
+      <DataSourceReference>DataSource1</DataSourceReference>
+      <DataSetParameters>
+        <DataSetParameter Name="@DateFrom">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+        <DataSetParameter Name="@DateTo">
+          <ReadOnly>false</ReadOnly>
+          <Nullable>true</Nullable>
+          <OmitFromQuery>false</OmitFromQuery>
+          <rd:DbType>Object</rd:DbType>
+        </DataSetParameter>
+      </DataSetParameters>
+      <CommandText>
+SELECT
+    Date,
+    Amount,
+    ChequeNo,
+    AccountNo,
+    Branch.Name AS Branch,
+    Hub.Name AS Hub,
+    MICR
+FROM ChequeInfo
+INNER JOIN Branch
+    ON Branch.Code = ChequeInfo.ReceiverBranchCode
+INNER JOIN Hub
+    ON Hub.Code = ChequeInfo.Hubcode
+WHERE Status = 'A'
+  AND (@DateFrom IS NULL OR @DateFrom = '' OR CAST(Date AS DATE) &gt;= TRY_CAST(@DateFrom AS DATE))
+  AND (@DateTo IS NULL OR @DateTo = '' OR CAST(Date AS DATE) &lt;= TRY_CAST(@DateTo AS DATE));</CommandText>
+    </Query>
+    <Fields>
+      <Field Name="Date">
+        <DataField>Date</DataField>
+        <rd:TypeName>System.DateTime</rd:TypeName>
+      </Field>
+      <Field Name="Amount">
+        <DataField>Amount</DataField>
+        <rd:TypeName>System.Decimal</rd:TypeName>
+      </Field>
+      <Field Name="ChequeNo">
+        <DataField>ChequeNo</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="AccountNo">
+        <DataField>AccountNo</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Branch">
+        <DataField>Branch</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="Hub">
+        <DataField>Hub</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="MICR">
+        <DataField>MICR</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+    </Fields>
+  </DataSet>
+</SharedDataSet>

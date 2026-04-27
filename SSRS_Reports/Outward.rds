@@ -1,8 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<RptDataSource xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Name="Outward">
-  <ConnectionProperties>
-    <Extension>SQL</Extension>
-    <ConnectString>Data Source=.;Initial Catalog=MBLNew</ConnectString>
-  </ConnectionProperties>
-  <DataSourceID>54dc993a-4c35-4f1b-881a-e0084588ab5d</DataSourceID>
-</RptDataSource>
