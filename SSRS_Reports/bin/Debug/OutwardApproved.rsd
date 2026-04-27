@@ -4,13 +4,13 @@
     <Query>
       <DataSourceReference>DataSource1</DataSourceReference>
       <DataSetParameters>
-        <DataSetParameter Name="@FromDate">
+        <DataSetParameter Name="@DateFrom">
           <ReadOnly>false</ReadOnly>
           <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
-        <DataSetParameter Name="@ToDate">
+        <DataSetParameter Name="@DateTo">
           <ReadOnly>false</ReadOnly>
           <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
@@ -18,8 +18,7 @@
         </DataSetParameter>
       </DataSetParameters>
       <CommandText>
-
-SELECT 
+SELECT
     Date,
     Amount,
     ChequeNo,
@@ -28,13 +27,13 @@ SELECT
     Hub.Name AS Hub,
     MICR
 FROM ChequeInfo
-INNER JOIN Branch 
+INNER JOIN Branch
     ON Branch.Code = ChequeInfo.ReceiverBranchCode
-INNER JOIN Hub 
+INNER JOIN Hub
     ON Hub.Code = ChequeInfo.Hubcode
 WHERE Status = 'A'
-  AND Date &gt;= @FromDate
-  AND Date &lt; DATEADD(DAY, 1, @ToDate);</CommandText>
+  AND (@DateFrom IS NULL OR @DateFrom = '' OR CAST(Date AS DATE) &gt;= TRY_CAST(@DateFrom AS DATE))
+  AND (@DateTo IS NULL OR @DateTo = '' OR CAST(Date AS DATE) &lt;= TRY_CAST(@DateTo AS DATE));</CommandText>
     </Query>
     <Fields>
       <Field Name="Date">
