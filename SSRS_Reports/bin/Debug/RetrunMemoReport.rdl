@@ -88,7 +88,7 @@
 							</TablixColumns>
 							<TablixRows>
 								<TablixRow>
-									<Height>4.5cm</Height>
+									<Height>5.5cm</Height>
 									<TablixCells>
 										<TablixCell>
 											<CellContents>
@@ -635,6 +635,11 @@ Amount PKR</Value>
 														<Border>
 															<Style>None</Style>
 														</Border>
+														<BottomBorder>
+															<Style>Solid</Style>
+															<Width>2pt</Width>
+														</BottomBorder>
+														<PaddingBottom>0.3cm</PaddingBottom>
 													</Style>
 												</Rectangle>
 											</CellContents>
@@ -661,7 +666,7 @@ Amount PKR</Value>
 						<DataSetName>DataSet1</DataSetName>
 						<Top>0.5cm</Top>
 						<Left>0.5cm</Left>
-						<Height>4.5cm</Height>
+						<Height>5.5cm</Height>
 						<Width>18cm</Width>
 						<Style>
 							<Border>
@@ -670,7 +675,7 @@ Amount PKR</Value>
 						</Style>
 					</Tablix>
 				</ReportItems>
-				<Height>5.5cm</Height>
+				<Height>6.5cm</Height>
 				<Style />
 			</Body>
 			<Width>19cm</Width>

@@ -4,13 +4,13 @@
     <Query>
       <DataSourceReference>DataSource1</DataSourceReference>
       <DataSetParameters>
-        <DataSetParameter Name="@DateFrom">
+        <DataSetParameter Name="@FromDate">
           <ReadOnly>false</ReadOnly>
           <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
-        <DataSetParameter Name="@DateTo">
+        <DataSetParameter Name="@ToDate">
           <ReadOnly>false</ReadOnly>
           <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
@@ -32,8 +32,8 @@ INNER JOIN Branch
 INNER JOIN Hub
     ON Hub.Code = ChequeInfo.Hubcode
 WHERE Status = 'A'
-  AND (@DateFrom IS NULL OR @DateFrom = '' OR CAST(Date AS DATE) &gt;= TRY_CAST(@DateFrom AS DATE))
-  AND (@DateTo IS NULL OR @DateTo = '' OR CAST(Date AS DATE) &lt;= TRY_CAST(@DateTo AS DATE));</CommandText>
+  AND (@FromDate IS NULL OR Date &gt;= @FromDate)
+  AND (@ToDate IS NULL OR Date &lt; DATEADD(DAY, 1, @ToDate));</CommandText>
     </Query>
     <Fields>
       <Field Name="Date">
