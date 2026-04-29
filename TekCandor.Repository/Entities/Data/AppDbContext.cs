@@ -50,6 +50,7 @@ namespace TekCandor.Repository.Entities.Data
         public DbSet<Outward.DepositorType> DepositorType { get; set; }
         public DbSet<Outward.ChequeInfo> ChequeInfo { get; set; }
         public DbSet<Outward.NiftUploadStaging> NiftUploadStaging { get; set; }
+        public DbSet<Outward.Batch> Batch { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

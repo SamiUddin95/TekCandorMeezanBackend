@@ -45,6 +45,7 @@ namespace TekCandor.Repository.Entities.Outward
         public string? UpdatedBy { get; set; }
         public string? BranchName { get; set; }
         public string? Hubcode { get; set; }
+        public string? BatchId { get; set; }
 
     }
 }

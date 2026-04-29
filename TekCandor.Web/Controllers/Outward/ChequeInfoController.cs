@@ -104,7 +104,7 @@ namespace TekCandor.Web.Controllers.Outward
                 if (dto == null)
                     return BadRequest(ApiResponse<string>.Error("Invalid request data", 400));
 
-                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+                var userId = User.Identity?.Name;
 
                 var result = await _service.UpdateAsync(id, dto, userId);
                 if (result == null)

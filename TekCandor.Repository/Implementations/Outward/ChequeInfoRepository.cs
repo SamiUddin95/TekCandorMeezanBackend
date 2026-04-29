@@ -20,10 +20,19 @@ namespace TekCandor.Repository.Implementations.Outward
 
         public async Task<ChequeInfo> CreateAsync(ChequeInfo chequeInfo)
         {
-            chequeInfo.CreatedOn = DateTime.Now;
-            _context.ChequeInfo.Add(chequeInfo);
-            await _context.SaveChangesAsync();
-            return chequeInfo;
+            try
+            {
+                chequeInfo.CreatedOn = DateTime.Now;
+                _context.ChequeInfo.Add(chequeInfo);
+                await _context.SaveChangesAsync();
+                return chequeInfo;
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+           
         }
 
         public async Task<ChequeInfo?> GetByIdAsync(long id)
@@ -363,6 +372,14 @@ namespace TekCandor.Repository.Implementations.Outward
                 .ToListAsync();
 
             return (items, totalCount);
+        }
+
+        public async Task<List<ChequeInfo>> GetByBatchIdAsync(string batchId)
+        {
+            return await _context.ChequeInfo
+                .Where(c => c.BatchId == batchId)
+                .OrderByDescending(c => c.CreatedOn)
+                .ToListAsync();
         }
     }
 }

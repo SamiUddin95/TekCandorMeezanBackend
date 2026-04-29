@@ -1,7 +1,8 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Text;
 using System.Threading.Tasks;
 using TekCandor.Repository.Entities.Data;
@@ -46,7 +47,7 @@ namespace TekCandor.Service.Outward.Implementations
         {
             int part1 = _random.Next(100000000, 1000000000); // 9 digits
             int part2 = _random.Next(10000000, 100000000);   // 8 digits
-            int part3 = _random.Next(0, 100);                // 2 digits (00�99)
+            int part3 = _random.Next(0, 100);                // 2 digits (00–99)
 
             return $"{part1}: {part2:D8}: {part3:D2}";
         }
@@ -61,7 +62,7 @@ namespace TekCandor.Service.Outward.Implementations
             var getHubId = await _context.Branch.Where(x => x.Code == dto.ReceiverBranchCode).Select(b => b.HubId).FirstOrDefaultAsync();
             if (getHubId != null)
             {
-                 getHubCode= await _context.Hub.Where(x => x.Id == getHubId).Select(h => h.Code).FirstOrDefaultAsync();
+                getHubCode = await _context.Hub.Where(x => x.Id == getHubId).Select(h => h.Code).FirstOrDefaultAsync();
             }
             else
             {
@@ -103,6 +104,7 @@ namespace TekCandor.Service.Outward.Implementations
                 Status = (upperLimit.HasValue && dto.Amount > upperLimit.Value) ? "U" : "A",
                 //Status = dto.Status ?? "Pending",
                 Hubcode = getHubCode,
+                BatchId = dto.BatchId,
                 IsReconciled = dto.IsReconciled,
                 IsReturned = dto.IsReturned,
                 IsRealized = dto.IsRealized,
@@ -136,6 +138,23 @@ namespace TekCandor.Service.Outward.Implementations
         }
         public async Task<ChequeInfoDTO?> UpdateAsync(long id, ChequeInfoDTO dto, string userId)
         {
+            var getUser = await _context.Users
+            .Where(x => x.LoginName == userId)
+            .FirstOrDefaultAsync();
+
+            var getHubCode = string.Empty;
+
+            var getHubId = await _context.Branch.Where(x => x.Code == dto.ReceiverBranchCode).Select(b => b.HubId).FirstOrDefaultAsync();
+            if (getHubId != null)
+            {
+                getHubCode = await _context.Hub.Where(x => x.Id == getHubId).Select(h => h.Code).FirstOrDefaultAsync();
+            }
+            else
+            {
+                getHubCode = "10";
+            }
+            long userIdLong = getUser.Id;
+            var upperLimit = await _userRepository.GetUserUpperLimitAsync(userIdLong);
             var entity = await _repository.GetByIdAsync(id);
             if (entity == null) return null;
 
@@ -168,7 +187,11 @@ namespace TekCandor.Service.Outward.Implementations
             entity.AmountInWords = dto.AmountInWords;
             entity.ReferenceNo = dto.ReferenceNo;
             entity.DepositSlipId = dto.DepositSlipId;
-            entity.Status = dto.Status;
+            //entity.Status = dto.Status;
+            entity.Status = (upperLimit.HasValue && dto.Amount > upperLimit.Value) ? "U" : "A";
+            //Status = dto.Status ?? "Pending",
+            entity.Hubcode = getHubCode;
+            entity.BatchId = dto.BatchId;
             entity.IsReconciled = dto.IsReconciled;
             entity.IsReturned = dto.IsReturned;
             entity.IsRealized = dto.IsRealized;
@@ -183,33 +206,16 @@ namespace TekCandor.Service.Outward.Implementations
             return await _repository.DeleteAsync(id);
         }
 
-        public async Task<string> GenerateFileContentAsync(string receiverBranchCode, DateTime date)
+        public async Task<List<ChequeInfoDTO>> GetByBranchIdAndDateAsync(string receiverBranchCode, DateTime date)
         {
-            var cheques = await _repository.GetByBranchIdAndDateAsync(receiverBranchCode, date);
-            
-            if (cheques == null || cheques.Count == 0)
-                return string.Empty;
+            var entities = await _repository.GetByBranchIdAndDateAsync(receiverBranchCode, date);
+            return entities.Select(MapToDTO).ToList();
+        }
 
-            var sb = new StringBuilder();
-            
-            var count = cheques.Count;
-            var totalAmount = cheques.Sum(c => c.Amount ?? 0);
-            var dateStr = date.ToString("dd-MM-yyyy");
-            
-            sb.AppendLine($"{dateStr}|{count}|{totalAmount:0}");
-            
-            foreach (var cheque in cheques)
-            {
-                var chequeDate = cheque.Date.HasValue ? cheque.Date.Value.ToString("dd-MM-yyyy") : dateStr;
-                var chequeNo = cheque.ChequeNo ?? "";
-                var amount = cheque.Amount ?? 0;
-                
-                sb.AppendLine($"{chequeDate}|{chequeNo}|{amount:0}");
-            }
-            
-            sb.AppendLine("EOF");
-            
-            return sb.ToString();
+        public async Task<List<ChequeInfoDTO>> GetByHubcodeAndDateAsync(string hubcode, DateTime date)
+        {
+            var entities = await _repository.GetByHubcodeAndDateAsync(hubcode, date);
+            return entities.Select(MapToDTO).ToList();
         }
 
         public async Task<List<ChequeInfoDTO>> GetByStatusAsync(string status, DateTime? fromDate = null, DateTime? toDate = null)
@@ -220,178 +226,61 @@ namespace TekCandor.Service.Outward.Implementations
 
         public async Task<bool> ApproveAsync(long id, string userId)
         {
-            return await _repository.UpdateStatusAsync(id, "A", userId);
+            return await _repository.UpdateStatusAsync(id, "Approved", userId);
         }
 
         public async Task<bool> RejectAsync(long id, string userId, string remarks)
         {
-            return await _repository.UpdateRejectStatusAsync(id, "RE", userId, remarks);
+            return await _repository.UpdateRejectStatusAsync(id, "Rejected", userId, remarks);
+        }
+
+        public async Task<string> GenerateFileContentAsync(string receiverBranchCode, DateTime date)
+        {
+            var cheques = await _repository.GetByBranchIdAndDateAsync(receiverBranchCode, date);
+
+            if (!cheques.Any())
+                return string.Empty;
+
+            var sb = new StringBuilder();
+
+            foreach (var cheque in cheques)
+            {
+                sb.AppendLine($"{cheque.ChequeNo}|{cheque.Amount}|{cheque.MICR}|{cheque.ReceiverBranchCode}|{cheque.Date:yyyy-MM-dd}");
+            }
+
+            return sb.ToString();
         }
 
         public async Task<NiftUploadResultDTO> ProcessNiftFileAsync(string fileName, string fileContent, string fileType)
         {
-            var result = new NiftUploadResultDTO();
-            var lines = fileContent.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
-            var stagingRecords = new List<NiftUploadStaging>();
-            
-            bool isPaid = fileType.ToUpper() == "PAID";
-            string status = isPaid ? "PAID" : "RETURN";
-
-            for (int i = 0; i < lines.Length; i++)
+            return new NiftUploadResultDTO
             {
-                var line = lines[i].Trim();
-                
-                if (i == 0 || line == "EOF")
-                    continue;
-
-                var parts = line.Split('|');
-                
-                if (isPaid && parts.Length >= 4)
+                MatchedRecords = new List<NiftRecordDTO>(),
+                UnmatchedRecords = new List<NiftRecordDTO>(),
+                Summary = new NiftSummaryDTO
                 {
-                    stagingRecords.Add(new NiftUploadStaging
-                    {
-                        FileName = fileName,
-                        UploadDate = DateTime.Now,
-                        ChequeNo = parts[1],
-                        Amount = decimal.TryParse(parts[2], out var amt) ? amt : 0,
-                        MICR = parts[3],
-                        Status = status,
-                        IsProcessed = false
-                    });
+                    TotalLodgement = 0,
+                    Matched = 0,
+                    Unmatched = 0,
+                    TotalAmount = 0
                 }
-                else if (!isPaid && parts.Length >= 6)
-                {
-                    stagingRecords.Add(new NiftUploadStaging
-                    {
-                        FileName = fileName,
-                        UploadDate = DateTime.Now,
-                        ChequeNo = parts[1],
-                        Amount = decimal.TryParse(parts[2], out var amt) ? amt : 0,
-                        MICR = parts[3],
-                        Status = status,
-                        ReturnCode = parts[4],
-                        ReturnReason = parts[5],
-                        IsProcessed = false
-                    });
-                }
-            }
-
-            await _niftRepository.CreateBulkAsync(stagingRecords);
-
-            var matchedList = new List<NiftRecordDTO>();
-            var unmatchedList = new List<NiftRecordDTO>();
-            decimal totalAmount = 0;
-
-            foreach (var record in stagingRecords)
-            {
-                var chequeInfo = await _repository.FindByChequeDetailsAsync(
-                    record.ChequeNo ?? "", 
-                    record.Amount ?? 0, 
-                    record.MICR ?? ""
-                );
-
-                var niftRecord = new NiftRecordDTO
-                {
-                    ChequeInfoId = chequeInfo?.Id,
-                    NiftStagingId = record.Id,
-                    ChequeNo = record.ChequeNo,
-                    Amount = record.Amount,
-                    Date = record.UploadDate?.ToString("dd-MM-yyyy"),
-                    Discrepancy = isPaid ? "" : record.ReturnReason,
-                    BranchName = chequeInfo?.BranchName ?? ""
-                };
-
-                if (chequeInfo != null)
-                {
-                    await _repository.UpdateMatchStatusAndStatusAsync(
-                        chequeInfo.Id, 
-                        "Matched", 
-                        isPaid ? "Cleared" : "Returned"
-                    );
-                    
-                    await _niftRepository.UpdateIsProcessedAsync(record.Id, true);
-                    
-                    matchedList.Add(niftRecord);
-                }
-                else
-                {
-                    unmatchedList.Add(niftRecord);
-                }
-
-                totalAmount += record.Amount ?? 0;
-            }
-
-            result.MatchedRecords = matchedList;
-            result.UnmatchedRecords = unmatchedList;
-            result.Summary = new NiftSummaryDTO
-            {
-                TotalLodgement = stagingRecords.Count,
-                Matched = matchedList.Count,
-                Unmatched = unmatchedList.Count,
-                TotalAmount = totalAmount
             };
-
-            return result;
         }
 
         public async Task<NiftUploadResultDTO> GetNiftUploadDataAsync(DateTime date)
         {
-            var result = new NiftUploadResultDTO();
-            var stagingRecords = await _niftRepository.GetByUploadDateAsync(date);
-
-            if (stagingRecords == null || stagingRecords.Count == 0)
+            return new NiftUploadResultDTO
             {
-                return result;
-            }
-
-            var matchedList = new List<NiftRecordDTO>();
-            var unmatchedList = new List<NiftRecordDTO>();
-            decimal totalAmount = 0;
-
-            foreach (var record in stagingRecords)
-            {
-                var chequeInfo = await _repository.FindByChequeDetailsAsync(
-                    record.ChequeNo ?? "",
-                    record.Amount ?? 0,
-                    record.MICR ?? ""
-                );
-
-                bool isPaid = record.Status?.ToUpper() == "PAID";
-
-                var niftRecord = new NiftRecordDTO
+                MatchedRecords = new List<NiftRecordDTO>(),
+                UnmatchedRecords = new List<NiftRecordDTO>(),
+                Summary = new NiftSummaryDTO
                 {
-                    ChequeInfoId = chequeInfo?.Id,
-                    NiftStagingId = record.Id,
-                    ChequeNo = record.ChequeNo,
-                    Amount = record.Amount,
-                    Date = record.UploadDate?.ToString("dd-MM-yyyy"),
-                    Discrepancy = isPaid ? "" : record.ReturnReason,
-                    BranchName = chequeInfo?.BranchName ?? ""
-                };
-
-                if (record.IsProcessed == true && chequeInfo != null)
-                {
-                    matchedList.Add(niftRecord);
+                    TotalLodgement = 0,
+                    Matched = 0,
+                    Unmatched = 0,
+                    TotalAmount = 0
                 }
-                else
-                {
-                    unmatchedList.Add(niftRecord);
-                }
-
-                totalAmount += record.Amount ?? 0;
-            }
-
-            result.MatchedRecords = matchedList;
-            result.UnmatchedRecords = unmatchedList;
-            result.Summary = new NiftSummaryDTO
-            {
-                TotalLodgement = stagingRecords.Count,
-                Matched = matchedList.Count,
-                Unmatched = unmatchedList.Count,
-                TotalAmount = totalAmount
             };
-
-            return result;
         }
 
         public async Task<bool> ForceMatchAsync(ForceMatchRequestDTO request)
@@ -400,94 +289,73 @@ namespace TekCandor.Service.Outward.Implementations
             if (niftRecord == null)
                 return false;
 
-            var getchequeInfoId = await _context.ChequeInfo
-                .Where(c => c.ChequeNo == request.ChequeNo)
-                .Select(c => c.Id)
-                .FirstOrDefaultAsync(
-            );
-
-            var chequeInfo = await _repository.GetByIdAsync(getchequeInfoId);
-            if (chequeInfo == null)
+            var cheque = await _repository.FindByChequeDetailsAsync(request.ChequeNo, niftRecord.Amount ?? 0, niftRecord.MICR ?? "");
+            if (cheque == null)
                 return false;
 
-            bool isPaid = niftRecord.Status?.ToUpper() == "PAID";
-            string newStatus = isPaid ? "Cleared" : "Returned";
+            cheque.Status = niftRecord.Status;
+            cheque.UpdatedOn = DateTime.Now;
 
-            var updated = await _repository.UpdateMatchStatusAndStatusAsync(
-                chequeInfo.Id,
-                "Force Matched",
-                newStatus
-            );
+            await _repository.UpdateMatchStatusAndStatusAsync(cheque.Id, "Matched", "Matched");
 
-            if (updated)
-            {
-                await _niftRepository.UpdateIsProcessedAsync(niftRecord.Id, true);
-            }
+            niftRecord.IsProcessed = true;
+            await _context.SaveChangesAsync();
 
-            return updated;
+            return true;
         }
 
         public async Task<PagedResult<ReturnListDTO>> GetReturnListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var (items, totalCount) = await _repository.GetReturnListPagedAsync(pageNumber, pageSize, fromDate, toDate);
 
-            var result = new List<ReturnListDTO>();
-            foreach (var item in items)
+            var dtos = items.Select(item => new ReturnListDTO
             {
-                var itemType = item.GetType();
-                result.Add(new ReturnListDTO
-                {
-                    ChequeInfoId = (long)itemType.GetProperty("ChequeInfoId")?.GetValue(item)!,
-                    Date = (DateTime?)itemType.GetProperty("Date")?.GetValue(item),
-                    DepositorType = (string?)itemType.GetProperty("DepositorType")?.GetValue(item),
-                    AccountNo = (string?)itemType.GetProperty("AccountNo")?.GetValue(item),
-                    CNIC = (string?)itemType.GetProperty("CNIC")?.GetValue(item),
-                    DepositorTitle = (string?)itemType.GetProperty("DepositorTitle")?.GetValue(item),
-                    BranchName = (string?)itemType.GetProperty("BranchName")?.GetValue(item),
-                    ChequeNo = (string?)itemType.GetProperty("ChequeNo")?.GetValue(item),
-                    Amount = (decimal?)itemType.GetProperty("Amount")?.GetValue(item),
-                    MICR = (string?)itemType.GetProperty("MICR")?.GetValue(item),
-                    Status = (string?)itemType.GetProperty("Status")?.GetValue(item),
-                    MatchStatus = (string?)itemType.GetProperty("MatchStatus")?.GetValue(item),
-                    NiftStagingId = (long)itemType.GetProperty("NiftStagingId")?.GetValue(item)!,
-                    FileName = (string?)itemType.GetProperty("FileName")?.GetValue(item),
-                    UploadDate = (DateTime?)itemType.GetProperty("UploadDate")?.GetValue(item),
-                    ReturnCode = (string?)itemType.GetProperty("ReturnCode")?.GetValue(item),
-                    ReturnReason = (string?)itemType.GetProperty("ReturnReason")?.GetValue(item),
-                    IsProcessed = (bool?)itemType.GetProperty("IsProcessed")?.GetValue(item)
-                });
-            }
+                ChequeInfoId = (long)((dynamic)item).ChequeInfoId,
+                Date = ((dynamic)item).Date != null ? (DateTime?)((dynamic)item).Date : null,
+                DepositorType = ((dynamic)item).DepositorType?.ToString(),
+                AccountNo = ((dynamic)item).AccountNo?.ToString(),
+                CNIC = ((dynamic)item).CNIC?.ToString(),
+                DepositorTitle = ((dynamic)item).DepositorTitle?.ToString(),
+                BranchName = ((dynamic)item).BranchName?.ToString(),
+                ChequeNo = ((dynamic)item).ChequeNo?.ToString() ?? "",
+                Amount = ((dynamic)item).Amount != null ? (decimal?)((dynamic)item).Amount : null,
+                MICR = ((dynamic)item).MICR?.ToString(),
+                Status = ((dynamic)item).Status?.ToString() ?? "",
+                MatchStatus = ((dynamic)item).MatchStatus?.ToString(),
+                NiftStagingId = ((dynamic)item).NiftStagingId != null ? (long)((dynamic)item).NiftStagingId : 0,
+                FileName = ((dynamic)item).FileName?.ToString(),
+                UploadDate = ((dynamic)item).UploadDate != null ? (DateTime?)((dynamic)item).UploadDate : null,
+                ReturnCode = ((dynamic)item).ReturnCode?.ToString(),
+                ReturnReason = ((dynamic)item).ReturnReason?.ToString(),
+                IsProcessed = ((dynamic)item).IsProcessed != null ? (bool?)((dynamic)item).IsProcessed : null
+            }).ToList();
 
             return new PagedResult<ReturnListDTO>
             {
-                Items = result,
+                Items = dtos,
                 TotalCount = totalCount,
                 PageNumber = pageNumber,
                 PageSize = pageSize
             };
         }
 
-
         public async Task<ReturnDetailDTO?> GetReturnDetailByIdAsync(long id)
         {
-            var data = await _repository.GetReturnDetailByIdAsync(id);
-            
-            if (data == null)
-                return null;
+            var item = await _repository.GetReturnDetailByIdAsync(id);
+            if (item == null) return null;
 
-            var itemType = data.GetType();
             return new ReturnDetailDTO
             {
-                BeneficiaryTitle = (string?)itemType.GetProperty("BeneficiaryTitle")?.GetValue(data),
-                AccountNo = (string?)itemType.GetProperty("AccountNo")?.GetValue(data),
-                ChequeDate = (DateTime?)itemType.GetProperty("ChequeDate")?.GetValue(data),
-                BranchName = (string?)itemType.GetProperty("BranchName")?.GetValue(data),
-                ReturnReason = (string?)itemType.GetProperty("ReturnReason")?.GetValue(data),
-                ChequeNo = (string?)itemType.GetProperty("ChequeNo")?.GetValue(data),
-                Amount = (decimal?)itemType.GetProperty("Amount")?.GetValue(data),
-                ImageF = (string?)itemType.GetProperty("ImageF")?.GetValue(data),
-                ImageB = (string?)itemType.GetProperty("ImageB")?.GetValue(data),
-                ImageU = (string?)itemType.GetProperty("ImageU")?.GetValue(data)
+                BeneficiaryTitle = ((dynamic)item).BeneficiaryTitle?.ToString(),
+                AccountNo = ((dynamic)item).AccountNo?.ToString(),
+                ChequeDate = ((dynamic)item).ChequeDate != null ? (DateTime?)((dynamic)item).ChequeDate : null,
+                BranchName = ((dynamic)item).BranchName?.ToString(),
+                ReturnReason = ((dynamic)item).ReturnReason?.ToString(),
+                ChequeNo = ((dynamic)item).ChequeNo?.ToString() ?? "",
+                Amount = ((dynamic)item).Amount != null ? (decimal?)((dynamic)item).Amount : null,
+                ImageF = ((dynamic)item).ImageF?.ToString(),
+                ImageB = ((dynamic)item).ImageB?.ToString(),
+                ImageU = ((dynamic)item).ImageU?.ToString()
             };
         }
 
@@ -495,22 +363,17 @@ namespace TekCandor.Service.Outward.Implementations
         {
             var (items, totalCount) = await _repository.GetFundRealizationListPagedAsync(pageNumber, pageSize, fromDate, toDate);
 
-            var result = new List<FundRealizationDTO>();
-            foreach (var item in items)
+            var dtos = items.Select(item => new FundRealizationDTO
             {
-                var itemType = item.GetType();
-                result.Add(new FundRealizationDTO
-                {
-                    ReceiverBranchCode = (string?)itemType.GetProperty("ReceiverBranchCode")?.GetValue(item),
-                    BranchName = (string?)itemType.GetProperty("BranchName")?.GetValue(item),
-                    TotalAmount = (decimal)itemType.GetProperty("TotalAmount")?.GetValue(item)!,
-                    ChequeCount = (int)itemType.GetProperty("ChequeCount")?.GetValue(item)!
-                });
-            }
+                ReceiverBranchCode = ((dynamic)item).ReceiverBranchCode?.ToString(),
+                BranchName = ((dynamic)item).BranchName?.ToString(),
+                TotalAmount = ((dynamic)item).TotalAmount != null ? (decimal)((dynamic)item).TotalAmount : 0,
+                ChequeCount = ((dynamic)item).ChequeCount != null ? (int)((dynamic)item).ChequeCount : 0
+            }).ToList();
 
             return new PagedResult<FundRealizationDTO>
             {
-                Items = result,
+                Items = dtos,
                 TotalCount = totalCount,
                 PageNumber = pageNumber,
                 PageSize = pageSize
@@ -564,7 +427,9 @@ namespace TekCandor.Service.Outward.Implementations
                 CreatedOn = entity.CreatedOn,
                 CreatedBy = entity.CreatedBy,
                 UpdatedOn = entity.UpdatedOn,
-                UpdatedBy = entity.UpdatedBy
+                UpdatedBy = entity.UpdatedBy,
+                Hubcode = entity.Hubcode,
+                BatchId = entity.BatchId
             };
         }
 
