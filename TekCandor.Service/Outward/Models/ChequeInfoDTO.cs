@@ -44,5 +44,6 @@ namespace TekCandor.Service.Outward.Models
         public DateTime? UpdatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public string? Hubcode { get; set; }
+        public string? BatchId { get; set; }
     }
 }

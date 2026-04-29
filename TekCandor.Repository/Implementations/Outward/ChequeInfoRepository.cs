@@ -373,5 +373,13 @@ namespace TekCandor.Repository.Implementations.Outward
 
             return (items, totalCount);
         }
+
+        public async Task<List<ChequeInfo>> GetByBatchIdAsync(string batchId)
+        {
+            return await _context.ChequeInfo
+                .Where(c => c.BatchId == batchId)
+                .OrderByDescending(c => c.CreatedOn)
+                .ToListAsync();
+        }
     }
 }
