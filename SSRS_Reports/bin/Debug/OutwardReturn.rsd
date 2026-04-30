@@ -4,13 +4,13 @@
     <Query>
       <DataSourceReference>DataSource1</DataSourceReference>
       <DataSetParameters>
-        <DataSetParameter Name="@FromDate">
+        <DataSetParameter Name="@DateFrom">
           <ReadOnly>false</ReadOnly>
           <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
-        <DataSetParameter Name="@ToDate">
+        <DataSetParameter Name="@DateTo">
           <ReadOnly>false</ReadOnly>
           <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
@@ -32,9 +32,9 @@ INNER JOIN Branch
     ON Branch.Code = ChequeInfo.ReceiverBranchCode
 INNER JOIN Hub
     ON Hub.Code = ChequeInfo.Hubcode
-WHERE Status = 'A'
-  AND (@FromDate IS NULL OR Date &gt;= @FromDate)
-  AND (@ToDate IS NULL OR Date &lt; DATEADD(DAY, 1, @ToDate));</CommandText>
+WHERE Status = 'R'
+  AND (@DateFrom IS NULL OR Date &gt;= @DateFrom)
+  AND (@DateTo IS NULL OR Date &lt; DATEADD(DAY, 1, @DateTo));</CommandText>
     </Query>
     <Fields>
       <Field Name="Date">
