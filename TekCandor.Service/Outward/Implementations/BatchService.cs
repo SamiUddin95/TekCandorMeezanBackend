@@ -158,6 +158,18 @@ namespace TekCandor.Service.Outward.Implementations
             };
         }
 
+        public async Task<BatchDateRangeWithStatsDTO> GetBatchesByDateRangeWithStatsAsync(DateTime fromDate, DateTime toDate)
+        {
+            var batches = await GetBatchesByDateRangeAsync(fromDate, toDate);
+            var statistics = await GetBatchStatisticsAsync();
+
+            return new BatchDateRangeWithStatsDTO
+            {
+                Batches = batches,
+                Statistics = statistics
+            };
+        }
+
         public async Task<BatchWithInstrumentsDTO?> GetBatchWithInstrumentsAsync(string batchId)
         {
             var batch = await _batchRepository.GetByBatchIdAsync(batchId);

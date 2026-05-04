@@ -59,67 +59,67 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
-        [HttpGet("{id:long}")]
-        [ProducesResponseType(typeof(ApiResponse<BatchDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetBatchById(long id)
-        {
-            try
-            {
-                var result = await _batchService.GetBatchByIdAsync(id);
-                if (result == null)
-                    return NotFound(ApiResponse<string>.Error("Batch not found", 404));
+        //[HttpGet("{id:long}")]
+        //[ProducesResponseType(typeof(ApiResponse<BatchDTO>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<IActionResult> GetBatchById(long id)
+        //{
+        //    try
+        //    {
+        //        var result = await _batchService.GetBatchByIdAsync(id);
+        //        if (result == null)
+        //            return NotFound(ApiResponse<string>.Error("Batch not found", 404));
 
-                return Ok(ApiResponse<BatchDTO>.Success(result));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
-            }
-        }
+        //        return Ok(ApiResponse<BatchDTO>.Success(result));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+        //    }
+        //}
 
-        [HttpGet("by-batch-id/{batchId}")]
-        [ProducesResponseType(typeof(ApiResponse<BatchDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetBatchByBatchId(string batchId)
-        {
-            try
-            {
-                var result = await _batchService.GetBatchByBatchIdAsync(batchId);
-                if (result == null)
-                    return NotFound(ApiResponse<string>.Error("Batch not found", 404));
+        //[HttpGet("by-batch-id/{batchId}")]
+        //[ProducesResponseType(typeof(ApiResponse<BatchDTO>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<IActionResult> GetBatchByBatchId(string batchId)
+        //{
+        //    try
+        //    {
+        //        var result = await _batchService.GetBatchByBatchIdAsync(batchId);
+        //        if (result == null)
+        //            return NotFound(ApiResponse<string>.Error("Batch not found", 404));
 
-                return Ok(ApiResponse<BatchDTO>.Success(result));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
-            }
-        }
+        //        return Ok(ApiResponse<BatchDTO>.Success(result));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+        //    }
+        //}
 
-        [HttpPut("{id:long}")]
-        [ProducesResponseType(typeof(ApiResponse<BatchDTO>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateBatch(long id, [FromBody] CreateBatchDTO dto)
-        {
-            try
-            {
-                if (dto == null)
-                    return BadRequest(ApiResponse<string>.Error("Invalid request data", 400));
+        //[HttpPut("{id:long}")]
+        //[ProducesResponseType(typeof(ApiResponse<BatchDTO>), StatusCodes.Status200OK)]
+        //[ProducesResponseType(StatusCodes.Status404NotFound)]
+        //public async Task<IActionResult> UpdateBatch(long id, [FromBody] CreateBatchDTO dto)
+        //{
+        //    try
+        //    {
+        //        if (dto == null)
+        //            return BadRequest(ApiResponse<string>.Error("Invalid request data", 400));
 
-                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+        //        var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
 
-                var result = await _batchService.UpdateBatchAsync(id, dto, userId);
-                if (result == null)
-                    return NotFound(ApiResponse<string>.Error("Batch not found", 404));
+        //        var result = await _batchService.UpdateBatchAsync(id, dto, userId);
+        //        if (result == null)
+        //            return NotFound(ApiResponse<string>.Error("Batch not found", 404));
 
-                return Ok(ApiResponse<BatchDTO>.Success(result));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
-            }
-        }
+        //        return Ok(ApiResponse<BatchDTO>.Success(result));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+        //    }
+        //}
 
         [HttpDelete("{id:long}")]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -218,7 +218,7 @@ namespace TekCandor.Web.Controllers.Outward
             {
                 var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
                 var result = await _batchService.RejectBatchAsync(batchId, userId, dto.RejectionReason);
-                
+
                 if (result == null)
                     return NotFound(ApiResponse<string>.Error("Batch not found", 404));
 
@@ -227,21 +227,6 @@ namespace TekCandor.Web.Controllers.Outward
             catch (InvalidOperationException ex)
             {
                 return BadRequest(ApiResponse<string>.Error(ex.Message, 400));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
-            }
-        }
-
-        [HttpGet("statistics")]
-        [ProducesResponseType(typeof(ApiResponse<BatchStatisticsDTO>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetBatchStatistics()
-        {
-            try
-            {
-                var result = await _batchService.GetBatchStatisticsAsync();
-                return Ok(ApiResponse<BatchStatisticsDTO>.Success(result));
             }
             catch (Exception ex)
             {
@@ -269,7 +254,7 @@ namespace TekCandor.Web.Controllers.Outward
         }
 
         [HttpGet("date-range")]
-        [ProducesResponseType(typeof(ApiResponse<List<BatchDTO>>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse<BatchDateRangeWithStatsDTO>), StatusCodes.Status200OK)]
         public async Task<IActionResult> GetBatchesByDateRange([FromQuery] string fromDate, [FromQuery] string toDate)
         {
             try
@@ -279,8 +264,8 @@ namespace TekCandor.Web.Controllers.Outward
                     return BadRequest(ApiResponse<string>.Error("Invalid date format", 400));
                 }
 
-                var result = await _batchService.GetBatchesByDateRangeAsync(parsedFromDate, parsedToDate);
-                return Ok(ApiResponse<List<BatchDTO>>.Success(result));
+                var result = await _batchService.GetBatchesByDateRangeWithStatsAsync(parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<BatchDateRangeWithStatsDTO>.Success(result));
             }
             catch (Exception ex)
             {
