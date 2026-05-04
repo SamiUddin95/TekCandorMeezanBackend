@@ -21,6 +21,7 @@ namespace TekCandor.Service.Outward.Interfaces
         Task<BatchDTO?> RejectBatchAsync(string batchId, string userId, string rejectionReason);
         
         Task<BatchStatisticsDTO> GetBatchStatisticsAsync();
+        Task<BatchDateRangeWithStatsDTO> GetBatchesByDateRangeWithStatsAsync(DateTime fromDate, DateTime toDate);
         Task<BatchWithInstrumentsDTO?> GetBatchWithInstrumentsAsync(string batchId);
         Task<List<ChequeInfoDTO>> GetInstrumentsByBatchIdAsync(string batchId);
     }
