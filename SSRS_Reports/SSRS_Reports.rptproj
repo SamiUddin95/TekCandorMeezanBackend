@@ -55,6 +55,7 @@
     <DataSet Include="FinalReport.rsd" />
     <DataSet Include="InwardClearingReport.rsd" />
     <DataSet Include="OutwardApproved.rsd" />
+    <DataSet Include="OutwardReturn.rsd" />
     <DataSet Include="ReturnMemoReport.rsd" />
     <DataSet Include="ReturnRegisterReport.rsd" />
   </ItemGroup>
@@ -69,6 +70,7 @@
     <Report Include="FinalReport.rdl" />
     <Report Include="InwardClearingReport.rdl" />
     <Report Include="OutwardApproved.rdl" />
+    <Report Include="OutwardReturn.rdl" />
     <Report Include="RetrunMemoReport.rdl" />
     <Report Include="ReturnRegisterReport.rdl" />
   </ItemGroup>

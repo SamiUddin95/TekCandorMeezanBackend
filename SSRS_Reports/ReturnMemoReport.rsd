@@ -6,52 +6,71 @@
       <DataSetParameters>
         <DataSetParameter Name="@DateFrom">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@DateTo">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@ChequeNumber">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@BranchCode">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
         <DataSetParameter Name="@AccountNumber">
           <ReadOnly>false</ReadOnly>
-          <Nullable>false</Nullable>
+          <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
       </DataSetParameters>
-      <CommandText>	SELECT 
-    ChequeNumber, AccountNumber, AccountTitle, Amount,
-    ReturnReason.Name AS "ReceiverBranchCode",
-    ChequeDepositInformation.ApproverId AS "TransactionCode",
-    ChequeDepositInformation.AuthorizerId AS "HubCode",
-    ChequeDepositInformation.TrProcORRecTime AS "Date"
+      <CommandText>SELECT
+    ChequeNumber, 
+    AccountNumber, 
+    AccountTitle, 
+    Amount,
+    Branch.Name AS ReceiverBranchCode,
+    ChequeDepositInformation.ApproverId AS TransactionCode,
+    ChequeDepositInformation.AuthorizerId AS HubCode,
+    ReturnReason.Name AS ReturnReason,
+    ISNULL(CONVERT(VARCHAR(20), 
+        TRY_CONVERT(DATETIME, ChequeDepositInformation.TrProcORRecTime), 120), '') AS Date
 FROM ChequeDepositInformation
-LEFT JOIN ReturnReason ON ChequeDepositInformation.Returnreasone = ReturnReason.code
-WHERE
-(@DateFrom IS NULL OR @DateFrom = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &gt;= TRY_CAST(@DateFrom AS DATE))
-    AND (@DateTo IS NULL OR @DateTo = '' OR CAST(ChequeDepositInformation.TrProcORRecTime AS DATE) &lt;= TRY_CAST(@DateTo AS DATE))
- AND (@ChequeNumber IS NULL OR @ChequeNumber = '' 
-OR ChequeDepositInformation.ChequeNumber = @ChequeNumber)
-    AND (@BranchCode IS NULL OR @BranchCode = '' 
-OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode)
-    AND (@AccountNumber IS NULL OR @AccountNumber = '' 
-OR ChequeDepositInformation.AccountNumber = @AccountNumber)</CommandText>
+
+INNER JOIN ReturnReason 
+    ON ChequeDepositInformation.Returnreasone = ReturnReason.Code
+
+INNER JOIN Branch 
+    ON Branch.Code = ChequeDepositInformation.ReceiverBranchCode
+
+WHERE 
+    ChequeDepositInformation.Status = 'R'
+
+    AND (@DateFrom IS NULL 
+         OR TRY_CONVERT(DATE, ChequeDepositInformation.TrProcORRecTime) &gt;= TRY_CONVERT(DATE, @DateFrom))
+
+    AND (@DateTo IS NULL 
+         OR TRY_CONVERT(DATE, ChequeDepositInformation.TrProcORRecTime) &lt;= TRY_CONVERT(DATE, @DateTo))
+
+    AND (@ChequeNumber IS NULL 
+         OR ChequeDepositInformation.ChequeNumber = @ChequeNumber)
+
+    AND (@BranchCode IS NULL 
+         OR ChequeDepositInformation.ReceiverBranchCode = @BranchCode)
+
+    AND (@AccountNumber IS NULL 
+         OR ChequeDepositInformation.AccountNumber = @AccountNumber);</CommandText>
     </Query>
     <Fields>
       <Field Name="ChequeNumber">
@@ -80,6 +99,10 @@ OR ChequeDepositInformation.AccountNumber = @AccountNumber)</CommandText>
       </Field>
       <Field Name="HubCode">
         <DataField>HubCode</DataField>
+        <rd:TypeName>System.String</rd:TypeName>
+      </Field>
+      <Field Name="ReturnReason">
+        <DataField>ReturnReason</DataField>
         <rd:TypeName>System.String</rd:TypeName>
       </Field>
       <Field Name="Date">

@@ -1,16 +1,16 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
-  <DataSet Name="DataSet1">
+  <DataSet Name="OutwardApproved">
     <Query>
-      <DataSourceReference>DataSource1</DataSourceReference>
+      <DataSourceReference>MBL</DataSourceReference>
       <DataSetParameters>
-        <DataSetParameter Name="@DateFrom">
+        <DataSetParameter Name="@FromDate">
           <ReadOnly>false</ReadOnly>
           <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
-        <DataSetParameter Name="@DateTo">
+        <DataSetParameter Name="@ToDate">
           <ReadOnly>false</ReadOnly>
           <Nullable>true</Nullable>
           <OmitFromQuery>false</OmitFromQuery>
@@ -19,21 +19,22 @@
       </DataSetParameters>
       <CommandText>
 SELECT
-    Date,
-    Amount,
-    ChequeNo,
-    AccountNo,
-    Branch.Name AS Branch,
-    Hub.Name AS Hub,
-    MICR
-FROM ChequeInfo
-INNER JOIN Branch
-    ON Branch.Code = ChequeInfo.ReceiverBranchCode
-INNER JOIN Hub
-    ON Hub.Code = ChequeInfo.Hubcode
-WHERE Status = 'A'
-  AND (@DateFrom IS NULL OR @DateFrom = '' OR CAST(Date AS DATE) &gt;= TRY_CAST(@DateFrom AS DATE))
-  AND (@DateTo IS NULL OR @DateTo = '' OR CAST(Date AS DATE) &lt;= TRY_CAST(@DateTo AS DATE));</CommandText>
+    ci.Date,
+    ci.Amount,
+    ci.ChequeNo,
+    ci.AccountNo,
+    b.Name AS Branch,
+    h.Name AS Hub,
+    ci.MICR
+FROM ChequeInfo ci
+INNER JOIN Branch b
+    ON b.Code = ci.ReceiverBranchCode
+INNER JOIN Hub h
+    ON h.Code = ci.HubCode
+WHERE ci.Status = 'A'
+  AND (@FromDate IS NULL OR @FromDate = '' OR ci.Date &gt;= @FromDate)
+  AND (@ToDate IS NULL OR @ToDate = '' OR ci.Date &lt; DATEADD(DAY, 1, @ToDate))
+      </CommandText>
     </Query>
     <Fields>
       <Field Name="Date">

@@ -9,7 +9,7 @@
 			<am:Name>SSDTRS</am:Name>
 			<am:Version>18.1.11312.151</am:Version>
 		</am:UpdatedBy>
-		<am:LastModifiedTimestamp>2026-04-15T14:04:19.3885233Z</am:LastModifiedTimestamp>
+		<am:LastModifiedTimestamp>2026-04-28T12:00:00.0000000Z</am:LastModifiedTimestamp>
 	</am:AuthoringMetadata>
 	<df:DefaultFontFamily>Segoe UI</df:DefaultFontFamily>
 	<AutoRefresh>0</AutoRefresh>
@@ -19,19 +19,19 @@
 				<SharedDataSetReference>ReturnMemoReport</SharedDataSetReference>
 				<QueryParameters>
 					<QueryParameter Name="@DateFrom">
-						<Value>=Parameters!DateFrom.Value</Value>
+						<Value>=IIF(IsNothing(Parameters!DateFrom.Value) OR Parameters!DateFrom.Value = "", Nothing, Parameters!DateFrom.Value)</Value>
 					</QueryParameter>
 					<QueryParameter Name="@DateTo">
-						<Value>=Parameters!DateTo.Value</Value>
+						<Value>=IIF(IsNothing(Parameters!DateTo.Value) OR Parameters!DateTo.Value = "", Nothing, Parameters!DateTo.Value)</Value>
 					</QueryParameter>
 					<QueryParameter Name="@ChequeNumber">
-						<Value>=Parameters!ChequeNumber.Value</Value>
+						<Value>=IIF(IsNothing(Parameters!ChequeNumber.Value) OR Parameters!ChequeNumber.Value = "", Nothing, Parameters!ChequeNumber.Value)</Value>
 					</QueryParameter>
 					<QueryParameter Name="@BranchCode">
-						<Value>=Parameters!BranchCode.Value</Value>
+						<Value>=IIF(IsNothing(Parameters!BranchCode.Value) OR Parameters!BranchCode.Value = "", Nothing, Parameters!BranchCode.Value)</Value>
 					</QueryParameter>
 					<QueryParameter Name="@AccountNumber">
-						<Value>=Parameters!AccountNumber.Value</Value>
+						<Value>=IIF(IsNothing(Parameters!AccountNumber.Value) OR Parameters!AccountNumber.Value = "", Nothing, Parameters!AccountNumber.Value)</Value>
 					</QueryParameter>
 				</QueryParameters>
 			</SharedDataSet>
@@ -68,6 +68,10 @@
 					<DataField>Date</DataField>
 					<rd:TypeName>System.String</rd:TypeName>
 				</Field>
+				<Field Name="ReturnReason">
+					<DataField>ReturnReason</DataField>
+					<rd:TypeName>System.String</rd:TypeName>
+				</Field>
 			</Fields>
 		</DataSet>
 	</DataSets>
@@ -75,593 +79,569 @@
 		<ReportSection>
 			<Body>
 				<ReportItems>
-					<Tablix Name="Tablix1">
+					<Tablix Name="MemoList">
 						<TablixBody>
 							<TablixColumns>
 								<TablixColumn>
-									<Width>3.02917cm</Width>
-								</TablixColumn>
-								<TablixColumn>
-									<Width>3.37657cm</Width>
-								</TablixColumn>
-								<TablixColumn>
-									<Width>3.135cm</Width>
-								</TablixColumn>
-								<TablixColumn>
-									<Width>3.17733cm</Width>
-								</TablixColumn>
-								<TablixColumn>
-									<Width>4.29917cm</Width>
-								</TablixColumn>
-								<TablixColumn>
-									<Width>3.41017cm</Width>
-								</TablixColumn>
-								<TablixColumn>
-									<Width>2.5cm</Width>
-								</TablixColumn>
-								<TablixColumn>
-									<Width>2.5cm</Width>
+									<Width>18cm</Width>
 								</TablixColumn>
 							</TablixColumns>
 							<TablixRows>
 								<TablixRow>
-									<Height>0.83813cm</Height>
+									<Height>5.5cm</Height>
 									<TablixCells>
 										<TablixCell>
 											<CellContents>
-												<Textbox Name="Textbox1">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>Cheque Number</Value>
+												<Rectangle Name="MemoRectangle">
+													<ReportItems>
+														<Textbox Name="MemoTitle">
+															<CanGrow>true</CanGrow>
+															<KeepTogether>true</KeepTogether>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>Meezan Bank Limited - Centralized Clearing Unit - Inward Clearing Return Memo</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>10pt</FontSize>
+																				<FontWeight>Bold</FontWeight>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
 																	<Style>
-																		<FontSize>9pt</FontSize>
-																		<FontWeight>Bold</FontWeight>
+																		<TextAlign>Center</TextAlign>
 																	</Style>
-																</TextRun>
-															</TextRuns>
+																</Paragraph>
+															</Paragraphs>
+															<Top>0cm</Top>
+															<Left>0cm</Left>
+															<Height>0.8cm</Height>
+															<Width>18cm</Width>
 															<Style>
-																<TextAlign>Center</TextAlign>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</Border>
+																<TopBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</TopBorder>
+																<BottomBorder>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</BottomBorder>
+																<LeftBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</LeftBorder>
+																<RightBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</RightBorder>
+																<PaddingTop>2pt</PaddingTop>
+																<PaddingBottom>2pt</PaddingBottom>
 															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Textbox1</rd:DefaultName>
+														</Textbox>
+														<Textbox Name="DateLabel">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>Date</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																				<FontWeight>Bold</FontWeight>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>0.8cm</Top>
+															<Left>0cm</Left>
+															<Height>0.6cm</Height>
+															<Width>3cm</Width>
+															<ZIndex>1</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<LeftBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</LeftBorder>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="DateValue">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>=Fields!Date.Value</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>0.8cm</Top>
+															<Left>3cm</Left>
+															<Height>0.6cm</Height>
+															<Width>5cm</Width>
+															<ZIndex>2</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="BranchLabel">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>Branch</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																				<FontWeight>Bold</FontWeight>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>0.8cm</Top>
+															<Left>8cm</Left>
+															<Height>0.6cm</Height>
+															<Width>3cm</Width>
+															<ZIndex>3</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="BranchValue">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>=Fields!ReceiverBranchCode.Value</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>0.8cm</Top>
+															<Left>11cm</Left>
+															<Height>0.6cm</Height>
+															<Width>4cm</Width>
+															<ZIndex>4</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="ReturnToLabel">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>Return To
+(Bank Name)</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>8pt</FontSize>
+																				<FontWeight>Bold</FontWeight>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>0.8cm</Top>
+															<Left>15cm</Left>
+															<Height>0.6cm</Height>
+															<Width>3cm</Width>
+															<ZIndex>5</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<RightBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</RightBorder>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="ChequeLabel">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>Cheque#</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																				<FontWeight>Bold</FontWeight>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>1.4cm</Top>
+															<Left>0cm</Left>
+															<Height>0.6cm</Height>
+															<Width>3cm</Width>
+															<ZIndex>6</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<LeftBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</LeftBorder>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="ChequeValue">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>=Fields!ChequeNumber.Value</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>1.4cm</Top>
+															<Left>3cm</Left>
+															<Height>0.6cm</Height>
+															<Width>3cm</Width>
+															<ZIndex>7</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="DrawnOnLabel">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>Drawn On
+A/c No</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>8pt</FontSize>
+																				<FontWeight>Bold</FontWeight>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>1.4cm</Top>
+															<Left>6cm</Left>
+															<Height>0.6cm</Height>
+															<Width>2.5cm</Width>
+															<ZIndex>8</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="AccountValue">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>=Fields!AccountNumber.Value</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>1.4cm</Top>
+															<Left>8.5cm</Left>
+															<Height>0.6cm</Height>
+															<Width>4cm</Width>
+															<ZIndex>9</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="AmountLabel">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>Instrument
+Amount PKR</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>8pt</FontSize>
+																				<FontWeight>Bold</FontWeight>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>1.4cm</Top>
+															<Left>12.5cm</Left>
+															<Height>0.6cm</Height>
+															<Width>2.5cm</Width>
+															<ZIndex>10</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="AmountValue">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>=Fields!Amount.Value</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>1.4cm</Top>
+															<Left>15cm</Left>
+															<Height>0.6cm</Height>
+															<Width>3cm</Width>
+															<ZIndex>11</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<RightBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</RightBorder>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="ReasonText">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>The above numbered Instrument(s) is / are returned for reason(s) given below</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Left</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>2cm</Top>
+															<Left>0cm</Left>
+															<Height>0.5cm</Height>
+															<Width>18cm</Width>
+															<ZIndex>12</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<LeftBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</LeftBorder>
+																<RightBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</RightBorder>
+																<PaddingLeft>5pt</PaddingLeft>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+														<Textbox Name="ReasonBox">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>=Fields!ReturnReason.Value</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>9pt</FontSize>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style />
+																</Paragraph>
+															</Paragraphs>
+															<Top>2.5cm</Top>
+															<Left>0cm</Left>
+															<Height>1.5cm</Height>
+															<Width>18cm</Width>
+															<ZIndex>13</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<LeftBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</LeftBorder>
+																<RightBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</RightBorder>
+															</Style>
+														</Textbox>
+														<Textbox Name="FooterText">
+															<CanGrow>true</CanGrow>
+															<Paragraphs>
+																<Paragraph>
+																	<TextRuns>
+																		<TextRun>
+																			<Value>This is a system generated return Memo and doesnt require signature</Value>
+																			<Style>
+																				<FontFamily>Arial</FontFamily>
+																				<FontSize>8pt</FontSize>
+																				<FontStyle>Italic</FontStyle>
+																			</Style>
+																		</TextRun>
+																	</TextRuns>
+																	<Style>
+																		<TextAlign>Center</TextAlign>
+																	</Style>
+																</Paragraph>
+															</Paragraphs>
+															<Top>4cm</Top>
+															<Left>0cm</Left>
+															<Height>0.5cm</Height>
+															<Width>18cm</Width>
+															<ZIndex>14</ZIndex>
+															<Style>
+																<Border>
+																	<Style>Solid</Style>
+																	<Width>1pt</Width>
+																</Border>
+																<BottomBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</BottomBorder>
+																<LeftBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</LeftBorder>
+																<RightBorder>
+																	<Style>Solid</Style>
+																	<Width>2pt</Width>
+																</RightBorder>
+																<PaddingTop>2pt</PaddingTop>
+															</Style>
+														</Textbox>
+													</ReportItems>
+													<KeepTogether>true</KeepTogether>
 													<Style>
 														<Border>
-															<Style>Solid</Style>
+															<Style>None</Style>
 														</Border>
-														<BackgroundColor>LightGrey</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>5pt</PaddingTop>
-														<PaddingBottom>5pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="Textbox4">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>Account Number</Value>
-																	<Style>
-																		<FontSize>9pt</FontSize>
-																		<FontWeight>Bold</FontWeight>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Textbox4</rd:DefaultName>
-													<Style>
-														<Border>
+														<BottomBorder>
 															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>LightGrey</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>5pt</PaddingTop>
-														<PaddingBottom>5pt</PaddingBottom>
+															<Width>2pt</Width>
+														</BottomBorder>
+														<PaddingBottom>0.3cm</PaddingBottom>
 													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="Textbox6">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>Account Title</Value>
-																	<Style>
-																		<FontSize>9pt</FontSize>
-																		<FontWeight>Bold</FontWeight>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Textbox6</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>LightGrey</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>5pt</PaddingTop>
-														<PaddingBottom>5pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="Textbox8">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>Amount</Value>
-																	<Style>
-																		<FontFamily>Arial</FontFamily>
-																		<FontWeight>Bold</FontWeight>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Textbox8</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>LightGrey</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>5pt</PaddingTop>
-														<PaddingBottom>5pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="Textbox10">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>Receiver Branch Code</Value>
-																	<Style>
-																		<FontFamily>Arial</FontFamily>
-																		<FontWeight>Bold</FontWeight>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Textbox10</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>LightGrey</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>5pt</PaddingTop>
-														<PaddingBottom>5pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="Textbox12">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>Transaction Code</Value>
-																	<Style>
-																		<FontFamily>Arial</FontFamily>
-																		<FontWeight>Bold</FontWeight>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Textbox12</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>LightGrey</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>5pt</PaddingTop>
-														<PaddingBottom>5pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="Textbox14">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>Hub Code</Value>
-																	<Style>
-																		<FontFamily>Arial</FontFamily>
-																		<FontWeight>Bold</FontWeight>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Textbox14</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>LightGrey</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>5pt</PaddingTop>
-														<PaddingBottom>5pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="Textbox16">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>Date</Value>
-																	<Style>
-																		<FontFamily>Arial</FontFamily>
-																		<FontWeight>Bold</FontWeight>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Textbox16</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>LightGrey</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>5pt</PaddingTop>
-														<PaddingBottom>5pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-									</TablixCells>
-								</TablixRow>
-								<TablixRow>
-									<Height>0.6cm</Height>
-									<TablixCells>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="ChequeNumber">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>=Fields!ChequeNumber.Value</Value>
-																	<Style>
-																		<FontSize>8pt</FontSize>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>ChequeNumber</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>=IIF(RowNumber(Nothing) MOD 2 = 0, "#EEF3FA", "White")</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>4pt</PaddingTop>
-														<PaddingBottom>4pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="AccountNumber">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>=Fields!AccountNumber.Value</Value>
-																	<Style>
-																		<FontSize>8pt</FontSize>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>AccountNumber</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>=IIF(RowNumber(Nothing) MOD 2 = 0, "#EEF3FA", "White")</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>4pt</PaddingTop>
-														<PaddingBottom>4pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="AccountTitle">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>=Fields!AccountTitle.Value</Value>
-																	<Style>
-																		<FontSize>8pt</FontSize>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>AccountTitle</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>=IIF(RowNumber(Nothing) MOD 2 = 0, "#EEF3FA", "White")</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>4pt</PaddingTop>
-														<PaddingBottom>4pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="Amount">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>=Fields!Amount.Value</Value>
-																	<Style>
-																		<FontSize>8pt</FontSize>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Amount</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>=IIF(RowNumber(Nothing) MOD 2 = 0, "#EEF3FA", "White")</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>4pt</PaddingTop>
-														<PaddingBottom>4pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="ReceiverBranchCode">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>=Fields!ReceiverBranchCode.Value</Value>
-																	<Style>
-																		<FontSize>8pt</FontSize>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>ReceiverBranchCode</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>=IIF(RowNumber(Nothing) MOD 2 = 0, "#EEF3FA", "White")</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>4pt</PaddingTop>
-														<PaddingBottom>4pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="TransactionCode">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>=Fields!TransactionCode.Value</Value>
-																	<Style>
-																		<FontSize>8pt</FontSize>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>TransactionCode</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>=IIF(RowNumber(Nothing) MOD 2 = 0, "#EEF3FA", "White")</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>4pt</PaddingTop>
-														<PaddingBottom>4pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="HubCode">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>=Fields!HubCode.Value</Value>
-																	<Style>
-																		<FontSize>8pt</FontSize>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>HubCode</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>=IIF(RowNumber(Nothing) MOD 2 = 0, "#EEF3FA", "White")</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>4pt</PaddingTop>
-														<PaddingBottom>4pt</PaddingBottom>
-													</Style>
-												</Textbox>
-											</CellContents>
-										</TablixCell>
-										<TablixCell>
-											<CellContents>
-												<Textbox Name="Date">
-													<CanGrow>true</CanGrow>
-													<KeepTogether>true</KeepTogether>
-													<Paragraphs>
-														<Paragraph>
-															<TextRuns>
-																<TextRun>
-																	<Value>=Fields!Date.Value</Value>
-																	<Style>
-																		<FontSize>8pt</FontSize>
-																	</Style>
-																</TextRun>
-															</TextRuns>
-															<Style>
-																<TextAlign>Center</TextAlign>
-															</Style>
-														</Paragraph>
-													</Paragraphs>
-													<rd:DefaultName>Date</rd:DefaultName>
-													<Style>
-														<Border>
-															<Style>Solid</Style>
-														</Border>
-														<BackgroundColor>=IIF(RowNumber(Nothing) MOD 2 = 0, "#EEF3FA", "White")</BackgroundColor>
-														<PaddingLeft>5pt</PaddingLeft>
-														<PaddingRight>5pt</PaddingRight>
-														<PaddingTop>4pt</PaddingTop>
-														<PaddingBottom>4pt</PaddingBottom>
-													</Style>
-												</Textbox>
+												</Rectangle>
 											</CellContents>
 										</TablixCell>
 									</TablixCells>
@@ -671,34 +651,23 @@
 						<TablixColumnHierarchy>
 							<TablixMembers>
 								<TablixMember />
-								<TablixMember />
-								<TablixMember />
-								<TablixMember />
-								<TablixMember />
-								<TablixMember />
-								<TablixMember />
-								<TablixMember />
 							</TablixMembers>
 						</TablixColumnHierarchy>
 						<TablixRowHierarchy>
 							<TablixMembers>
 								<TablixMember>
-									<KeepWithGroup>After</KeepWithGroup>
-									<RepeatOnNewPage>true</RepeatOnNewPage>
-								</TablixMember>
-								<TablixMember>
 									<Group Name="Details" />
+									<TablixMembers>
+										<TablixMember />
+									</TablixMembers>
 								</TablixMember>
 							</TablixMembers>
 						</TablixRowHierarchy>
-						<RepeatColumnHeaders>true</RepeatColumnHeaders>
-						<RepeatRowHeaders>true</RepeatRowHeaders>
-						<KeepTogether>true</KeepTogether>
 						<DataSetName>DataSet1</DataSetName>
-						<Top>0.40853cm</Top>
-						<Left>0.34643cm</Left>
-						<Height>1.43813cm</Height>
-						<Width>25.42741cm</Width>
+						<Top>0.5cm</Top>
+						<Left>0.5cm</Left>
+						<Height>5.5cm</Height>
+						<Width>18cm</Width>
 						<Style>
 							<Border>
 								<Style>None</Style>
@@ -706,376 +675,18 @@
 						</Style>
 					</Tablix>
 				</ReportItems>
-				<Height>3.98333in</Height>
+				<Height>6.5cm</Height>
 				<Style />
 			</Body>
-			<Width>27.7cm</Width>
+			<Width>19cm</Width>
 			<Page>
-				<PageHeader>
-					<Height>3.9cm</Height>
-					<PrintOnFirstPage>true</PrintOnFirstPage>
-					<PrintOnLastPage>true</PrintOnLastPage>
-					<ReportItems>
-						<Textbox Name="TxtReportTitle">
-							<CanGrow>true</CanGrow>
-							<KeepTogether>true</KeepTogether>
-							<Paragraphs>
-								<Paragraph>
-									<TextRuns>
-										<TextRun>
-											<Value>Return Memo Report</Value>
-											<Style>
-												<FontSize>16pt</FontSize>
-												<FontWeight>Bold</FontWeight>
-											</Style>
-										</TextRun>
-									</TextRuns>
-									<Style>
-										<TextAlign>Left</TextAlign>
-									</Style>
-								</Paragraph>
-							</Paragraphs>
-							<Top>0.5cm</Top>
-							<Left>0.3cm</Left>
-							<Height>1.2cm</Height>
-							<Width>20.20cm</Width>
-							<Style>
-								<Border>
-									<Style>None</Style>
-								</Border>
-								<VerticalAlign>Middle</VerticalAlign>
-								<PaddingLeft>4pt</PaddingLeft>
-							</Style>
-						</Textbox>
-						<Image Name="ImgLogoHeader">
-							<Source>Embedded</Source>
-							<Value>Meezan_Bank_Logo</Value>
-							<Sizing>FitProportional</Sizing>
-							<Top>0.2cm</Top>
-							<Left>20.70cm</Left>
-							<Height>1.8cm</Height>
-							<Width>7.0cm</Width>
-							<ZIndex>0</ZIndex>
-							<Style>
-								<Border>
-									<Style>None</Style>
-								</Border>
-							</Style>
-						</Image>
-						<Textbox Name="FRM_DateFrom">
-							<CanGrow>true</CanGrow>
-							<KeepTogether>true</KeepTogether>
-							<Paragraphs>
-								<Paragraph>
-									<TextRuns>
-										<TextRun>
-											<Value>Date From: </Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-												<FontWeight>Bold</FontWeight>
-											</Style>
-										</TextRun>
-										<TextRun>
-											<Value>=IIF(IsNothing(Parameters!DateFrom.Value) OR Parameters!DateFrom.Value = "", "All", Parameters!DateFrom.Value)</Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-											</Style>
-										</TextRun>
-									</TextRuns>
-									<Style />
-								</Paragraph>
-							</Paragraphs>
-							<Top>2.1cm</Top>
-							<Left>0.3cm</Left>
-							<Height>0.6cm</Height>
-							<Width>3.8cm</Width>
-							<ZIndex>1</ZIndex>
-							<Style>
-								<Border>
-									<Style>None</Style>
-								</Border>
-								<PaddingLeft>5pt</PaddingLeft>
-								<PaddingRight>5pt</PaddingRight>
-								<PaddingTop>4pt</PaddingTop>
-								<PaddingBottom>4pt</PaddingBottom>
-							</Style>
-						</Textbox>
-						<Textbox Name="FRM_DateTo">
-							<CanGrow>true</CanGrow>
-							<KeepTogether>true</KeepTogether>
-							<Paragraphs>
-								<Paragraph>
-									<TextRuns>
-										<TextRun>
-											<Value>Date To: </Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-												<FontWeight>Bold</FontWeight>
-											</Style>
-										</TextRun>
-										<TextRun>
-											<Value>=IIF(IsNothing(Parameters!DateTo.Value) OR Parameters!DateTo.Value = "", "All", Parameters!DateTo.Value)</Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-											</Style>
-										</TextRun>
-									</TextRuns>
-									<Style />
-								</Paragraph>
-							</Paragraphs>
-							<Top>2.1cm</Top>
-							<Left>4.2cm</Left>
-							<Height>0.6cm</Height>
-							<Width>3.8cm</Width>
-							<ZIndex>2</ZIndex>
-							<Style>
-								<Border>
-									<Style>None</Style>
-								</Border>
-								<PaddingLeft>5pt</PaddingLeft>
-								<PaddingRight>5pt</PaddingRight>
-								<PaddingTop>4pt</PaddingTop>
-								<PaddingBottom>4pt</PaddingBottom>
-							</Style>
-						</Textbox>
-						<Textbox Name="FRM_Branch">
-							<CanGrow>true</CanGrow>
-							<KeepTogether>true</KeepTogether>
-							<Paragraphs>
-								<Paragraph>
-									<TextRuns>
-										<TextRun>
-											<Value>Branch: </Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-												<FontWeight>Bold</FontWeight>
-											</Style>
-										</TextRun>
-										<TextRun>
-											<Value>=IIF(IsNothing(Parameters!BranchCode.Value) OR Parameters!BranchCode.Value = "", "All", Parameters!BranchCode.Value)</Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-											</Style>
-										</TextRun>
-									</TextRuns>
-									<Style />
-								</Paragraph>
-							</Paragraphs>
-							<Top>2.1cm</Top>
-							<Left>8.1cm</Left>
-							<Height>0.6cm</Height>
-							<Width>3.5cm</Width>
-							<ZIndex>3</ZIndex>
-							<Style>
-								<Border>
-									<Style>None</Style>
-								</Border>
-								<PaddingLeft>5pt</PaddingLeft>
-								<PaddingRight>5pt</PaddingRight>
-								<PaddingTop>4pt</PaddingTop>
-								<PaddingBottom>4pt</PaddingBottom>
-							</Style>
-						</Textbox>
-						<Textbox Name="FRM_Cheque">
-							<CanGrow>true</CanGrow>
-							<KeepTogether>true</KeepTogether>
-							<Paragraphs>
-								<Paragraph>
-									<TextRuns>
-										<TextRun>
-											<Value>Cheque No: </Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-												<FontWeight>Bold</FontWeight>
-											</Style>
-										</TextRun>
-										<TextRun>
-											<Value>=IIF(IsNothing(Parameters!ChequeNumber.Value) OR Parameters!ChequeNumber.Value = "", "All", Parameters!ChequeNumber.Value)</Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-											</Style>
-										</TextRun>
-									</TextRuns>
-									<Style />
-								</Paragraph>
-							</Paragraphs>
-							<Top>2.1cm</Top>
-							<Left>11.7cm</Left>
-							<Height>0.6cm</Height>
-							<Width>3.8cm</Width>
-							<ZIndex>4</ZIndex>
-							<Style>
-								<Border>
-									<Style>None</Style>
-								</Border>
-								<PaddingLeft>5pt</PaddingLeft>
-								<PaddingRight>5pt</PaddingRight>
-								<PaddingTop>4pt</PaddingTop>
-								<PaddingBottom>4pt</PaddingBottom>
-							</Style>
-						</Textbox>
-						<Textbox Name="FRM_Account">
-							<CanGrow>true</CanGrow>
-							<KeepTogether>true</KeepTogether>
-							<Paragraphs>
-								<Paragraph>
-									<TextRuns>
-										<TextRun>
-											<Value>Account No: </Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-												<FontWeight>Bold</FontWeight>
-											</Style>
-										</TextRun>
-										<TextRun>
-											<Value>=IIF(IsNothing(Parameters!AccountNumber.Value) OR Parameters!AccountNumber.Value = "", "All", Parameters!AccountNumber.Value)</Value>
-											<Style>
-												<FontFamily>Arial</FontFamily>
-												<FontSize>8pt</FontSize>
-											</Style>
-										</TextRun>
-									</TextRuns>
-									<Style />
-								</Paragraph>
-							</Paragraphs>
-							<Top>2.1cm</Top>
-							<Left>15.6cm</Left>
-							<Height>0.6cm</Height>
-							<Width>3.8cm</Width>
-							<ZIndex>5</ZIndex>
-							<Style>
-								<Border>
-									<Style>None</Style>
-								</Border>
-								<PaddingLeft>5pt</PaddingLeft>
-								<PaddingRight>5pt</PaddingRight>
-								<PaddingTop>4pt</PaddingTop>
-								<PaddingBottom>4pt</PaddingBottom>
-							</Style>
-						</Textbox>
-					</ReportItems>
-					<Style>
-						<Border>
-							<Style>None</Style>
-						</Border>
-					</Style>
-				</PageHeader>
-				<PageHeight>21cm</PageHeight>
-				<PageWidth>29.7cm</PageWidth>
-				<InteractiveWidth>29.7cm</InteractiveWidth>
+				<PageHeight>29.7cm</PageHeight>
+				<PageWidth>21cm</PageWidth>
 				<LeftMargin>1cm</LeftMargin>
 				<RightMargin>1cm</RightMargin>
-				<TopMargin>2cm</TopMargin>
-				<BottomMargin>2cm</BottomMargin>
-				<ColumnSpacing>0.13cm</ColumnSpacing>
+				<TopMargin>1cm</TopMargin>
+				<BottomMargin>1cm</BottomMargin>
 				<Style />
-				<PageFooter>
-					<Height>0.6cm</Height>
-					<PrintOnFirstPage>true</PrintOnFirstPage>
-					<PrintOnLastPage>true</PrintOnLastPage>
-					<ReportItems>
-						<Textbox Name="TxtFooterDate">
-							<CanGrow>true</CanGrow>
-							<KeepTogether>true</KeepTogether>
-							<Paragraphs>
-								<Paragraph>
-									<TextRuns>
-										<TextRun>
-											<Value>=Format(Now(), "dd-MMM-yyyy HH:mm")</Value>
-											<Style>
-												<FontSize>7pt</FontSize>
-												<Color>#555555</Color>
-											</Style>
-										</TextRun>
-									</TextRuns>
-									<Style />
-								</Paragraph>
-							</Paragraphs>
-							<rd:DefaultName>TxtFooterDate</rd:DefaultName>
-							<Top>0.1cm</Top>
-							<Left>0.3cm</Left>
-							<Height>0.45cm</Height>
-							<Width>10cm</Width>
-							<Style>
-								<Border>
-									<Style>None</Style>
-								</Border>
-								<VerticalAlign>Middle</VerticalAlign>
-								<PaddingLeft>4pt</PaddingLeft>
-							</Style>
-						</Textbox>
-						<Textbox Name="TxtPageNumber">
-							<CanGrow>true</CanGrow>
-							<KeepTogether>true</KeepTogether>
-							<Paragraphs>
-								<Paragraph>
-									<TextRuns>
-										<TextRun>
-											<Value>Page </Value>
-											<Style>
-												<FontSize>7pt</FontSize>
-												<Color>#555555</Color>
-											</Style>
-										</TextRun>
-										<TextRun>
-											<Value>=Globals!PageNumber</Value>
-											<Style>
-												<FontSize>7pt</FontSize>
-												<FontWeight>Bold</FontWeight>
-												<Color>#003366</Color>
-											</Style>
-										</TextRun>
-										<TextRun>
-											<Value> of </Value>
-											<Style>
-												<FontSize>7pt</FontSize>
-												<Color>#555555</Color>
-											</Style>
-										</TextRun>
-										<TextRun>
-											<Value>=Globals!TotalPages</Value>
-											<Style>
-												<FontSize>7pt</FontSize>
-												<FontWeight>Bold</FontWeight>
-												<Color>#003366</Color>
-											</Style>
-										</TextRun>
-									</TextRuns>
-									<Style>
-										<TextAlign>Right</TextAlign>
-									</Style>
-								</Paragraph>
-							</Paragraphs>
-							<rd:DefaultName>TxtPageNumber</rd:DefaultName>
-							<Top>0.1cm</Top>
-							<Left>17.40000cm</Left>
-							<Height>0.45cm</Height>
-							<Width>10cm</Width>
-							<ZIndex>1</ZIndex>
-							<Style>
-								<Border>
-									<Style>None</Style>
-								</Border>
-								<VerticalAlign>Middle</VerticalAlign>
-								<PaddingRight>4pt</PaddingRight>
-							</Style>
-						</Textbox>
-					</ReportItems>
-					<Style>
-						<Border>
-							<Style>None</Style>
-						</Border>
-					</Style>
-				</PageFooter>
 			</Page>
 		</ReportSection>
 	</ReportSections>
@@ -1083,63 +694,53 @@
 		<ReportParameter Name="ChequeNumber">
 			<DataType>String</DataType>
 			<Nullable>true</Nullable>
-			<DefaultValue>
-				<Values>
-					<Value />
-				</Values>
-			</DefaultValue>
 			<AllowBlank>true</AllowBlank>
 			<Prompt>Cheque Number</Prompt>
+			<DefaultValue>
+				<Values>
+					<Value></Value>
+				</Values>
+			</DefaultValue>
 		</ReportParameter>
 		<ReportParameter Name="BranchCode">
 			<DataType>String</DataType>
 			<Nullable>true</Nullable>
+			<AllowBlank>true</AllowBlank>
+			<Prompt>Branch Code</Prompt>
 			<DefaultValue>
 				<Values>
-					<Value />
+					<Value></Value>
 				</Values>
 			</DefaultValue>
-			<AllowBlank>true</AllowBlank>
-			<Prompt>Branch</Prompt>
 		</ReportParameter>
 		<ReportParameter Name="AccountNumber">
 			<DataType>String</DataType>
 			<Nullable>true</Nullable>
-			<DefaultValue>
-				<Values>
-					<Value />
-				</Values>
-			</DefaultValue>
 			<AllowBlank>true</AllowBlank>
 			<Prompt>Account Number</Prompt>
+			<DefaultValue>
+				<Values>
+					<Value></Value>
+				</Values>
+			</DefaultValue>
 		</ReportParameter>
 		<ReportParameter Name="DateFrom">
 			<DataType>String</DataType>
 			<Nullable>true</Nullable>
-			<DefaultValue>
-				<Values>
-					<Value />
-				</Values>
-			</DefaultValue>
 			<AllowBlank>true</AllowBlank>
-			<Prompt>From Date</Prompt>
+			<Prompt>Date From (yyyy-MM-dd)</Prompt>
 		</ReportParameter>
 		<ReportParameter Name="DateTo">
 			<DataType>String</DataType>
 			<Nullable>true</Nullable>
-			<DefaultValue>
-				<Values>
-					<Value />
-				</Values>
-			</DefaultValue>
 			<AllowBlank>true</AllowBlank>
-			<Prompt>To Date</Prompt>
+			<Prompt>Date To (yyyy-MM-dd)</Prompt>
 		</ReportParameter>
 	</ReportParameters>
 	<ReportParametersLayout>
 		<GridLayoutDefinition>
-			<NumberOfColumns>4</NumberOfColumns>
-			<NumberOfRows>3</NumberOfRows>
+			<NumberOfColumns>3</NumberOfColumns>
+			<NumberOfRows>2</NumberOfRows>
 			<CellDefinitions>
 				<CellDefinition>
 					<ColumnIndex>0</ColumnIndex>
@@ -1157,18 +758,22 @@
 					<ParameterName>AccountNumber</ParameterName>
 				</CellDefinition>
 				<CellDefinition>
-					<ColumnIndex>3</ColumnIndex>
-					<RowIndex>0</RowIndex>
+					<ColumnIndex>0</ColumnIndex>
+					<RowIndex>1</RowIndex>
 					<ParameterName>DateFrom</ParameterName>
 				</CellDefinition>
 				<CellDefinition>
-					<ColumnIndex>0</ColumnIndex>
+					<ColumnIndex>1</ColumnIndex>
 					<RowIndex>1</RowIndex>
 					<ParameterName>DateTo</ParameterName>
 				</CellDefinition>
 			</CellDefinitions>
 		</GridLayoutDefinition>
 	</ReportParametersLayout>
+	<Language>en-US</Language>
+	<ConsumeContainerWhitespace>true</ConsumeContainerWhitespace>
+	<rd:ReportUnitType>Cm</rd:ReportUnitType>
+	<rd:ReportID>a1b2c3d4-e5f6-7890-abcd-ef1234567890</rd:ReportID>
 	<EmbeddedImages>
 		<EmbeddedImage Name="Meezan_Bank_Logo">
 			<MIMEType>image/png</MIMEType>
@@ -1757,6 +1362,4 @@
 			</ImageData>
 		</EmbeddedImage>
 	</EmbeddedImages>
-	<rd:ReportUnitType>Cm</rd:ReportUnitType>
-	<rd:ReportID>691d771f-f622-44bc-a1f0-196ef6a3894d</rd:ReportID>
 </Report>

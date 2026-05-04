@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <SharedDataSet xmlns="http://schemas.microsoft.com/sqlserver/reporting/2010/01/shareddatasetdefinition" xmlns:rd="http://schemas.microsoft.com/SQLServer/reporting/reportdesigner">
-  <DataSet Name="OutwardApproved">
+  <DataSet Name="DataSet1">
     <Query>
-      <DataSourceReference>MBL</DataSourceReference>
+      <DataSourceReference>DataSource1</DataSourceReference>
       <DataSetParameters>
         <DataSetParameter Name="@FromDate">
           <ReadOnly>false</ReadOnly>
@@ -17,24 +17,22 @@
           <rd:DbType>Object</rd:DbType>
         </DataSetParameter>
       </DataSetParameters>
-      <CommandText>
-SELECT
-    ci.Date,
-    ci.Amount,
-    ci.ChequeNo,
-    ci.AccountNo,
-    b.Name AS Branch,
-    h.Name AS Hub,
-    ci.MICR
-FROM ChequeInfo ci
-INNER JOIN Branch b
-    ON b.Code = ci.ReceiverBranchCode
-INNER JOIN Hub h
-    ON h.Code = ci.HubCode
-WHERE ci.Status = 'A'
-  AND (@FromDate IS NULL OR @FromDate = '' OR ci.Date &gt;= @FromDate)
-  AND (@ToDate IS NULL OR @ToDate = '' OR ci.Date &lt; DATEADD(DAY, 1, @ToDate))
-      </CommandText>
+      <CommandText>SELECT
+    Date,
+    Amount,
+    ChequeNo,
+    AccountNo,
+    Branch.Name AS Branch,
+    Hub.Name AS Hub,
+    MICR
+FROM ChequeInfo
+INNER JOIN Branch
+    ON Branch.Code = ChequeInfo.ReceiverBranchCode
+INNER JOIN Hub
+    ON Hub.Code = ChequeInfo.Hubcode
+WHERE Status = 'R'
+  AND (@FromDate IS NULL OR Date &gt;= @FromDate)
+  AND (@ToDate IS NULL OR Date &lt; DATEADD(DAY, 1, @ToDate));</CommandText>
     </Query>
     <Fields>
       <Field Name="Date">
