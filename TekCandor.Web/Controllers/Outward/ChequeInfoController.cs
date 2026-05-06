@@ -138,9 +138,39 @@ namespace TekCandor.Web.Controllers.Outward
         }
 
 
+        //[HttpGet("supervisorListGrouped")]
+        //[ProducesResponseType(typeof(ApiResponse<PagedResult<ChequeInfoDTO>>), StatusCodes.Status200OK)]
+        //public async Task<IActionResult> SupervisorList(
+        //    [FromQuery] int pageNumber = 1,
+        //    [FromQuery] int pageSize = 10,
+        //    [FromQuery] string? fromDate = null,
+        //    [FromQuery] string? toDate = null)
+        //{
+        //    try
+        //    {
+        //        DateTime? parsedFromDate = null;
+        //        DateTime? parsedToDate = null;
+        //        if (!string.IsNullOrEmpty(fromDate))
+        //        {
+        //            parsedFromDate = DateTime.ParseExact(fromDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        //        }
+
+        //        if (!string.IsNullOrEmpty(toDate))
+        //        {
+        //            parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
+        //        }
+        //        var result = await _service.GetSupervisorListPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+        //        return Ok(ApiResponse<PagedResult<ChequeInfoDTO>>.Success(result));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+        //    }
+        //}
+
         [HttpGet("supervisorList")]
-        [ProducesResponseType(typeof(ApiResponse<PagedResult<ChequeInfoDTO>>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> SupervisorList(
+        [ProducesResponseType(typeof(ApiResponse<SupervisorListGroupedResult>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> SupervisorListGrouped(
             [FromQuery] int pageNumber = 1,
             [FromQuery] int pageSize = 10,
             [FromQuery] string? fromDate = null,
@@ -159,8 +189,8 @@ namespace TekCandor.Web.Controllers.Outward
                 {
                     parsedToDate = DateTime.ParseExact(toDate, "yyyy-MM-dd", CultureInfo.InvariantCulture);
                 }
-                var result = await _service.GetSupervisorListPagedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
-                return Ok(ApiResponse<PagedResult<ChequeInfoDTO>>.Success(result));
+                var result = await _service.GetSupervisorListGroupedAsync(pageNumber, pageSize, parsedFromDate, parsedToDate);
+                return Ok(ApiResponse<SupervisorListGroupedResult>.Success(result));
             }
             catch (Exception ex)
             {

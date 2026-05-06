@@ -2,7 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+using TekCandor.Repository.Entities.Data;
 using TekCandor.Repository.Entities.Outward;
+using TekCandor.Repository.Interfaces;
 using TekCandor.Repository.Interfaces.Outward;
 using TekCandor.Service.Outward.Interfaces;
 using TekCandor.Service.Outward.Models;
@@ -13,15 +16,30 @@ namespace TekCandor.Service.Outward.Implementations
     {
         private readonly IBatchRepository _batchRepository;
         private readonly IChequeInfoRepository _chequeInfoRepository;
+        private readonly IBranchRepository _branchRepository;
+        private readonly AppDbContext _context;
 
-        public BatchService(IBatchRepository batchRepository, IChequeInfoRepository chequeInfoRepository)
+        public BatchService(IBatchRepository batchRepository, IChequeInfoRepository chequeInfoRepository, IBranchRepository branchRepository, AppDbContext context)
         {
             _batchRepository = batchRepository;
             _chequeInfoRepository = chequeInfoRepository;
+            _branchRepository = branchRepository;
+            _context = context;
         }
 
         public async Task<BatchDTO> CreateBatchAsync(CreateBatchDTO dto, string userId)
         {
+            var today = DateTime.Today;
+            var tomorrow = today.AddDays(1);
+
+            var existingBatch = await _batchRepository
+                .GetByBranchAndDateAsync(dto.Branch, today, tomorrow);
+
+            if (existingBatch != null)
+            {
+                throw new Exception("This branch already has a batch for today.");
+            }
+
             var batchId = GenerateBatchId();
 
             var batch = new Batch
@@ -57,13 +75,21 @@ namespace TekCandor.Service.Outward.Implementations
         public async Task<List<BatchDTO>> GetAllBatchesAsync()
         {
             var batches = await _batchRepository.GetAllAsync();
-            return batches.Select(MapToDTO).ToList();
+            return batches.Select(b => MapToDTO(b)).ToList();
         }
 
         public async Task<List<BatchDTO>> GetBatchesByDateRangeAsync(DateTime fromDate, DateTime toDate)
         {
             var batches = await _batchRepository.GetByDateRangeAsync(fromDate, toDate);
-            return batches.Select(MapToDTO).ToList();
+
+            var branchesQueryable = await _branchRepository.GetAllQueryableAsync();
+            var branches = await branchesQueryable.ToListAsync();
+            var branchDict = branches
+                .Where(b => !string.IsNullOrEmpty(b.Code))
+                .GroupBy(b => b.Code)
+                .ToDictionary(g => g.Key!, g => g.First().Name ?? "");
+
+            return batches.Select(batch => MapToDTO(batch, branchDict)).ToList();
         }
 
         public async Task<BatchDTO?> UpdateBatchAsync(long id, CreateBatchDTO dto, string userId)
@@ -87,6 +113,28 @@ namespace TekCandor.Service.Outward.Implementations
         public async Task<bool> UpdateBatchTotalsAsync(string batchId)
         {
             return await _batchRepository.UpdateBatchTotalsAsync(batchId);
+        }
+
+        public async Task<BatchDTO?> SaveBatchAsDraftAsync(string batchId, string userId)
+        {
+            var batch = await _batchRepository.GetByBatchIdAsync(batchId);
+            if (batch == null) return null;
+
+            if (batch.Status == "Authorized")
+                throw new InvalidOperationException("Authorized batches cannot be modified");
+
+            if (batch.Status == "Rejected")
+                throw new InvalidOperationException("Rejected batches cannot be modified");
+
+            await UpdateBatchTotalsAsync(batchId);
+            batch = await _batchRepository.GetByBatchIdAsync(batchId);
+
+            batch.Status = "Draft";
+            batch.UpdatedAt = DateTime.Now;
+            batch.UpdatedBy = userId;
+
+            var updated = await _batchRepository.UpdateAsync(batch);
+            return updated != null ? MapToDTO(updated) : null;
         }
 
         public async Task<BatchDTO?> SubmitBatchForAuthorizationAsync(string batchId, string userId)
@@ -147,21 +195,21 @@ namespace TekCandor.Service.Outward.Implementations
             return updated != null ? MapToDTO(updated) : null;
         }
 
-        public async Task<BatchStatisticsDTO> GetBatchStatisticsAsync()
+        public async Task<BatchStatisticsDTO> GetBatchStatisticsAsync(DateTime fromDate, DateTime toDate)
         {
             return new BatchStatisticsDTO
             {
-                TotalBatchesToday = await _batchRepository.GetTotalBatchesTodayAsync(),
-                PendingAuthorization = await _batchRepository.GetPendingAuthorizationCountAsync(),
-                AuthorizedValue = await _batchRepository.GetAuthorizedValueAsync(),
-                ProcessingExceptions = await _batchRepository.GetProcessingExceptionsCountAsync()
+                TotalBatchesToday = await _batchRepository.GetTotalBatchesTodayAsync(fromDate, toDate),
+                PendingAuthorization = await _batchRepository.GetPendingAuthorizationCountAsync(fromDate, toDate),
+                AuthorizedValue = await _batchRepository.GetAuthorizedValueAsync(fromDate, toDate),
+                ProcessingExceptions = await _batchRepository.GetProcessingExceptionsCountAsync(fromDate, toDate)
             };
         }
 
         public async Task<BatchDateRangeWithStatsDTO> GetBatchesByDateRangeWithStatsAsync(DateTime fromDate, DateTime toDate)
         {
             var batches = await GetBatchesByDateRangeAsync(fromDate, toDate);
-            var statistics = await GetBatchStatisticsAsync();
+            var statistics = await GetBatchStatisticsAsync(fromDate, toDate);
 
             return new BatchDateRangeWithStatsDTO
             {
@@ -187,7 +235,14 @@ namespace TekCandor.Service.Outward.Implementations
         public async Task<List<ChequeInfoDTO>> GetInstrumentsByBatchIdAsync(string batchId)
         {
             var cheques = await _chequeInfoRepository.GetByBatchIdAsync(batchId);
-            return cheques.Select(MapChequeToDTO).ToList();
+
+            var banks = await _context.Bank.ToListAsync();
+            var bankDict = banks
+                .Where(b => !string.IsNullOrEmpty(b.Code))
+                .GroupBy(b => b.Code)
+                .ToDictionary(g => g.Key!, g => g.First().Name ?? "");
+
+            return cheques.Select(c => MapChequeToDTO(c, bankDict)).ToList();
         }
 
         private string GenerateBatchId()
@@ -197,13 +252,20 @@ namespace TekCandor.Service.Outward.Implementations
             return $"BATCH-{timestamp}-{random}";
         }
 
-        private BatchDTO MapToDTO(Batch batch)
+        private BatchDTO MapToDTO(Batch batch, Dictionary<string, string>? branchDict = null)
         {
+            string? branchName = null;
+            if (branchDict != null && !string.IsNullOrEmpty(batch.Branch))
+            {
+                branchDict.TryGetValue(batch.Branch, out branchName);
+            }
+
             return new BatchDTO
             {
                 Id = batch.Id,
                 BatchId = batch.BatchId,
                 Branch = batch.Branch,
+                BranchName = branchName,
                 TotalInstruments = batch.TotalInstruments,
                 TotalAmount = batch.TotalAmount,
                 Status = batch.Status,
@@ -222,8 +284,14 @@ namespace TekCandor.Service.Outward.Implementations
             };
         }
 
-        private ChequeInfoDTO MapChequeToDTO(ChequeInfo entity)
+        private ChequeInfoDTO MapChequeToDTO(ChequeInfo entity, Dictionary<string, string>? bankDict = null)
         {
+            string? drawerBankName = null;
+            if (bankDict != null && !string.IsNullOrEmpty(entity.DrawerBank))
+            {
+                bankDict.TryGetValue(entity.DrawerBank, out drawerBankName);
+            }
+
             return new ChequeInfoDTO
             {
                 Id = entity.Id,
@@ -254,6 +322,7 @@ namespace TekCandor.Service.Outward.Implementations
                 ReceiverBranchCode = entity.ReceiverBranchCode,
                 BranchName = entity.BranchName,
                 DrawerBank = entity.DrawerBank,
+                DrawerBankName = drawerBankName,
                 AmountInWords = entity.AmountInWords,
                 ReferenceNo = entity.ReferenceNo,
                 DepositSlipId = entity.DepositSlipId,
@@ -266,7 +335,7 @@ namespace TekCandor.Service.Outward.Implementations
                 UpdatedOn = entity.UpdatedOn,
                 UpdatedBy = entity.UpdatedBy,
                 Hubcode = entity.Hubcode,
-                BatchId = entity.BatchId
+                //BatchId = entity.BatchId
             };
         }
     }

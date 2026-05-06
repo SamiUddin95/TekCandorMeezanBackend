@@ -110,34 +110,66 @@ namespace TekCandor.Repository.Implementations.Outward
                 .ToListAsync();
         }
 
-        public async Task<int> GetTotalBatchesTodayAsync()
+       
+        public async Task<int> GetTotalBatchesTodayAsync(DateTime fromDate, DateTime toDate)
         {
-            var today = DateTime.Today;
-            var tomorrow = today.AddDays(1);
+            var start = fromDate.Date;
+            var end = toDate.Date.AddDays(1);
+
             return await _context.Batch
-                .Where(b => b.CreatedAt >= today && b.CreatedAt < tomorrow)
+                .Where(b => b.CreatedAt.HasValue &&
+                            b.CreatedAt >= start &&
+                            b.CreatedAt < end)
+                .CountAsync();
+        }
+       
+        public async Task<int> GetPendingAuthorizationCountAsync(DateTime fromDate, DateTime toDate)
+        {
+            var start = fromDate.Date;
+            var end = toDate.Date.AddDays(1);
+
+            return await _context.Batch
+                .Where(b => b.CreatedAt.HasValue &&
+                            b.CreatedAt >= start &&
+                            b.CreatedAt < end &&
+                            (b.Status == "Balanced" || b.Status == "Draft"))
                 .CountAsync();
         }
 
-        public async Task<int> GetPendingAuthorizationCountAsync()
+        
+        public async Task<decimal> GetAuthorizedValueAsync(DateTime fromDate, DateTime toDate)
         {
+            var start = fromDate.Date;
+            var end = toDate.Date.AddDays(1);
+
             return await _context.Batch
-                .Where(b => b.Status == "Balanced" || b.Status == "Pending Authorization")
-                .CountAsync();
+                .Where(b => b.CreatedAt.HasValue &&
+                            b.CreatedAt >= start &&
+                            b.CreatedAt < end &&
+                            b.Status == "Authorized")
+                .SumAsync(b => (decimal?)b.TotalAmount) ?? 0;
         }
 
-        public async Task<decimal> GetAuthorizedValueAsync()
+        public async Task<int> GetProcessingExceptionsCountAsync(DateTime fromDate, DateTime toDate)
         {
-            return await _context.Batch
-                .Where(b => b.Status == "Authorized")
-                .SumAsync(b => b.TotalAmount);
-        }
+            var start = fromDate.Date;
+            var end = toDate.Date.AddDays(1);
 
-        public async Task<int> GetProcessingExceptionsCountAsync()
+            return await _context.Batch
+                .Where(b => b.CreatedAt.HasValue &&
+                            b.CreatedAt >= start &&
+                            b.CreatedAt < end &&
+                            (b.Status == "Exception" || b.Status == "Rejected"))
+                .CountAsync();
+        }
+        public async Task<Batch?> GetByBranchAndDateAsync(string branch, DateTime fromDate, DateTime toDate)
         {
             return await _context.Batch
-                .Where(b => b.Status == "Exception" || b.Status == "Rejected")
-                .CountAsync();
+                .FirstOrDefaultAsync(b =>
+                    b.Branch == branch &&
+                    b.CreatedAt >= fromDate &&
+                    b.CreatedAt < toDate
+                );
         }
     }
 }

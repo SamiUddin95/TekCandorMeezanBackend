@@ -32,6 +32,7 @@ namespace TekCandor.Service.Outward.Models
         public string? ReceiverBranchCode { get; set; }
         public string? BranchName { get; set; }
         public string? DrawerBank { get; set; }
+        public string? DrawerBankName { get; set; }
         public string? AmountInWords { get; set; }
         public string? ReferenceNo { get; set; }
         public long? DepositSlipId { get; set; }
@@ -44,6 +45,6 @@ namespace TekCandor.Service.Outward.Models
         public DateTime? UpdatedOn { get; set; }
         public string? UpdatedBy { get; set; }
         public string? Hubcode { get; set; }
-        public string? BatchId { get; set; }
+        //public string? BatchId { get; set; }
     }
 }

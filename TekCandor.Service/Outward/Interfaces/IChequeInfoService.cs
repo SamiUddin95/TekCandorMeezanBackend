@@ -15,7 +15,8 @@ namespace TekCandor.Service.Outward.Interfaces
         Task<string> GenerateFileContentAsync(string receiverBranchCode, DateTime date);
         Task<string> GenerateFileContentHubwiseAsync(string hubcode, DateTime date);
         Task<List<ChequeInfoDTO>> GetByStatusAsync(string status, DateTime? fromDate = null, DateTime? toDate = null);
-        Task<PagedResult<ChequeInfoDTO>> GetSupervisorListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
+        //Task<PagedResult<ChequeInfoDTO>> GetSupervisorListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
+        Task<SupervisorListGroupedResult> GetSupervisorListGroupedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null);
         Task<bool> ApproveAsync(long id, string userId);
         Task<bool> RejectAsync(long id, string userId, string remarks);
         Task<NiftUploadResultDTO> ProcessNiftFileAsync(string fileName, string fileContent, string fileType);

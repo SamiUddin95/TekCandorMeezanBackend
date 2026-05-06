@@ -127,31 +127,31 @@ namespace TekCandor.Repository.Implementations.Outward
                 .ToListAsync();
         }
 
-        public async Task<(List<ChequeInfo> items, int totalCount)> GetByStatusPagedAsync(string status, int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
-        {
-            var query = _context.ChequeInfo
-                .Where(c => c.Status == status);
+        //public async Task<(List<ChequeInfo> items, int totalCount)> GetByStatusPagedAsync(string status, int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        //{
+        //    var query = _context.ChequeInfo
+        //        .Where(c => c.Status == status);
 
-            if (fromDate.HasValue)
-            {
-                query = query.Where(c => c.Date >= fromDate.Value);
-            }
+        //    if (fromDate.HasValue)
+        //    {
+        //        query = query.Where(c => c.Date >= fromDate.Value);
+        //    }
 
-            if (toDate.HasValue)
-            {
-                query = query.Where(c => c.Date <= toDate.Value);
-            }
+        //    if (toDate.HasValue)
+        //    {
+        //        query = query.Where(c => c.Date <= toDate.Value);
+        //    }
 
-            var totalCount = await query.CountAsync();
+        //    var totalCount = await query.CountAsync();
 
-            var items = await query
-                .OrderByDescending(c => c.CreatedOn)
-                .Skip((pageNumber - 1) * pageSize)
-                .Take(pageSize)
-                .ToListAsync();
+        //    var items = await query
+        //        .OrderByDescending(c => c.CreatedOn)
+        //        .Skip((pageNumber - 1) * pageSize)
+        //        .Take(pageSize)
+        //        .ToListAsync();
 
-            return (items, totalCount);
-        }
+        //    return (items, totalCount);
+        //}
 
         public async Task<bool> UpdateStatusAsync(long id, string status, string userId)
         {

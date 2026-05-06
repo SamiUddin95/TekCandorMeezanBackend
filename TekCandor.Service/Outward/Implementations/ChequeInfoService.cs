@@ -104,7 +104,7 @@ namespace TekCandor.Service.Outward.Implementations
                 Status = (upperLimit.HasValue && dto.Amount > upperLimit.Value) ? "U" : "A",
                 //Status = dto.Status ?? "Pending",
                 Hubcode = getHubCode,
-                BatchId = dto.BatchId,
+                //BatchId = dto.BatchId,
                 IsReconciled = dto.IsReconciled,
                 IsReturned = dto.IsReturned,
                 IsRealized = dto.IsRealized,
@@ -126,7 +126,7 @@ namespace TekCandor.Service.Outward.Implementations
         {
             var (items, totalCount) = await _repository.GetAllPagedAsync(pageNumber, pageSize, fromDate, toDate);
 
-            var dtos = items.Select(MapToDTO).ToList();
+            var dtos = items.Select(e => MapToDTO(e)).ToList();
 
             return new PagedResult<ChequeInfoDTO>
             {
@@ -191,7 +191,7 @@ namespace TekCandor.Service.Outward.Implementations
             entity.Status = (upperLimit.HasValue && dto.Amount > upperLimit.Value) ? "U" : "A";
             //Status = dto.Status ?? "Pending",
             entity.Hubcode = getHubCode;
-            entity.BatchId = dto.BatchId;
+            //entity.BatchId = dto.BatchId;
             entity.IsReconciled = dto.IsReconciled;
             entity.IsReturned = dto.IsReturned;
             entity.IsRealized = dto.IsRealized;
@@ -209,19 +209,19 @@ namespace TekCandor.Service.Outward.Implementations
         public async Task<List<ChequeInfoDTO>> GetByBranchIdAndDateAsync(string receiverBranchCode, DateTime date)
         {
             var entities = await _repository.GetByBranchIdAndDateAsync(receiverBranchCode, date);
-            return entities.Select(MapToDTO).ToList();
+            return entities.Select(e => MapToDTO(e)).ToList();
         }
 
         public async Task<List<ChequeInfoDTO>> GetByHubcodeAndDateAsync(string hubcode, DateTime date)
         {
             var entities = await _repository.GetByHubcodeAndDateAsync(hubcode, date);
-            return entities.Select(MapToDTO).ToList();
+            return entities.Select(e => MapToDTO(e)).ToList();
         }
 
         public async Task<List<ChequeInfoDTO>> GetByStatusAsync(string status, DateTime? fromDate = null, DateTime? toDate = null)
         {
             var entities = await _repository.GetByStatusAsync(status, fromDate, toDate);
-            return entities.Select(MapToDTO).ToList();
+            return entities.Select(e => MapToDTO(e)).ToList();
         }
 
         public async Task<bool> ApproveAsync(long id, string userId)
@@ -385,8 +385,14 @@ namespace TekCandor.Service.Outward.Implementations
             return await _repository.MarkAsReturnAsync(id, userId);
         }
 
-        private ChequeInfoDTO MapToDTO(ChequeInfo entity)
+        private ChequeInfoDTO MapToDTO(ChequeInfo entity, Dictionary<string, string>? bankDict = null)
         {
+            string? drawerBankName = null;
+            if (bankDict != null && !string.IsNullOrEmpty(entity.DrawerBank))
+            {
+                bankDict.TryGetValue(entity.DrawerBank, out drawerBankName);
+            }
+
             return new ChequeInfoDTO
             {
                 Id = entity.Id,
@@ -417,6 +423,7 @@ namespace TekCandor.Service.Outward.Implementations
                 ReceiverBranchCode = entity.ReceiverBranchCode,
                 BranchName = entity.BranchName,
                 DrawerBank = entity.DrawerBank,
+                DrawerBankName = drawerBankName,
                 AmountInWords = entity.AmountInWords,
                 ReferenceNo = entity.ReferenceNo,
                 DepositSlipId = entity.DepositSlipId,
@@ -429,7 +436,7 @@ namespace TekCandor.Service.Outward.Implementations
                 UpdatedOn = entity.UpdatedOn,
                 UpdatedBy = entity.UpdatedBy,
                 Hubcode = entity.Hubcode,
-                BatchId = entity.BatchId
+                //BatchId = entity.BatchId
             };
         }
 
@@ -474,15 +481,86 @@ namespace TekCandor.Service.Outward.Implementations
             return response;
         }
 
-        public async Task<PagedResult<ChequeInfoDTO>> GetSupervisorListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        //public async Task<PagedResult<ChequeInfoDTO>> GetSupervisorListPagedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
+        //{
+        //    var (items, totalCount) = await _repository.GetByStatusPagedAsync("U", pageNumber, pageSize, fromDate, toDate);
+
+        //    var dtos = items.Select(e => MapToDTO(e)).ToList();
+
+        //    return new PagedResult<ChequeInfoDTO>
+        //    {
+        //        Items = dtos,
+        //        TotalCount = totalCount,
+        //        PageNumber = pageNumber,
+        //        PageSize = pageSize
+        //    };
+        //}
+
+        public async Task<SupervisorListGroupedResult> GetSupervisorListGroupedAsync(int pageNumber, int pageSize, DateTime? fromDate = null, DateTime? toDate = null)
         {
-            var (items, totalCount) = await _repository.GetByStatusPagedAsync("U", pageNumber, pageSize, fromDate, toDate);
+            
+            var allCheques = await _repository.GetByStatusAsync("U", fromDate, toDate);
 
-            var dtos = items.Select(MapToDTO).ToList();
+           
+            var batchIds = allCheques.Select(c => c.BatchId).Distinct().Where(b => !string.IsNullOrEmpty(b)).ToList();
 
-            return new PagedResult<ChequeInfoDTO>
+           
+            var batches = await _context.Batch
+                .Where(b => batchIds.Contains(b.BatchId))
+                .ToListAsync();
+
+           
+            var branchCodes = batches.Select(b => b.Branch).Distinct().Where(b => !string.IsNullOrEmpty(b)).ToList();
+            var branches = await _context.Branch
+                .Where(b => branchCodes.Contains(b.Code))
+                .ToListAsync();
+            var branchDict = branches
+                .Where(b => !string.IsNullOrEmpty(b.Code))
+                .GroupBy(b => b.Code)
+                .ToDictionary(g => g.Key!, g => g.First().Name ?? "");
+
+          
+            var bankCodes = allCheques.Select(c => c.DrawerBank).Distinct().Where(b => !string.IsNullOrEmpty(b)).ToList();
+            var banks = await _context.Bank
+                .Where(b => bankCodes.Contains(b.Code))
+                .ToListAsync();
+            var bankDict = banks
+                .Where(b => !string.IsNullOrEmpty(b.Code))
+                .GroupBy(b => b.Code)
+                .ToDictionary(g => g.Key!, g => g.First().Name ?? "");
+
+            
+            var groupedBatches = allCheques
+                .GroupBy(c => c.BatchId)
+                .Select(g =>
+                {
+                    var batch = batches.FirstOrDefault(b => b.BatchId == g.Key);
+                    var branchName = batch != null && !string.IsNullOrEmpty(batch.Branch) && branchDict.ContainsKey(batch.Branch)
+                        ? branchDict[batch.Branch]
+                        : null;
+
+                    return new BatchGroupedChequeDTO
+                    {
+                        BatchId = g.Key ?? "",
+                    
+                        BranchName = branchName,
+                       
+                        Items = g.Select(c => MapToDTO(c, bankDict)).ToList()
+                    };
+                })
+                .OrderByDescending(b => b.BatchId)
+                .ToList();
+
+            
+            var totalCount = groupedBatches.Count;
+            var pagedBatches = groupedBatches
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new SupervisorListGroupedResult
             {
-                Items = dtos,
+                Batches = pagedBatches,
                 TotalCount = totalCount,
                 PageNumber = pageNumber,
                 PageSize = pageSize
@@ -493,7 +571,7 @@ namespace TekCandor.Service.Outward.Implementations
         {
             var (items, totalCount) = await _repository.GetTransactionHistoryPagedAsync(pageNumber, pageSize, fromDate, toDate);
 
-            var dtos = items.Select(MapToDTO).ToList();
+            var dtos = items.Select(e => MapToDTO(e)).ToList();
 
             return new PagedResult<ChequeInfoDTO>
             {

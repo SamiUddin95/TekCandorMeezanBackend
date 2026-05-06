@@ -16,9 +16,10 @@ namespace TekCandor.Repository.Interfaces.Outward
         Task<Batch?> UpdateAsync(Batch batch);
         Task<bool> DeleteAsync(long id);
         Task<bool> UpdateBatchTotalsAsync(string batchId);
-        Task<int> GetTotalBatchesTodayAsync();
-        Task<int> GetPendingAuthorizationCountAsync();
-        Task<decimal> GetAuthorizedValueAsync();
-        Task<int> GetProcessingExceptionsCountAsync();
+        Task<int> GetTotalBatchesTodayAsync(DateTime fromDate, DateTime toDate);
+        Task<int> GetPendingAuthorizationCountAsync(DateTime fromDate, DateTime toDate);
+        Task<decimal> GetAuthorizedValueAsync(DateTime fromDate, DateTime toDate);
+        Task<int> GetProcessingExceptionsCountAsync(DateTime fromDate, DateTime toDate);
+        Task<Batch?> GetByBranchAndDateAsync(string branch, DateTime fromDate, DateTime toDate);
     }
 }

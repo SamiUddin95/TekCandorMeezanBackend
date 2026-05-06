@@ -159,6 +159,31 @@ namespace TekCandor.Web.Controllers.Outward
             }
         }
 
+        [HttpPost("save-draft/{batchId}")]
+        [ProducesResponseType(typeof(ApiResponse<BatchDTO>), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> SaveBatchAsDraft(string batchId)
+        {
+            try
+            {
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+                var result = await _batchService.SaveBatchAsDraftAsync(batchId, userId);
+
+                if (result == null)
+                    return NotFound(ApiResponse<string>.Error("Batch not found", 404));
+
+                return Ok(ApiResponse<BatchDTO>.Success(result));
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(ApiResponse<string>.Error(ex.Message, 400));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
         [HttpPost("submit/{batchId}")]
         [ProducesResponseType(typeof(ApiResponse<BatchDTO>), StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]

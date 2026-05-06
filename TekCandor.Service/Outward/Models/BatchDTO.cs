@@ -22,5 +22,6 @@ namespace TekCandor.Service.Outward.Models
         public DateTime? RejectedAt { get; set; }
         public string? RejectedBy { get; set; }
         public string? RejectionReason { get; set; }
+        public string? BranchName { get; set; }
     }
 }

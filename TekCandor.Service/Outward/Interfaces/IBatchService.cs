@@ -15,12 +15,12 @@ namespace TekCandor.Service.Outward.Interfaces
         Task<BatchDTO?> UpdateBatchAsync(long id, CreateBatchDTO dto, string userId);
         Task<bool> DeleteBatchAsync(long id);
         Task<bool> UpdateBatchTotalsAsync(string batchId);
-        
+        Task<BatchDTO?> SaveBatchAsDraftAsync(string batchId, string userId);
         Task<BatchDTO?> SubmitBatchForAuthorizationAsync(string batchId, string userId);
         Task<BatchDTO?> AuthorizeBatchAsync(string batchId, string userId);
         Task<BatchDTO?> RejectBatchAsync(string batchId, string userId, string rejectionReason);
         
-        Task<BatchStatisticsDTO> GetBatchStatisticsAsync();
+        Task<BatchStatisticsDTO> GetBatchStatisticsAsync(DateTime fromDate, DateTime toDate);
         Task<BatchDateRangeWithStatsDTO> GetBatchesByDateRangeWithStatsAsync(DateTime fromDate, DateTime toDate);
         Task<BatchWithInstrumentsDTO?> GetBatchWithInstrumentsAsync(string batchId);
         Task<List<ChequeInfoDTO>> GetInstrumentsByBatchIdAsync(string batchId);
