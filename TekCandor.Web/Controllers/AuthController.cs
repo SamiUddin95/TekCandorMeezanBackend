@@ -28,14 +28,16 @@ namespace TekCandor.Web.Controllers
         private readonly IUserService _userService;
         private readonly IConfiguration _config;
         private readonly ITokenRevocationRepository _revocationRepo;
+        private readonly ILicenseService _licenseService;
 
         //private readonly IPermissionHelperService _permissionHelper;
 
-        public AuthController(IUserService userService, IConfiguration config, ITokenRevocationRepository revocationRepo)
+        public AuthController(IUserService userService, IConfiguration config, ITokenRevocationRepository revocationRepo, ILicenseService licenseService)
         {
             _userService = userService;
             _config = config;
             _revocationRepo = revocationRepo;
+            _licenseService = licenseService;
 
             //_permissionHelper = permissionHelper;
         }
@@ -59,6 +61,13 @@ namespace TekCandor.Web.Controllers
                 if (user.IsActive == false)
                 {
                     return Unauthorized(ApiResponse<string>.Error("You are not authorized to log in. Your Status Is InActive.", 201));
+                }
+
+                var licenseStatus = await _licenseService.GetLicenseStatusAsync();
+                if (licenseStatus.IsExpired)
+                {
+                    return StatusCode(402, ApiResponse<LicenseStatusDTO>.Error(
+                        licenseStatus.Message, 402, licenseStatus));
                 }
 
                 var token = await GenerateJwtTokenAsync(user);

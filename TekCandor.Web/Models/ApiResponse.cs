@@ -28,5 +28,16 @@
                 ErrorMessage = errorMessage
             };
         }
+
+        public static ApiResponse<T> Error(string errorMessage, int statusCode, T data)
+        {
+            return new ApiResponse<T>
+            {
+                Status = "error",
+                Data = data,
+                StatusCode = statusCode,
+                ErrorMessage = errorMessage
+            };
+        }
     }
 }

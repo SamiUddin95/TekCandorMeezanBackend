@@ -75,6 +75,9 @@ builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped<ILiveMonitoringService,LiveMonitoringService>();
 builder.Services.AddScoped<ILiveMonitoringRepository, LiveMonitoringRepository>();
 
+builder.Services.AddScoped<IApplicationConfigRepository, ApplicationConfigRepository>();
+builder.Services.AddScoped<ILicenseService, LicenseService>();
+
 builder.Services.AddScoped<TekCandor.Repository.Interfaces.Outward.IBusinessDateRepository, TekCandor.Repository.Implementations.Outward.BusinessDateRepository>();
 builder.Services.AddScoped<TekCandor.Service.Outward.Interfaces.IBusinessDateService, TekCandor.Service.Outward.Implementations.BusinessDateService>();
 

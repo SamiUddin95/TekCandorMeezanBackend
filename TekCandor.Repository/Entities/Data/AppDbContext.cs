@@ -292,21 +292,12 @@ namespace TekCandor.Repository.Entities.Data
 
                 entity.Property(e => e.IsDeleted)
                       .IsRequired()               
-                      .HasDefaultValue(false);     
+                      .HasDefaultValue(false);
 
-                entity.Property(e => e.CreatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);           
-
-                entity.Property(e => e.UpdatedBy)
-                      .HasMaxLength(128)
-                      .IsRequired(false);           
-
-                entity.Property(e => e.CreatedOn)
-                      .IsRequired(false);           
-
-                entity.Property(e => e.UpdatedOn)
-                      .IsRequired(false);           
+                entity.Property(b => b.CreatedBy).HasColumnName("CreatedUser");
+                entity.Property(b => b.CreatedOn).HasColumnName("CreatedDateTime").HasDefaultValueSql("GETUTCDATE()");
+                entity.Property(b => b.UpdatedBy).HasColumnName("ModifiedUser");
+                entity.Property(b => b.UpdatedOn).HasColumnName("ModifiedDateTime").IsRequired(false);
             });
             modelBuilder.Entity<HostCall>(entity =>
             {
