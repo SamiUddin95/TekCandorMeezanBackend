@@ -129,7 +129,7 @@ namespace TekCandor.Service.Outward.Implementations
             await UpdateBatchTotalsAsync(batchId);
             batch = await _batchRepository.GetByBatchIdAsync(batchId);
 
-            batch.Status = "Draft";
+            batch.Status = "Balanced";
             batch.UpdatedAt = DateTime.Now;
             batch.UpdatedBy = userId;
 
@@ -142,13 +142,22 @@ namespace TekCandor.Service.Outward.Implementations
             var batch = await _batchRepository.GetByBatchIdAsync(batchId);
             if (batch == null) return null;
 
-            if (batch.Status != "Draft")
-                throw new InvalidOperationException("Only draft batches can be submitted for authorization");
+            if (batch.Status != "Balanced")
+                throw new InvalidOperationException("Only Balanced batches can be submitted for authorization");
 
             await UpdateBatchTotalsAsync(batchId);
             batch = await _batchRepository.GetByBatchIdAsync(batchId);
+            // ? Update cheque status
+            var cheques = await _context.ChequeInfo
+                .Where(c => c.BatchId == batchId)
+                .ToListAsync();
 
-            batch.Status = "Balanced";
+            foreach (var cheque in cheques)
+            {
+                cheque.Status = "U";
+            }
+
+            batch.Status = "Authorize";
             batch.SubmittedAt = DateTime.Now;
             batch.SubmittedBy = userId;
             batch.UpdatedAt = DateTime.Now;
