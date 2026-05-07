@@ -157,7 +157,7 @@ namespace TekCandor.Service.Outward.Implementations
                 cheque.Status = "U";
             }
 
-            batch.Status = "Authorize";
+            batch.Status = "Authorized";
             batch.SubmittedAt = DateTime.Now;
             batch.SubmittedBy = userId;
             batch.UpdatedAt = DateTime.Now;

@@ -146,7 +146,7 @@ namespace TekCandor.Repository.Implementations.Outward
                 .Where(b => b.CreatedAt.HasValue &&
                             b.CreatedAt >= start &&
                             b.CreatedAt < end &&
-                            b.Status == "Authorize")
+                            b.Status == "Authorized")
                 .SumAsync(b => (decimal?)b.TotalAmount) ?? 0;
         }
 
