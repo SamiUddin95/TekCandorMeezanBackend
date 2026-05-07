@@ -56,6 +56,10 @@ namespace TekCandor.Service.Outward.Implementations
             var getUser = await _context.Users
             .Where(x => x.LoginName == userId)
             .FirstOrDefaultAsync();
+            var drawerBankName = await _context.Bank
+    .Where(x => x.Code == dto.DrawerBank)
+    .Select(x => x.Name)
+    .FirstOrDefaultAsync();
 
             var getHubCode = string.Empty;
 
@@ -97,7 +101,9 @@ namespace TekCandor.Service.Outward.Implementations
                 Currency = dto.Currency,
                 Remarks = dto.Remarks,
                 ReceiverBranchCode = dto.ReceiverBranchCode,
-                DrawerBank = dto.DrawerBank,
+                //DrawerBank = dto.DrawerBank,
+                DrawerBank = drawerBankName ?? dto.DrawerBank,
+
                 AmountInWords = dto.AmountInWords,
                 ReferenceNo = dto.ReferenceNo,
                 DepositSlipId = dto.DepositSlipId,
@@ -436,7 +442,7 @@ namespace TekCandor.Service.Outward.Implementations
                 UpdatedOn = entity.UpdatedOn,
                 UpdatedBy = entity.UpdatedBy,
                 Hubcode = entity.Hubcode,
-                //BatchId = entity.BatchId
+                BatchId = entity.BatchId
             };
         }
 
