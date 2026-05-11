@@ -95,6 +95,10 @@ builder.Services.AddScoped<TekCandor.Repository.Interfaces.Outward.INiftUploadSt
 builder.Services.AddScoped<TekCandor.Repository.Interfaces.Outward.IBatchRepository, TekCandor.Repository.Implementations.Outward.BatchRepository>();
 builder.Services.AddScoped<TekCandor.Service.Outward.Interfaces.IBatchService, TekCandor.Service.Outward.Implementations.BatchService>();
 
+builder.Services.AddScoped<TekCandor.Repository.Interfaces.Outward.IBatchFileRepository, TekCandor.Repository.Implementations.Outward.BatchFileRepository>();
+builder.Services.AddScoped<TekCandor.Service.Outward.Interfaces.IBatchFileService, TekCandor.Service.Outward.Implementations.BatchFileService>();
+
+
 builder.Services.Configure<SsrsOptions>(builder.Configuration.GetSection("Ssrs"));
 builder.Services.AddHttpClient<ISsrsRenderService, SsrsRenderService>("Ssrs")
     .ConfigurePrimaryHttpMessageHandler(sp =>

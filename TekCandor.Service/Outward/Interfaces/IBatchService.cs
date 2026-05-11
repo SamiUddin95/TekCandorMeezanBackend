@@ -24,5 +24,9 @@ namespace TekCandor.Service.Outward.Interfaces
         Task<BatchDateRangeWithStatsDTO> GetBatchesByDateRangeWithStatsAsync(DateTime fromDate, DateTime toDate);
         Task<BatchWithInstrumentsDTO?> GetBatchWithInstrumentsAsync(string batchId);
         Task<List<ChequeInfoDTO>> GetInstrumentsByBatchIdAsync(string batchId);
+        Task<bool> ApproveBatchAsync(string batchId, string userId);
+        Task<bool> ApproveInstrumentAsync(long id, string userId);
+
+
     }
 }

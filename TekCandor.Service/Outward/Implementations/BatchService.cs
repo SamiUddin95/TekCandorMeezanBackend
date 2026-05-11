@@ -147,7 +147,7 @@ namespace TekCandor.Service.Outward.Implementations
 
             await UpdateBatchTotalsAsync(batchId);
             batch = await _batchRepository.GetByBatchIdAsync(batchId);
-            // ? Update cheque status
+            
             var cheques = await _context.ChequeInfo
                 .Where(c => c.BatchId == batchId)
                 .ToListAsync();
@@ -347,5 +347,53 @@ namespace TekCandor.Service.Outward.Implementations
                 //BatchId = entity.BatchId
             };
         }
+
+        public async Task<bool> ApproveBatchAsync(string batchId, string userId)
+        {
+            var batch = await _batchRepository.GetByBatchIdAsync(batchId);
+
+            if (batch == null)
+                return false;
+
+            var cheques = await _context.ChequeInfo
+                .Where(c => c.BatchId == batchId)
+                .ToListAsync();
+
+            foreach (var cheque in cheques)
+            {
+                cheque.Status = "A";
+                cheque.UpdatedBy = userId;
+                cheque.UpdatedOn = DateTime.Now;
+            }
+
+           
+            batch.Status = "Approved";
+            batch.AuthorizedAt = DateTime.Now;
+            batch.AuthorizedBy = userId;
+            batch.UpdatedAt = DateTime.Now;
+            batch.UpdatedBy = userId;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
+        public async Task<bool> ApproveInstrumentAsync(long id, string userId)
+        {
+            var cheque = await _context.ChequeInfo.FindAsync(id);
+
+            if (cheque == null)
+                return false;
+
+            cheque.Status = "A";
+            cheque.UpdatedBy = userId;
+            cheque.UpdatedOn = DateTime.Now;
+
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
     }
+
 }

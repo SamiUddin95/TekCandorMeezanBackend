@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
+using TekCandor.Service.Outward.Implementations;
 using TekCandor.Service.Outward.Interfaces;
 using TekCandor.Service.Outward.Models;
 using TekCandor.Web.Models;
@@ -297,5 +298,48 @@ namespace TekCandor.Web.Controllers.Outward
                 return StatusCode(500, ApiResponse<string>.Error(ex.Message));
             }
         }
+
+        [HttpPost("approve/batch/{batchId}")]
+        [ProducesResponseType(typeof(ApiResponse<string>), StatusCodes.Status200OK)]
+        public async Task<IActionResult> ApproveBatch(string batchId)
+        {
+            try
+            {
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+
+                var result = await _batchService.ApproveBatchAsync(batchId, userId);
+
+                if (!result)
+                    return NotFound(ApiResponse<string>.Error("Batch not found", 404));
+
+                return Ok(ApiResponse<string>.Success("Batch approved successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+        [HttpPost("approve/{id}")]
+        public async Task<IActionResult> ApproveInstrument(long id)
+        {
+            try
+            {
+                var userId = User.FindFirst(JwtRegisteredClaimNames.Sub)?.Value ?? "system";
+
+                var result = await _batchService.ApproveInstrumentAsync(id, userId);
+
+                if (!result)
+                    return NotFound(ApiResponse<string>.Error("Instrument not found", 404));
+
+                return Ok(ApiResponse<string>.Success("Instrument approved successfully"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+            }
+        }
+
+
     }
 }
