@@ -295,7 +295,7 @@ namespace TekCandor.Repository.Implementations.Outward
 
             var query = from c in baseQuery
                         group c by new { c.ReceiverBranchCode, c.BranchName } into g
-                        select new
+                        select new 
                         {
                             ReceiverBranchCode = g.Key.ReceiverBranchCode,
                             BranchName = g.Key.BranchName,
