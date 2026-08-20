@@ -1016,7 +1016,7 @@ namespace TekCandor.Service.Implementations
                             var signature = new TekCandor.Repository.Entities.Signature
                             {
                                 AccountNumber = accountNumber,
-                                Sign = System.Text.Encoding.UTF8.GetBytes(sigImagesPath + fileName),
+                                Sign = sigImagesPath + fileName,
                                 CreatedOn = DateTime.Now,
                                 IsDeleted = false
                             };

@@ -29,6 +29,6 @@ namespace TekCandor.Repository.Models
         public string CycleCode { get; set; } = string.Empty;
         public string HubCode { get; set; } = string.Empty;
         public string? ImagePath { get; set; }
-        public byte[][]? Signature { get; set; }
+        public string[]? Signature { get; set; }
     }
 }

@@ -895,7 +895,7 @@ namespace TekCandor.Service.Implementations
                 var notMatched = new List<PathItem>();
 
                 var existingFileNames = existingSignatures
-                    .Select(x => Path.GetFileName(Encoding.UTF8.GetString(x.Sign ?? Array.Empty<byte>())))
+                    .Select(x => Path.GetFileName(x.Sign ?? string.Empty))
                     .ToList();
 
                 // Compare signatures
@@ -919,7 +919,7 @@ namespace TekCandor.Service.Implementations
                 foreach (var fileName in toDelete)
                 {
                     var sigToDelete = existingSignatures.FirstOrDefault(x =>
-                        string.Equals(Path.GetFileName(Encoding.UTF8.GetString(x.Sign ?? Array.Empty<byte>())), fileName, StringComparison.OrdinalIgnoreCase));
+                        string.Equals(Path.GetFileName(x.Sign ?? string.Empty), fileName, StringComparison.OrdinalIgnoreCase));
 
                     if (sigToDelete != null)
                     {
@@ -1009,7 +1009,7 @@ namespace TekCandor.Service.Implementations
                             var signature = new Signature
                             {
                                 AccountNumber = criteriaValue,
-                                Sign = Encoding.UTF8.GetBytes(sigImagesPath + fileName),
+                                Sign = sigImagesPath + fileName,
                                 CreatedOn = DateTime.Now,
                                 IsDeleted = false
                             };

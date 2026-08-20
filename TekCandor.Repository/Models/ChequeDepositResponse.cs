@@ -18,7 +18,7 @@ namespace TekCandor.Repository.Models
         public decimal Amount { get; set; }
         public string AccountBalance { get; set; }
         public string ErrorInFields { get; set; }
-        public byte[][]? Signature { get; set; }
+        public string[]? Signature { get; set; }
         public string? ImagePath { get; set; }
     }
 }

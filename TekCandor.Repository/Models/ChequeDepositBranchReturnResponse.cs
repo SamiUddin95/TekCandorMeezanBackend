@@ -28,6 +28,6 @@ namespace TekCandor.Repository.Models
         public string RejectedReasonsByCCU { get; set; } = string.Empty;
         public string Currency { get; set; } = string.Empty;
         public string? ImagePath { get; set; }
-        public byte[][]? Signature { get; set; }
+        public string[]? Signature { get; set; }
     }
 }

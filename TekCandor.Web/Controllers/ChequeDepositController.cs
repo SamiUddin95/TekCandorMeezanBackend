@@ -794,6 +794,69 @@ namespace TekCandor.Web.Controllers
             }
         }
 
+        [HttpGet("image/{imageName}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetImage(string imageName)
+        {
+            try
+            {
+                var imagePath = _configuration["FileLocations:NiftImages"];
+                
+                if (string.IsNullOrEmpty(imagePath))
+                {
+                    _logger.LogError("NiftImages path not configured in appsettings");
+                    return NotFound("Image path not configured");
+                }
+
+                // Try with .jpg extension
+                var fullPath = Path.Combine(imagePath, imageName + ".jpg");
+                
+                if (!System.IO.File.Exists(fullPath))
+                {
+                    _logger.LogWarning("Image not found: {ImagePath}", fullPath);
+                    return NotFound($"Image not found: {imageName}");
+                }
+
+                var imageBytes = System.IO.File.ReadAllBytes(fullPath);
+                return File(imageBytes, "image/jpeg");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error serving image: {ImageName}", imageName);
+                return StatusCode(500, "Error serving image");
+            }
+        }
+
+        [HttpGet("signature-image")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetSignatureImage([FromQuery] string imagePath)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(imagePath))
+                {
+                    _logger.LogError("Image path parameter is empty");
+                    return NotFound("Image path not provided");
+                }
+
+                if (!System.IO.File.Exists(imagePath))
+                {
+                    _logger.LogWarning("Signature image not found: {ImagePath}", imagePath);
+                    return NotFound($"Signature image not found: {imagePath}");
+                }
+
+                var imageBytes = System.IO.File.ReadAllBytes(imagePath);
+                return File(imageBytes, "image/jpeg");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error serving signature image: {ImagePath}", imagePath);
+                return StatusCode(500, "Error serving signature image");
+            }
+        }
+
         private void ExtractZipFile(string zipFilePath, string extractPath)
         {
             try
