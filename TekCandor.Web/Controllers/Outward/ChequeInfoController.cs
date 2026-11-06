@@ -6,6 +6,8 @@ using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 using System.Threading.Tasks;
+using TekCandor.Repository.Entities.Data;
+using TekCandor.Repository.Entities.Outward;
 using TekCandor.Service.Outward.Interfaces;
 using TekCandor.Service.Outward.Models;
 using TekCandor.Web.Models;
@@ -19,9 +21,12 @@ namespace TekCandor.Web.Controllers.Outward
     {
         private readonly IChequeInfoService _service;
 
-        public ChequeInfoController(IChequeInfoService service)
+        private readonly AppDbContext _context;
+
+        public ChequeInfoController(IChequeInfoService service, AppDbContext context)
         {
             _service = service;
+            _context = context;
         }
 
         [HttpPost]
@@ -41,7 +46,7 @@ namespace TekCandor.Web.Controllers.Outward
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+                return StatusCode(500, ApiResponse<string>.Error(ex.GetBaseException().Message));
             }
         }
 
@@ -114,7 +119,7 @@ namespace TekCandor.Web.Controllers.Outward
             }
             catch (Exception ex)
             {
-                return StatusCode(500, ApiResponse<string>.Error(ex.Message));
+                return StatusCode(500, ApiResponse<string>.Error(ex.GetBaseException().Message));
             }
         }
 
@@ -382,6 +387,11 @@ namespace TekCandor.Web.Controllers.Outward
         {
             try
             {
+                var getId = _context.NiftUploadStaging.Where(x => x.ChequeNo == request.ChequeNo).FirstOrDefault();
+                if (getId != null)
+                {
+                    request.NiftStagingId = getId.Id;
+                }
                 if (request.NiftStagingId <= 0 || request.ChequeNo == null)
                     return BadRequest(ApiResponse<string>.Error("Invalid request data", 400));
 

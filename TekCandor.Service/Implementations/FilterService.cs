@@ -302,6 +302,7 @@ namespace TekCandor.Service.Implementations
                 .Where(h => h.Code == hubCode && !h.IsDeleted)
                 .Select(h => new
                 {
+                    h.Id,
                     h.Name,
                     h.Code
                 })
@@ -312,9 +313,11 @@ namespace TekCandor.Service.Implementations
                 throw new ArgumentException("Hub not found");
             }
 
-            // Get cheque statistics for this hub
-            var chequeQuery = _context.ChequeInfo
-                .Where(c => c.Hubcode == hubCode);
+            // Resolve through Branch.HubId — ChequeInfo.Hubcode is unreliable (NULL on many rows).
+            var chequeQuery = from c in _context.ChequeInfo
+                              join b in _context.Branch on c.ReceiverBranchCode equals b.Code
+                              where b.HubId == hub.Id
+                              select c;
 
             if (date.HasValue)
             {
@@ -324,7 +327,7 @@ namespace TekCandor.Service.Implementations
             }
 
             var chequeData = await chequeQuery
-                .GroupBy(c => c.Hubcode)
+                .GroupBy(c => 1)
                 .Select(g => new
                 {
                     TotalCount = g.Count(),

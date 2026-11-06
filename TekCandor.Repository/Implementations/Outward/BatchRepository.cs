@@ -132,7 +132,7 @@ namespace TekCandor.Repository.Implementations.Outward
                 .Where(b => b.CreatedAt.HasValue &&
                             b.CreatedAt >= start &&
                             b.CreatedAt < end &&
-                            (b.Status == "Balanced" || b.Status == "Draft"))
+                            (b.Status == "Balanced" || b.Status == "Draft" || b.Status == "Pending"))
                 .CountAsync();
         }
 

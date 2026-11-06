@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -21,14 +23,51 @@ namespace TekCandor.Service.Outward.Implementations
         private readonly INiftUploadStagingRepository _niftRepository;
         private readonly AppDbContext _context;
         private readonly IUserRepository _userRepository;
+        private readonly IConfiguration _configuration;
         private static readonly Random _random = new Random();
-        public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository, AppDbContext context, IUserRepository userRepository)
+        public ChequeInfoService(IChequeInfoRepository repository, INiftUploadStagingRepository niftRepository, AppDbContext context, IUserRepository userRepository, IConfiguration configuration)
         {
             _repository = repository;
             _niftRepository = niftRepository;
             _context = context;
             _userRepository = userRepository;
+            _configuration = configuration;
         }
+
+        /// <summary>
+        /// Scanner images arrive as base64 data URIs. The ImageF/B/U columns only hold a short
+        /// file name (served by GET api/ChequeDeposit/image/{name}), so the image is written as
+        /// {name}.jpg into FileLocations:NiftImages and the name is returned for storage.
+        /// Values that are already file names (or empty) are returned unchanged.
+        /// </summary>
+        private string? SaveChequeImage(string? value, string baseName, string side)
+        {
+            if (string.IsNullOrWhiteSpace(value)) return value;
+
+            var base64 = value.Trim();
+            if (base64.StartsWith("data:", StringComparison.OrdinalIgnoreCase))
+            {
+                var comma = base64.IndexOf(',');
+                base64 = comma >= 0 ? base64[(comma + 1)..] : string.Empty;
+            }
+            else if (base64.Length <= 50)
+            {
+                // Already a stored file name
+                return value;
+            }
+
+            var folder = _configuration["FileLocations:NiftImages"];
+            if (string.IsNullOrWhiteSpace(folder))
+                throw new InvalidOperationException("FileLocations:NiftImages is not configured; cheque images cannot be saved.");
+
+            Directory.CreateDirectory(folder);
+            var fileName = baseName + side;
+            File.WriteAllBytes(Path.Combine(folder, fileName + ".jpg"), Convert.FromBase64String(base64));
+            return fileName;
+        }
+
+        /// <summary>Unique 17-char base name (yyMMddHHmmssfff + 2 random digits) — with the F/B/U suffix it fits the 20-char image columns.</summary>
+        private static string NewImageBaseName() => $"{DateTime.Now:yyMMddHHmmssfff}{_random.Next(0, 100):00}";
 
         public int Generate7DigitNumber()
         {
@@ -63,7 +102,8 @@ namespace TekCandor.Service.Outward.Implementations
 
             var getHubCode = string.Empty;
 
-            var getHubId = await _context.Branch.Where(x => x.Code == dto.ReceiverBranchCode).Select(b => b.HubId).FirstOrDefaultAsync();
+            var getbranchname = await _context.Branch.Where(x => x.Code == dto.PayingBranchCode).FirstOrDefaultAsync();
+            var getHubId = await _context.Branch.Where(x => x.Code == dto.PayingBranchCode).Select(b => b.HubId).FirstOrDefaultAsync();
             if (getHubId != null)
             {
                 getHubCode = await _context.Hub.Where(x => x.Id == getHubId).Select(h => h.Code).FirstOrDefaultAsync();
@@ -74,6 +114,7 @@ namespace TekCandor.Service.Outward.Implementations
             }
             long userIdLong = getUser.Id;
             var upperLimit = await _userRepository.GetUserUpperLimitAsync(userIdLong);
+            var imageBaseName = NewImageBaseName();
             var entity = new ChequeInfo
             {
                 Date = dto.Date,
@@ -85,22 +126,23 @@ namespace TekCandor.Service.Outward.Implementations
                 BeneficiaryTitle = dto.BeneficiaryTitle,
                 AccountStatus = dto.AccountStatus,
                 BeneficiaryBranchCode = dto.BeneficiaryBranchCode,
-                ChequeNo = Convert.ToString(Generate7DigitNumber()),//dto.ChequeNo,
+                ChequeNo = !string.IsNullOrWhiteSpace(dto.ChequeNo) ? dto.ChequeNo : Convert.ToString(Generate7DigitNumber()),
                 PayingBankCode = dto.PayingBankCode,
                 PayingBranchCode = dto.PayingBranchCode,
                 Amount = dto.Amount,//GenerateRandomAmount(1000, 100000),//dto.Amount,
                 ChequeDate = dto.ChequeDate,
                 InstrumentType = dto.InstrumentType,
-                MICR = GenerateFormattedNumber(),//dto.MICR,
+                MICR = !string.IsNullOrWhiteSpace(dto.MICR) ? dto.MICR : GenerateFormattedNumber(),
                 OCREngine = dto.OCREngine,
                 ProcessingTime = dto.ProcessingTime,
                 Accuracy = dto.Accuracy,
-                ImageF = dto.ImageF,
-                ImageB = dto.ImageB,
-                ImageU = dto.ImageU,
+                ImageF = SaveChequeImage(dto.ImageF, imageBaseName, "F"),
+                ImageB = SaveChequeImage(dto.ImageB, imageBaseName, "B"),
+                ImageU = SaveChequeImage(dto.ImageU, imageBaseName, "U"),
                 Currency = dto.Currency,
                 Remarks = dto.Remarks,
-                ReceiverBranchCode = dto.ReceiverBranchCode,
+                ReceiverBranchCode = dto.PayingBranchCode,//dto.ReceiverBranchCode,
+                BranchName = getbranchname.Name,
                 //DrawerBank = dto.DrawerBank,
                 DrawerBank = drawerBankName ?? dto.DrawerBank,
 
@@ -183,9 +225,10 @@ namespace TekCandor.Service.Outward.Implementations
             entity.OCREngine = dto.OCREngine;
             entity.ProcessingTime = dto.ProcessingTime;
             entity.Accuracy = dto.Accuracy;
-            entity.ImageF = dto.ImageF;
-            entity.ImageB = dto.ImageB;
-            entity.ImageU = dto.ImageU;
+            var imageBaseName = NewImageBaseName();
+            entity.ImageF = SaveChequeImage(dto.ImageF, imageBaseName, "F");
+            entity.ImageB = SaveChequeImage(dto.ImageB, imageBaseName, "B");
+            entity.ImageU = SaveChequeImage(dto.ImageU, imageBaseName, "U");
             entity.Currency = dto.Currency;
             entity.Remarks = dto.Remarks;
             entity.ReceiverBranchCode = dto.ReceiverBranchCode;
@@ -204,6 +247,19 @@ namespace TekCandor.Service.Outward.Implementations
             entity.UpdatedBy = userId;
 
             var updated = await _repository.UpdateAsync(entity);
+
+            // Re-saving an instrument reopens a rejected batch for rework.
+            if (!string.IsNullOrEmpty(updated?.BatchId))
+            {
+                var batch = await _context.Batch.FirstOrDefaultAsync(b => b.BatchId == updated.BatchId);
+                if (batch != null && batch.Status == "Rejected")
+                {
+                    batch.Status = "Balanced";
+                    batch.UpdatedAt = DateTime.Now;
+                    batch.UpdatedBy = userId;
+                    await _context.SaveChangesAsync();
+                }
+            }
             return MapToDTO(updated);
         }
 
@@ -232,12 +288,54 @@ namespace TekCandor.Service.Outward.Implementations
 
         public async Task<bool> ApproveAsync(long id, string userId)
         {
-            return await _repository.UpdateStatusAsync(id, "Approved", userId);
+            var updated = await _repository.UpdateStatusAsync(id, "Approved", userId);
+            if (!updated) return false;
+
+            // When every cheque in the batch is approved, the batch becomes Authorized.
+            var cheque = await _repository.GetByIdAsync(id);
+            if (!string.IsNullOrEmpty(cheque?.BatchId))
+            {
+                var batch = await _context.Batch.FirstOrDefaultAsync(b => b.BatchId == cheque.BatchId);
+                if (batch != null && batch.Status == "Pending")
+                {
+                    var pendingCount = await _context.ChequeInfo
+                        .CountAsync(c => c.BatchId == cheque.BatchId && c.Status != "Approved" && c.Status != "A");
+                    if (pendingCount == 0)
+                    {
+                        batch.Status = "Authorized";
+                        batch.AuthorizedAt = DateTime.Now;
+                        batch.AuthorizedBy = userId;
+                        batch.UpdatedAt = DateTime.Now;
+                        batch.UpdatedBy = userId;
+                        await _context.SaveChangesAsync();
+                    }
+                }
+            }
+            return true;
         }
 
         public async Task<bool> RejectAsync(long id, string userId, string remarks)
         {
-            return await _repository.UpdateRejectStatusAsync(id, "Rejected", userId, remarks);
+            var updated = await _repository.UpdateRejectStatusAsync(id, "Rejected", userId, remarks);
+            if (!updated) return false;
+
+            // A rejection marks the parent batch Rejected; it can be reworked and resubmitted.
+            var cheque = await _repository.GetByIdAsync(id);
+            if (!string.IsNullOrEmpty(cheque?.BatchId))
+            {
+                var batch = await _context.Batch.FirstOrDefaultAsync(b => b.BatchId == cheque.BatchId);
+                if (batch != null && (batch.Status == "Authorized" || batch.Status == "Pending" || batch.Status == "Balanced"))
+                {
+                    batch.Status = "Rejected";
+                    batch.RejectedAt = DateTime.Now;
+                    batch.RejectedBy = userId;
+                    batch.RejectionReason = remarks;
+                    batch.UpdatedAt = DateTime.Now;
+                    batch.UpdatedBy = userId;
+                    await _context.SaveChangesAsync();
+                }
+            }
+            return true;
         }
 
         public async Task<string> GenerateFileContentAsync(string receiverBranchCode, DateTime date)

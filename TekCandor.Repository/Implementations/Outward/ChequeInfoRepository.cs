@@ -73,6 +73,10 @@ namespace TekCandor.Repository.Implementations.Outward
         public async Task<ChequeInfo> UpdateAsync(ChequeInfo chequeInfo)
         {
             chequeInfo.UpdatedOn = DateTime.Now;
+            chequeInfo.BranchName = _context.Branch
+                .Where(x => x.Code == chequeInfo.ReceiverBranchCode)
+                .Select(x => x.Name)
+                .FirstOrDefault();
             _context.ChequeInfo.Update(chequeInfo);
             await _context.SaveChangesAsync();
             return chequeInfo;
@@ -101,8 +105,18 @@ namespace TekCandor.Repository.Implementations.Outward
         public async Task<List<ChequeInfo>> GetByHubcodeAndDateAsync(string hubcode, DateTime date)
         {
             var dateOnly = date.Date;
+            var hubId = await _context.Hub
+                .Where(h => h.Code == hubcode && !h.IsDeleted)
+                .Select(h => (long?)h.Id)
+                .FirstOrDefaultAsync();
+
+            // Resolve through Branch.HubId — ChequeInfo.Hubcode is NULL on many rows.
             return await _context.ChequeInfo
-                .Where(c => c.Hubcode == hubcode && c.Date.HasValue && c.Date.Value.Date == dateOnly)
+                .Join(_context.Branch.Where(b => b.HubId == hubId),
+                    c => c.ReceiverBranchCode,
+                    b => b.Code,
+                    (c, b) => c)
+                .Where(c => c.Date.HasValue && c.Date.Value.Date == dateOnly)
                 .OrderBy(c => c.Id)
                 .ToListAsync();
         }

@@ -123,9 +123,6 @@ namespace TekCandor.Service.Outward.Implementations
             if (batch.Status == "Authorized")
                 throw new InvalidOperationException("Authorized batches cannot be modified");
 
-            if (batch.Status == "Rejected")
-                throw new InvalidOperationException("Rejected batches cannot be modified");
-
             await UpdateBatchTotalsAsync(batchId);
             batch = await _batchRepository.GetByBatchIdAsync(batchId);
 
@@ -157,7 +154,7 @@ namespace TekCandor.Service.Outward.Implementations
                 cheque.Status = "U";
             }
 
-            batch.Status = "Authorized";
+            batch.Status = "Pending";
             batch.SubmittedAt = DateTime.Now;
             batch.SubmittedBy = userId;
             batch.UpdatedAt = DateTime.Now;
@@ -172,8 +169,8 @@ namespace TekCandor.Service.Outward.Implementations
             var batch = await _batchRepository.GetByBatchIdAsync(batchId);
             if (batch == null) return null;
 
-            if (batch.Status != "Balanced")
-                throw new InvalidOperationException("Only balanced batches can be authorized");
+            if (batch.Status != "Pending")
+                throw new InvalidOperationException("Only pending batches can be authorized");
 
             batch.Status = "Authorized";
             batch.AuthorizedAt = DateTime.Now;
@@ -190,8 +187,8 @@ namespace TekCandor.Service.Outward.Implementations
             var batch = await _batchRepository.GetByBatchIdAsync(batchId);
             if (batch == null) return null;
 
-            if (batch.Status != "Balanced")
-                throw new InvalidOperationException("Only balanced batches can be rejected");
+            if (batch.Status != "Pending")
+                throw new InvalidOperationException("Only pending batches can be rejected");
 
             batch.Status = "Rejected";
             batch.RejectedAt = DateTime.Now;
@@ -355,6 +352,9 @@ namespace TekCandor.Service.Outward.Implementations
             if (batch == null)
                 return false;
 
+            if (batch.Status != "Pending")
+                return false;
+
             var cheques = await _context.ChequeInfo
                 .Where(c => c.BatchId == batchId)
                 .ToListAsync();
@@ -367,7 +367,7 @@ namespace TekCandor.Service.Outward.Implementations
             }
 
            
-            batch.Status = "Approved";
+            batch.Status = "Authorized";
             batch.AuthorizedAt = DateTime.Now;
             batch.AuthorizedBy = userId;
             batch.UpdatedAt = DateTime.Now;
